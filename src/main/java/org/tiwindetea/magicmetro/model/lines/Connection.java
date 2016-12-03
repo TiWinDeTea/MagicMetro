@@ -31,7 +31,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * TODO
+ * A connection between two subsections.
  *
  * @author Maxime PINARD
  * @since 0.1
@@ -41,12 +41,25 @@ public class Connection {
 	private Point2d position;
 	private Pair<SubSection, SubSection> subSections;
 
+	/**
+	 * Instantiates a new Connection.
+	 *
+	 * @param position    the position
+	 * @param subSections the subsections
+	 */
 	public Connection(@Nullable Point2d position, @Nonnull Pair<SubSection, SubSection> subSections) {
 
 		this.position = (position == null) ? new Point2d() : new Point2d(position);
 		this.subSections = new Pair<>(subSections);
 	}
 
+	/**
+	 * Instantiates a new Connection.
+	 *
+	 * @param position        the position
+	 * @param leftSubSection  the left subsection
+	 * @param rightSubSection the right subsection
+	 */
 	public Connection(@Nullable Point2d position,
 	                  @Nonnull SubSection leftSubSection,
 	                  @Nonnull SubSection rightSubSection) {
@@ -55,25 +68,52 @@ public class Connection {
 		this.subSections = new Pair<>(leftSubSection, rightSubSection);
 	}
 
+	/**
+	 * Instantiates a new Connection.
+	 *
+	 * @param position   the position
+	 * @param subSection the subsection (right and left)
+	 */
 	public Connection(@Nullable Point2d position, @Nonnull SubSection subSection) {
 
 		this.position = (position == null) ? new Point2d() : new Point2d(position);
 		this.subSections = new Pair<>(subSection, subSection);
 	}
 
+	/**
+	 * Gets position.
+	 *
+	 * @return the position
+	 */
 	public Point2d getPosition() {
 		return this.position;
 	}
 
+	/**
+	 * Gets sub ections.
+	 *
+	 * @return the subsections
+	 */
 	public Pair<SubSection, SubSection> getSubSections() {
 		return this.subSections;
 	}
 
-	public SubSection getLefttSubSection() {
+	/**
+	 * Gets left subsection.
+	 *
+	 * @return the left subsection
+	 */
+	public SubSection getLeftSubSection() {
 		return this.subSections.getLeft();
 	}
 
+	/**
+	 * Gets right subsection.
+	 *
+	 * @return the right subsection
+	 */
 	public SubSection getRightSubSection() {
 		return this.subSections.getRight();
 	}
+
 }
