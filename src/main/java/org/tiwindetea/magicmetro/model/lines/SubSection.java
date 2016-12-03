@@ -24,17 +24,54 @@
 
 package org.tiwindetea.magicmetro.model.lines;
 
+import org.tiwindetea.magicmetro.global.util.Pair;
+
+import javax.annotation.Nonnull;
+
 /**
- * TODO
+ * A subsection between two connections.
+ *
+ * @author Maxime PINARD
+ * @see Connection
+ * @since 0.1
  */
 public class SubSection {
 
-	private boolean tunnel;
+	private boolean isTunnel;
+	private Pair<Connection, Connection> connections;
 
 	/**
-	 * Default constructor
+	 * Instantiates a new SubSection.
+	 *
+	 * @param isTunnel    true if tunnel, false otherwise
+	 * @param connections the connections
 	 */
-	public SubSection() {
+	public SubSection(boolean isTunnel, @Nonnull Pair<Connection, Connection> connections) {
+
+		this.isTunnel = isTunnel;
+		this.connections = new Pair<>(connections);
+	}
+
+	/**
+	 * Instantiates a new SubSection.
+	 *
+	 * @param isTunnel        true if tunnel, false otherwise
+	 * @param leftConnection  the left connection
+	 * @param rightConnection the right connection
+	 */
+	public SubSection(boolean isTunnel, @Nonnull Connection leftConnection, @Nonnull Connection rightConnection) {
+
+		this.isTunnel = isTunnel;
+		this.connections = new Pair<>(leftConnection, rightConnection);
+	}
+
+	/**
+	 * Gets if tunnel or not.
+	 *
+	 * @return true if tunnel, false otherwise
+	 */
+	public boolean isTunnel() {
+		return this.isTunnel;
 	}
 
 }

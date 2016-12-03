@@ -34,6 +34,7 @@ import javax.annotation.Nullable;
  * A connection between two subsections.
  *
  * @author Maxime PINARD
+ * @see SubSection
  * @since 0.1
  */
 public class Connection {
