@@ -27,18 +27,53 @@ package org.tiwindetea.magicmetro.model.lines;
 import org.arakhne.afc.math.geometry.d2.d.Point2d;
 import org.tiwindetea.magicmetro.global.util.Pair;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * TODO
+ *
+ * @author Maxime PINARD
+ * @since 0.1
  */
 public class Connection {
 
 	private Point2d position;
 	private Pair<SubSection, SubSection> subSections;
 
-	/**
-	 * Default constructor.
-	 */
-	public Connection() {
+	public Connection(@Nullable Point2d position, @Nonnull Pair<SubSection, SubSection> subSections) {
 
+		this.position = (position == null) ? new Point2d() : new Point2d(position);
+		this.subSections = new Pair<>(subSections);
+	}
+
+	public Connection(@Nullable Point2d position,
+	                  @Nonnull SubSection leftSubSection,
+	                  @Nonnull SubSection rightSubSection) {
+
+		this.position = (position == null) ? new Point2d() : new Point2d(position);
+		this.subSections = new Pair<>(leftSubSection, rightSubSection);
+	}
+
+	public Connection(@Nullable Point2d position, @Nonnull SubSection subSection) {
+
+		this.position = (position == null) ? new Point2d() : new Point2d(position);
+		this.subSections = new Pair<>(subSection, subSection);
+	}
+
+	public Point2d getPosition() {
+		return this.position;
+	}
+
+	public Pair<SubSection, SubSection> getSubSections() {
+		return this.subSections;
+	}
+
+	public SubSection getLefttSubSection() {
+		return this.subSections.getLeft();
+	}
+
+	public SubSection getRightSubSection() {
+		return this.subSections.getRight();
 	}
 }
