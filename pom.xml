@@ -1,0 +1,67 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.tiwindetea</groupId>
+    <artifactId>magicmetro</artifactId>
+    <version>0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>MagicMetro</name>
+    <description>2016 UTBM LO43 school project, clone of MiniMetro game</description>
+    <url>https://github.com/pinam45/MagicMetro</url>
+
+    <licenses>
+        <license>
+            <name>The MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Maxime Pinard</name>
+            <email>maxime.pin@live.fr</email>
+            <url>http://maxime.pinard.info/</url>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>Europe/Paris</timezone>
+        </developer>
+        <developer>
+            <name>Julien Barbier</name>
+            <email>barbier.julien@orange.fr</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>Europe/Paris</timezone>
+        </developer>
+    </developers>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305 -->
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.4</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.arakhne.afc.core/math -->
+        <dependency>
+            <groupId>org.arakhne.afc.core</groupId>
+            <artifactId>math</artifactId>
+            <version>13.0</version>
+        </dependency>
+    </dependencies>
+</project>
