@@ -25,20 +25,27 @@
 package org.tiwindetea.magicmetro.model.lines;
 
 import org.tiwindetea.magicmetro.global.util.Pair;
+import org.tiwindetea.magicmetro.global.util.SimplePair;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.lang.ref.WeakReference;
 
 /**
  * A subsection between two connections.
  *
  * @author Maxime PINARD
  * @see Connection
+ * @see Section
  * @since 0.1
  */
 public class SubSection {
 
 	private boolean isTunnel;
-	private Pair<Connection, Connection> connections;
+	private SimplePair<Connection> connections;
+	private double length;
+	private boolean lengthUpToDate = false;
+	private WeakReference<Section> sectionRef = new WeakReference<>(null);
 
 	/**
 	 * Instantiates a new SubSection.
@@ -49,7 +56,7 @@ public class SubSection {
 	public SubSection(boolean isTunnel, @Nonnull Pair<Connection, Connection> connections) {
 
 		this.isTunnel = isTunnel;
-		this.connections = new Pair<>(connections);
+		this.connections = new SimplePair<>(connections);
 	}
 
 	/**
@@ -62,7 +69,7 @@ public class SubSection {
 	public SubSection(boolean isTunnel, @Nonnull Connection leftConnection, @Nonnull Connection rightConnection) {
 
 		this.isTunnel = isTunnel;
-		this.connections = new Pair<>(leftConnection, rightConnection);
+		this.connections = new SimplePair<>(leftConnection, rightConnection);
 	}
 
 	/**
@@ -72,6 +79,46 @@ public class SubSection {
 	 */
 	public boolean isTunnel() {
 		return this.isTunnel;
+	}
+
+	private void computeLength() {
+
+		this.length = this.connections.getLeft().getPosition().getDistance(this.connections.getRight().getPosition());
+		this.lengthUpToDate = true;
+	}
+
+	/**
+	 * Gets length.
+	 *
+	 * @return the length
+	 */
+	public double getLength() {
+
+		if(!this.lengthUpToDate) {
+			computeLength();
+		}
+		return this.length;
+	}
+
+	/**
+	 * Gets section reference.
+	 *
+	 * @return the section reference
+	 */
+	@Nullable
+	public Section getSectionRef() {
+
+		return this.sectionRef.get();
+	}
+
+	/**
+	 * Sets section reference.
+	 *
+	 * @param sectionRef the section reference
+	 */
+	public void setSectionRef(Section sectionRef) {
+
+		this.sectionRef = new WeakReference<>(sectionRef);
 	}
 
 }

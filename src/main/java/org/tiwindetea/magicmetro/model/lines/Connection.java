@@ -26,21 +26,27 @@ package org.tiwindetea.magicmetro.model.lines;
 
 import org.arakhne.afc.math.geometry.d2.d.Point2d;
 import org.tiwindetea.magicmetro.global.util.Pair;
+import org.tiwindetea.magicmetro.global.util.SimplePair;
+import org.tiwindetea.magicmetro.model.Station;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.lang.ref.WeakReference;
 
 /**
  * A connection between two subsections.
  *
  * @author Maxime PINARD
  * @see SubSection
+ * @see Section
  * @since 0.1
  */
 public class Connection {
 
 	private Point2d position;
-	private Pair<SubSection, SubSection> subSections;
+	private SimplePair<SubSection> subSections;
+	private WeakReference<Station> stationRef = new WeakReference<>(null);
+	private WeakReference<Section> sectionRef = new WeakReference<>(null);
 
 	/**
 	 * Instantiates a new Connection.
@@ -51,7 +57,7 @@ public class Connection {
 	public Connection(@Nullable Point2d position, @Nonnull Pair<SubSection, SubSection> subSections) {
 
 		this.position = (position == null) ? new Point2d() : new Point2d(position);
-		this.subSections = new Pair<>(subSections);
+		this.subSections = new SimplePair<>(subSections);
 	}
 
 	/**
@@ -66,7 +72,7 @@ public class Connection {
 	                  @Nonnull SubSection rightSubSection) {
 
 		this.position = (position == null) ? new Point2d() : new Point2d(position);
-		this.subSections = new Pair<>(leftSubSection, rightSubSection);
+		this.subSections = new SimplePair<>(leftSubSection, rightSubSection);
 	}
 
 	/**
@@ -78,7 +84,7 @@ public class Connection {
 	public Connection(@Nullable Point2d position, @Nonnull SubSection subSection) {
 
 		this.position = (position == null) ? new Point2d() : new Point2d(position);
-		this.subSections = new Pair<>(subSection, subSection);
+		this.subSections = new SimplePair<>(subSection, subSection);
 	}
 
 	/**
@@ -86,15 +92,17 @@ public class Connection {
 	 *
 	 * @return the position
 	 */
+	@Nonnull
 	public Point2d getPosition() {
 		return this.position;
 	}
 
 	/**
-	 * Gets sub ections.
+	 * Gets sub sections.
 	 *
 	 * @return the subsections
 	 */
+	@Nonnull
 	public Pair<SubSection, SubSection> getSubSections() {
 		return this.subSections;
 	}
@@ -104,6 +112,7 @@ public class Connection {
 	 *
 	 * @return the left subsection
 	 */
+	@Nonnull
 	public SubSection getLeftSubSection() {
 		return this.subSections.getLeft();
 	}
@@ -113,8 +122,61 @@ public class Connection {
 	 *
 	 * @return the right subsection
 	 */
+	@Nonnull
 	public SubSection getRightSubSection() {
 		return this.subSections.getRight();
+	}
+
+	/**
+	 * Gets if in station.
+	 *
+	 * @return true if in station, false otherwise
+	 */
+	public boolean isInStation() {
+
+		return (this.stationRef.get() != null);
+	}
+
+	/**
+	 * Gets station reference if in station.
+	 *
+	 * @return the station reference if in station, null otherwise
+	 */
+	@Nullable
+	public Station getStationRef() {
+
+		return this.stationRef.get();
+	}
+
+	/**
+	 * Sets station reference, the connection will consider it is in the station.
+	 *
+	 * @param stationRef the station reference
+	 */
+	public void setStationRef(@Nullable Station stationRef) {
+
+		this.stationRef = new WeakReference<>(stationRef);
+	}
+
+	/**
+	 * Gets section reference.
+	 *
+	 * @return the section reference
+	 */
+	@Nullable
+	public Section getSectionRef() {
+
+		return this.sectionRef.get();
+	}
+
+	/**
+	 * Sets section reference.
+	 *
+	 * @param sectionRef the section reference
+	 */
+	public void setSectionRef(Section sectionRef) {
+
+		this.sectionRef = new WeakReference<>(sectionRef);
 	}
 
 }
