@@ -1,0 +1,48 @@
+\documentclass[report, backcover, french, nodocumentinfo]{upmethodology-document}
+\include{settings}
+% For more information about UPmethodology: https://www.ctan.org/pkg/upmethodology
+
+\begin{document}
+
+	\pagenumbering{gobble}
+	\upmdocumentsummary{}
+	\upmdocumentauthors{}
+	\upmdocumentinformedpeople{}
+
+	\tableofcontents{}
+	\listoffigures{}
+
+	\chapter{sample chapter}
+		\section{sample section}
+			\subsection{sample subsection}
+				\subsubsection{sample subsubsection}
+					\paragraph*{sample paragraph}
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec ante cursus, porttitor erat sit amet, egestas tortor. Nulla commodo eu diam in fermentum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum et lacus ultrices, gravida dolor laoreet, tincidunt purus. Nulla ut justo nec odio dictum vulputate. Proin vel nibh consequat, venenatis elit malesuada, commodo odio.
+						\begin{figure}[h!]
+							\centering
+							\includegraphics[width=0.5\textwidth]{figures/sample} % or <figures/sample.jpg>
+							\caption{sample figure}
+							\label{fig:sampleFigure}
+						\end{figure}
+					\p{}
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec ante cursus, porttitor erat sit amet, egestas tortor. Nulla commodo eu diam in fermentum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum et lacus ultrices, gravida dolor laoreet, tincidunt purus. Nulla ut justo nec odio dictum vulputate. Proin vel nibh consequat, venenatis elit malesuada, commodo odio.
+						sample text in anonymous paragraph
+						\begin{upmcaution}
+							This is an example of a caution message. This text must be rendered with enough height (usually 2 lines of text) to avoid intersection between the caution icon and the box frame.
+						\end{upmcaution}
+						\begin{upminfo}
+							This is an example of an information message. This text must be rendered with enough height (usually 2 lines of text) to avoid intersection between the caution icon and the box frame.
+						\end{upminfo}
+						\begin{upmquestion}
+							This is an example of a question message. This text must be rendered with enough height (usually 2 lines of text) to avoid intersection between the caution icon and the box frame.
+						\end{upmquestion}
+					\p{sample paragraph}
+						footnote reference\footnote{sample footnote}\\
+						\begin{emphbox}[.7\linewidth]
+							This is an emphazed text.
+						\end{emphbox}
+	\chapter{sample chapter}
+		\ldots
+	%\theupmdockeywords
+	%\makebackcover
+\end{document}

@@ -1,12 +1,12 @@
 ########################
-## IntellijIDEA
+### IntellijIDEA
 ########################
 
 .idea/
 *.iml
 
 ########################
-## Eclipse
+### Eclipse
 ########################
 
 bin/
@@ -15,7 +15,39 @@ bin/
 .classpath
 
 ########################
-## Maven
+### Maven
 ########################
 
 target/
+
+########################
+### Latex
+########################
+
+## Compilation output:
+*.pdf
+
+## Core latex/pdflatex auxiliary files:
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+*.fmt
+*.fot
+*.cb
+*.cb2
+
+## Intermediate documents:
+*.dvi
+*-converted-to.*
+
+## Build tool auxiliary files:
+*.fdb_latexmk
+*.synctex
+*.synctex(busy)
+*.synctex.gz
+*.synctex.gz(busy)
+*.pdfsync
