@@ -10,8 +10,8 @@ import java.io.Serializable;
  */
 public class Pair<L, R> implements Serializable {
 
-	private L left;
-	private R right;
+	protected L left;
+	protected R right;
 
 	/**
 	 * Default constructor.
