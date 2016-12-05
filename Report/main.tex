@@ -12,37 +12,28 @@
 	\tableofcontents{}
 	\listoffigures{}
 
-	\chapter{sample chapter}
-		\section{sample section}
-			\subsection{sample subsection}
-				\subsubsection{sample subsubsection}
-					\paragraph*{sample paragraph}
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec ante cursus, porttitor erat sit amet, egestas tortor. Nulla commodo eu diam in fermentum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum et lacus ultrices, gravida dolor laoreet, tincidunt purus. Nulla ut justo nec odio dictum vulputate. Proin vel nibh consequat, venenatis elit malesuada, commodo odio.
-						\begin{figure}[h!]
-							\centering
-							\includegraphics[width=0.5\textwidth]{figures/sample} % or <figures/sample.jpg>
-							\caption{sample figure}
-							\label{fig:sampleFigure}
-						\end{figure}
-					\p{}
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec ante cursus, porttitor erat sit amet, egestas tortor. Nulla commodo eu diam in fermentum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum et lacus ultrices, gravida dolor laoreet, tincidunt purus. Nulla ut justo nec odio dictum vulputate. Proin vel nibh consequat, venenatis elit malesuada, commodo odio.
-						sample text in anonymous paragraph
-						\begin{upmcaution}
-							This is an example of a caution message. This text must be rendered with enough height (usually 2 lines of text) to avoid intersection between the caution icon and the box frame.
-						\end{upmcaution}
-						\begin{upminfo}
-							This is an example of an information message. This text must be rendered with enough height (usually 2 lines of text) to avoid intersection between the caution icon and the box frame.
-						\end{upminfo}
-						\begin{upmquestion}
-							This is an example of a question message. This text must be rendered with enough height (usually 2 lines of text) to avoid intersection between the caution icon and the box frame.
-						\end{upmquestion}
-					\p{sample paragraph}
-						footnote reference\footnote{sample footnote}\\
-						\begin{emphbox}[.7\linewidth]
-							This is an emphazed text.
-						\end{emphbox}
-	\chapter{sample chapter}
-		\ldots
+	\newpage{}
+	\chapter{Présentation de Mini Metro}
+		\section{Un peu d'histoire...}
+			\p{}
+				Mini Metro est un jeu développé par le studio indépendant Dinosaur Polo inc. Mini Métro a été présenté sous le nom de Mind The Gap à la 26ème édition du Ludum Dare qui a eu lieu le 26 avril 2013. Il est ensuite développé pour devenir un jeu complet et il est proposés aux Steam Greenlight qui permet aux publiques de choisir quelle jeu indépendant va entrer dans le catalogue Steam de manière permanente ou temporaire. Il sort sous sa forme définitive sur Steam et GOG.com le 6 novembre 2015. Il est ensuite porté sur les plateformes mobiles Android et ios le 18 octobre 2016.
+		\section{But du jeu}
+			\p{}
+				Mini Metro est un jeu de gestion de métro. On doit gérer les rames de métro pour pouvoir desservir toutes les stations de métro. Ces stations se remplissent, au fur et à mesure du temps, de passager qui souhaite aller à une station particulière. En effet, ces stations possèdent une forme et les passagers décident d'aller à une station avec une forme spécifique. Par exemple, un passager arrive à une station triangle et souhaite aller dans une station carré. Il faut donc relier les stations par des lignes et ainsi éviter que une station surcharge. Si une station surcharge, la partie se termine.
+			\p{}
+				Le jeu propose plusieurs niveaux qui se situe chacune dans une ville réelle (New York, Sydney...). Dans chacun des niveaux, on peut rencontrer de nouveaux types de train et le niveau de difficulté change.
+
+		\section{Analyse du jeu}
+			\p{}
+				Au démarrage du jeu, le joueur a accès à un succinct menu qui nous permet de choisir si on veut jouer, quitter le jeu ou modifier les paramètres de jeu. Si le joueur décide de jouer, il a accès à un autre menu qui lui propose tous les niveaux disponibles et le joueur décide quelle niveau choisir. Si celui-ci décide d'entrer dans les paramètres, il aura accès au contrôle de volume et la couleur du fond (blanc ou gris foncés).
+			\p{}
+				A l'intérieur d'un niveau, le joueur peut tracer des lignes entre les stations. Il possède un inventaire dans lequel il y a de base 3 lignes et 2 trains. Le jeu est en temps réels ainsi tous les éléments du jeu sont fonctions du temps (l'arrivée de station, de passager...). Tous les dimanches, le joueur reçoit des bonus de façon aléatoire avec parfois un choix possibles entre deux bonus.
+			\p{}
+				Le joueur modifie en temps réel les lignes voir retirer une ligne (il suffit de retirer la lignes de toutes les stations). S'il est supprimé, la ligne revient dans l'inventaire du joueur. Après modification de la ligne, si un train se situé sur la section de la ligne modifié, celui-ci continue sur l'ancienne section avant la mise à jour. Si une section de la ligne passe dans une partie de l'eau, alors cette section devient un tunnel et on a un nombre limité de tunnel.
+			\p{}
+				Il peut aussi ajouter ou retirer un train à une ligne. Si le train est retirée, celui-ci retourne dans l'inventaire du joueur. Le joueur peut déplacer un train, mais celui-ci reste immobile pendant 2-3 secondes et les passagers présents avant le déplacement retourne à la station d'origine.
+
+	\chapter{Conception du projet}
 	%\theupmdockeywords
 	%\makebackcover
 \end{document}
