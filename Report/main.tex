@@ -4,7 +4,6 @@
 
 \begin{document}
 
-	\pagenumbering{gobble}
 	\upmdocumentsummary{}
 	\upmdocumentauthors{}
 	\upmdocumentinformedpeople{}
@@ -35,9 +34,34 @@
 				Il peut aussi ajouter ou retirer un train à une ligne. Si le train est retiré, celui-ci retourne dans l'inventaire du joueur. Le joueur peut déplacer un train, mais celui-ci reste immobile pendant 2-3 secondes et les passagers présents avant le déplacement retournent à la station d'origine.
 
 	\chapter{Conception globale du projet}
-		\section{Simulateur}
-			\p{}
+		\section{Cas d'utilisation}
+			\begin{figure}[h!]
+				\centering
+				\includegraphics[width=\textwidth]{figures/UseCaseDiagram}
+				\caption{Diagramme des cas d'utilisation}
+				\label{fig:UseCaseDiagram}
+			\end{figure}
+			\p{Simulateur}
 				MiniMetro a pour particularité d'avoir un fonctionnement proche d'un simulateur, en effet a l'inverse d'un jeu d'échec par exemple qui attend sur l'utilisateur pour effectuer des action, MiniMetro lui a un fonctionnement en temps réel indépendant de l'utilisateur mais dépendant de l’environnement, que l'utilisateur peut modifier. En effet si l'utilisateur ne fait rien, le jeu continue mais cela mènera vite a la défaite, par conséquent l'utilisateur modifie l’environnement (trace des ligne, ajoute de wagons aux trains\ldots) pour empêcher la ``simulation'' d'aller a sa perte.
+			\p{Actions de l'utilisateur}
+				Les actions de l'utilisateur se répartissent en trois catégories:
+				\begin{itemize}
+					\item Choix (avant le début de la partie):
+						\begin{itemize}
+							\item De la carte
+							\item Des options de jeu
+						\end{itemize}
+					\item Ajustement de la vitesse de jeu
+					\item Déplacements d'éléments
+						\begin{itemize}
+							\item De la carte a l'inventaire
+							\item De l'inventaire a la carte
+							\item D'une position a l'autre (trains)
+							\item Même modifier une ligne revient a déplacer les connexion et sous-sections de cette ligne\footnote{La représentation des lignes expliquer ultérieurement}
+						\end{itemize}
+				\end{itemize}
+				Les actions décisives possible une fois en jeux pour l'utilisateur sont donc toutes des déplacements.
+
 		\section{Le modèle MVC}
 			\subsection{Adaptation a notre utilisation}
 				\p{Choix}
