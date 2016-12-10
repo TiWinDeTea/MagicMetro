@@ -99,11 +99,43 @@
 			\p{}
 			C'est différentes classes vont être manipulé par un objet appelé GameManager. Celui-ci va gérer le jeu et possédé la boucle de jeu. La GameMap va contenir tous les objets qui seront présents sur la map (station, lignes, train...). C'est cette objet qui va calculer le path-finding pour chaque passager qui va apparaitre à une station donnée. Celui-ci possédant une référence sur tous les objets présents sur la map, il pourra trouver le chemin optimal pour le passager en question.
 		\subsection{Vue}
+			Explication state en fonction de la souris
+		\subsection{Liaison modèle -- vue}
+			\begin{figure}[h!]
+				\centering
+				\includegraphics[width=\textwidth]{figures/ModelViewLinkClassDiagram}
+				\caption{Diagramme de classes: Liaison modèle -- vue}
+				\label{fig:ModelViewLinkClassDiagram}
+			\end{figure}
 			TODO
 		\subsection{Liaison vue -- modèle}
-			TODO
-		\subsection{Liaison modèle -- vue}
-			TODO
+			\subsubsection{Communication par event}
+				\p{Choix}
+					Nous avons décider que la communication entre la vue et le modèle se ferait par event de façon a ce que la vue n'ait pas de référence sur les éléments du modèle. De cette façon on évite les problème de référencement circulaire qui en Java peuvent empêcher le \texttt{grabage collector} de libérer la mémoire. De plus cela accentue la séparation entre la vue et le modèle.
+				\p{Fonctionnement}
+					Le principe des events est que certains objets sont des \jclass{EventListener} (implémentent l'interface en Java), c'est a dire qu'il possède une fonction a appeler pour les notifier d'un event, cette fonction est souvent nommée \jfunc{onEvent} et elle contient les actions a effectuer lors de la réception d'un event. Tout ceci utilise des template sur les types des \jclass{Event} qui sont des extensions d'une base class \jclass{Event}. En java on utilisera les \texttt{Generics}.
+			\subsubsection{EventDispatcher}
+				\p{}
+					Nous avons décidé d'utiliser d'utiliser un \texttt{EventDispatcher} pour l'envoi de nos events afin d'éviter le stockage de liste d'\jclass{EventListener} dans toutes nos classes qui envoient des events. Ce dernier a déjà été codé avant le projet, voir figure \ref{fig:EventDispatcherClassDiagram}. Il utilise des \jclass{WeakReference} et n'est donc pas a prendre en compte dans la gestion de la mémoire. De plus il est thread safe.
+					\begin{figure}[h!]
+						\centering
+						\includegraphics[width=\textwidth]{figures/EventDispatcherClassDiagram}
+						\caption{Diagramme de classes: EventDispatcher}
+						\label{fig:EventDispatcherClassDiagram}
+					\end{figure}
+				\p{Fonctionnement}
+					L'\jclass{EventDispatcher} est un singleton, il peut être utilisé de n'importe ou avec \jfunc{getInstance}. Les méthodes \jfunc{addListener} et \jfunc{removeListener} permettent de s'enregistrer ou dé-enregistrer en tant que \jclass{EventListener} pour un certain type d'\jclass{Event} passé en paramètre. Pour cela il faut implémenter l'interface \jinterface{EventListener}. Depuis \textit{Java 8} il est aussi possible de passer en paramètre une fonction lambda.
+			\subsubsection{Utilisation concrète}
+				\p{}
+					La figure \ref{fig:ViewModelLinkClassDiagram} représente la liaison entre la vue et le modèle avec les event qui notifient des modification sur la vitesse et mise en pause du jeux a titre d'exemple. Différent types d'events seront crée pour chaque action de l'utilisateur mais la conception de la vue n'étant pas encore définitive et dépendante de \textit{JavaFx} nous n'avons pas encore décidé d'une représentation des données a envoyer dans les events (ex: description de la nouvelle position d'une ligne qui a été modifié).
+					\begin{figure}[h!]
+						\centering
+						\includegraphics[width=\textwidth]{figures/ViewModelLinkClassDiagram}
+						\caption{Diagramme de classes: Liaison vue -- modèle}
+						\label{fig:ViewModelLinkClassDiagram}
+					\end{figure}
+				\p{}
+					Concrètement et comme visible sur la figure \ref{fig:ViewModelLinkClassDiagram}, le \jclass{GameManager} possèdes des \jclass{EventListener} qui correspondent a chaque type d'event envoyé par le \jclass{ViewManager}. La réceptions des events dans le modèle se fait donc par le \jclass{GameManager} qui modifie le contexte en conséquence. Du coté de la vue, sa conception n'étant pas encore définitive et dépendante de \textit{JavaFx}, il se pourrait que les events ne soient pas tous envoyé par le \jclass{ViewManager} mais qu'il soient envoyé par les éléments directement concerné (par exemple le \jclass{TrainView} pour notifier de son déplacement).
 
 	\chapter{Solutions particulières}
 		TODO
