@@ -135,7 +135,7 @@
 						\label{fig:ViewModelLinkClassDiagram}
 					\end{figure}
 				\p{}
-					Concrètement et comme visible sur la figure \ref{fig:ViewModelLinkClassDiagram}, le \jclass{GameManager} possèdes des \jclass{EventListener} qui correspondent a chaque type d'event envoyé par le \jclass{ViewManager}. La réceptions des events dans le modèle se fait donc par le \jclass{GameManager} qui modifie le contexte en conséquence. Du coté de la vue, sa conception n'étant pas encore définitive et dépendante de \textit{JavaFx}, il se pourrait que les events ne soient pas tous envoyé par le \jclass{ViewManager} mais qu'il soient envoyé par les éléments directement concerné (par exemple le \jclass{TrainView} pour notifier de son déplacement).
+					Concrètement et comme visible sur la figure \ref{fig:ViewModelLinkClassDiagram}, le \jclass{GameManager} possèdes des \jclass{EventListener} qui correspondent a chaque type d'event envoyé par le \jclass{ViewManager}, ces \jclass{EventListener} feront appel aux méthodes \jfunc{onEventXXX} du \jclass{GameManager}. La réceptions des events dans le modèle se fait donc par le \jclass{GameManager} qui modifie le contexte en conséquence. Du coté de la vue, sa conception n'étant pas encore définitive et dépendante de \textit{JavaFx}, il se pourrait que les events ne soient pas tous envoyé par le \jclass{ViewManager} mais qu'il soient envoyé par les éléments directement concerné (par exemple le \jclass{TrainView} pour notifier de son déplacement).
 
 	\chapter{Solutions particulières}
 		TODO
