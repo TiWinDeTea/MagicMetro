@@ -33,7 +33,36 @@
 			\p{}
 				Il peut aussi ajouter ou retirer un train à une ligne. Si le train est retiré, celui-ci retourne dans l'inventaire du joueur. Le joueur peut déplacer un train, mais celui-ci reste immobile pendant 2-3 secondes et les passagers présents avant le déplacement retournent à la station d'origine.
 
-	\chapter{Conception du projet}
+	\chapter{Conception globale du projet}
+		\section{Simulateur}
+			\p{}
+				MiniMetro a pour particularité d'avoir un fonctionnement proche d'un simulateur, en effet a l'inverse d'un jeu d'échec par exemple qui attend sur l'utilisateur pour effectuer des action, MiniMetro lui a un fonctionnement en temps réel indépendant de l'utilisateur mais dépendant de l’environnement, que l'utilisateur peut modifier. En effet si l'utilisateur ne fait rien, le jeu continue mais cela mènera vite a la défaite, par conséquent l'utilisateur modifie l’environnement (trace des ligne, ajoute de wagons aux trains\ldots) pour empêcher la ``simulation'' d'aller a sa perte.
+		\section{Le modèle MVC}
+			\subsection{Adaptation a notre utilisation}
+				\p{Choix}
+					Nous avons choisit de séparer notre projet en 3 parties: modèle, vue et contrôleur (MCV) pour organiser le code et rendre chaque parie le plus indépendant des autres que possible. Ceci dans le but d'obtenir un code maintenable et facilement adaptable a une autre bibliothèque graphique par exemple puisqu'il suffirait de ré-implémenter une partie de la vue.
+				\p{Modèle}
+					Il possède toute la logique du jeu il décide a chaque instant de quoi faire et s'adapte en fonction de l’environnement. Environnement qu'il maintient a jour en fonction des modifications dont il est notifier.
+				\p{Vue}
+					Elle est composée de tout les éléments graphiques du projet et est donc directement dépendante de la bibliothèque graphique utilisé a l'implémentation. Nous utiliserons \textit{JavaFx}.
+				\p{Contrôleur}
+					Il s'occupe de donner un sens a la vue, transforme les actions abstraites du joueur (glisser sa souris de la position $(14,35)$ a la position $(452,128)$) en action concrète pour le modèle (tracer une ligne de la station $A$ a la station $B$). Il s’occupe aussi le l'action inverse de transformer les action du modèle (déplacer le train) en actions visuelles (déplacer la vue associée au train).
+				\p{Prise en compte de JavaFx}
+					Puisque notre vue est réalisée par une librairie graphique externe au projet (ici \textit{JavaFx}) nous avons décidé de fusionner le contrôleur et la vue au niveau de la répartition des packages, le package \jpackage{view} regroupant donc les classes de contrôle qui en interne utilisent les éléments de \textit{JavaFx}. On obtient donc deux packages principaux: \jpackage{modele} et \jpackage{view}.
+				\p{}
+					On arrive donc sur un modèle hybride entre modèle vue (MV) et modèle, vue et contrôleur (MCV) du fait que la séparation contrôleur -- vue qui n'apparait pas au niveau des package, cela étant du a l'utilisation d'une librairie graphique externe au projet. Néanmoins notre conception n'est pas dépendante de \textit{JavaFx} et autre librairie graphique pourrait très bien être utilisée.
+
+	\chapter{Classes et liaisons}
+		\subsection{Modèle}
+			TODO
+		\subsection{Vue}
+			TODO
+		\subsection{Liaison vue -- modèle}
+			TODO
+		\subsection{Liaison modèle -- vue}
+			TODO
+
+	\chapter{Solutions particulières}
 		TODO
 
 	\chapter{Notes}
