@@ -189,24 +189,6 @@
 			\p{Choix d'un bonus}
 				Les bonus dans Minimétro étant toujours des éléments a ajouté a l'inventaire (train, ligne\ldots), choisir un bonus revient juste a choisir un élément a ajouter a son inventaire. Dans le cas ou le timecode de la sélection du / des prochain bonus est dépassé, le \jclass{GameManager} utilisera les fonction (que nous n'avons pas encore définies) du \jclass{ViewManager} pour demander a l'utilisateur de choisir entre les différent bonus décrit dans le \jclass{ElementChoiceScript}. En fonction du choix de l'utilisateur le \jclass{GameManager} sélectionnera les scripts correspondants et suivra la même procédure que pour les \jclass{Station}. Il instanciera les éléments en fonction du script, leur associera une vue et les ajoutera a l'inventaire. L'énumération \jclass{ElementType} permet de sécuriser les cast.
 	\chapter{Notes}
-		\section{Modèle MVC}
-			\begin{itemize}
-				\item model = package model
-				\item controlleur = package view
-				\item vue = JavaFx, package view
-			\end{itemize}
-			Liaison vue $\rightarrow$ model:
-			\begin{itemize}
-				\item Events
-				\item Utilisation d'un event dispatcher
-			\end{itemize}
-			Liaison model $\rightarrow$ vue:
-			\begin{itemize}
-				\item Interfaces
-				\item La réalisation des interface que nous feront sera en JavaFx
-				\item Appel au \textit{ViewManager} pour obtenir l'instanciation des vues
-				\item ex: la logique demande un train de type \textit{FAST}, le viewManager instancie un \textit{ConcreteTrainView} avec le skin associé a \textit{FAST} et retourne l'interface \textit{TrainView} sur le \textit{ConcreteTrainView}
-			\end{itemize}
 		\section{Modèle}
 			\begin{itemize}
 				\item Station
@@ -220,37 +202,7 @@
 					\end{itemize}
 			\end{itemize}
 			Division de manière a pouvoir parcourir une ligne facilement avec un train en suivant les \textit{SubSection} et \textit{Connection} mais aussi éditer au niveau des lignes par les \textit{Section} en fonction de la vue.
-		\section{Vue}
-			Est en réalité plutôt un contrôleur dans le sens ou JavaFx sera la vue dans notre implémentation.
-			\begin{itemize}
-				\item A une mini logique interne pour lier les stations par des sections
-				\item ViewManager:
-					\begin{itemize}
-						\item Instancie des réalisations des interfaces de contrôle de la vue
-						\item Écoute les events de JavaFx pour en fonction des actions de l'utilisateur prévenir par events le modèle des modifications de l'utilisateur
-					\end{itemize}
-				\item Éléments de la vue:
-					\begin{itemize}
-						\item Possède une skin qui est leur apparence graphique
-						\item Fonction de gestion de cette vue
-					\end{itemize}
-			\end{itemize}
 		\section{Temps réel}
-			\subsection{Contraintes}
-			On remarque:
-			\begin{itemize}
-				\item \textbf{Contrainte 1:} A carte fixe:
-					\begin{itemize}
-						\item Les éléments qui ont rapport au temp sont les trains
-						\item Les autres éléments dépendent des trains (passager qui montent et descendent des stations)
-					\end{itemize}
-				\item \textbf{Contrainte 2:} Mais la carte est dynamique:
-					\begin{itemize}
-						\item Apparition des stations
-						\item Apparition (dans l'inventaire après choix) des bonus
-					\end{itemize}
-				\item \textbf{Contrainte 3:} Plus l'utilisateur qui modifie en temp réel la carte
-			\end{itemize}
 			\subsection{Nos solutions}
 				\subsubsection{Contrainte 1}
 					\begin{itemize}
@@ -268,48 +220,8 @@
 							\end{itemize}
 						\item Un train enlevé d'une ligne est enlevé de la boucle de jeu et ajouté a l'inventaire
 					\end{itemize}
-				\subsubsection{Contrainte 2}
-					\begin{itemize}
-						\item Lorsque l'utilisateur choisit la carte de jeu, un nouvelle partie commence. Pour cela on instancie un \textit{GamaManager} qui prend en paramètre un \textit{MapScript}
-						\item Le \textit{MapScript} décrit la carte (position des l'eau), mais aussi le propriétés associés au thème (quel skin utiliser pour les trains\ldots)
-						\item Le \textit{MapScript} décrit aussi les événements qui vont arriver au cour de la partie
-						\item A	chaque tout de la boucle de jeu on regarde dans le script si un évènement est a réalisé
-						\item Deux évènements peuvent avoir lieu:
-							\begin{itemize}
-								\item Apparition d'une station elle même décrite par un \textit{StationScript} (position, forme\ldots)
-								\item Choix d'un ou plusieurs bonus c'est a dire choix d'un élément a ajouter a son inventaire
-									\begin{itemize}
-										\item \textit{ElementChoiceScript} $\longrightarrow$ \textit{ElementScript} $\longrightarrow$ \textit{TrainScript}, \textit{LineScript}\ldots a expliquer
-									\end{itemize}
-							\end{itemize}
-					\end{itemize}
-				\subsubsection{Contrainte 3}
-					Les actions qui ne modifient pas la carte (modification de la vitesse de jeu, play, pause, choix de bonus\ldots) déclenchent l'envoi d'event a la logique.\\
-					pour les autres:
-					\begin{itemize}
-						\item Ce sont des déplacements
-							\begin{itemize}
-								\item De l'inventaire a la carte
-								\item De la carte a l'inventaire
-								\item A une position invalide $\rightarrow$ retour a la position précédente
-							\end{itemize}
-						\item Utilisation de state machine simplifiée
-						\item Lorsque l'utilisateur clique en fonction de la position de curseur on choisit sélectionne l'état:
-							\begin{itemize}
-								\item \textit{MovingTrainState}
-								\item \textit{DrawingState} (abstract, classes dérivées pour simple ou double ligne)
-								\item \ldots
-							\end{itemize}
-						\item Lorsqu’il bouche la souris on appel \textit{update()} de l'état
-						\item Lorsqu'il relâche le clique on appel \textit{apply()} de l'état
-							\begin{itemize}
-								\item Si le mouvement est valide l'action est effectuée
-								\item Sinon l'élément retourne a sa position précédente
-							\end{itemize}
-					\end{itemize}
 		\section{Notes}
 			\begin{itemize}
-				\item Listes $\Longrightarrow$ shémas
 				\item Schéma de fonctionnement du menu? (genre de pushdown automaton)
 			\end{itemize}
 	%\theupmdockeywords
