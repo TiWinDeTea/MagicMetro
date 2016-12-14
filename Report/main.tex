@@ -79,24 +79,33 @@
 
 	\chapter{Classes et liaisons}
 		\subsection{Modèle}
+			\subsubsection{Problématiques}
 			\p{}
-			Pour faire le modèle, nous nous sommes basées sur ce que nous voyons. Ainsi quand on joue, on voit des trains, des lignes et des stations. Une des plus grosse interrogations que nous ayons eu a été les lignes. Pour pouvoir faire des modifications sur la lignes, nous avons décidés de divisée les lignes en sections qui correspond aux rails qui relie deux stations entre elles. Mais cette section peut être composé d'un angle et comme on devaient avoir les coordonnées de cette angle pour la vue, nous avons ainsi des sous-sections au nombre maximum de deux par section. De plus, ces sous-sections permettent de résoudre le problème des tunnels qui peuvent être sur une partie de la section et pas sur l'autre. Ainsi nous obtenons le diagramme UML du Model.
+			Pour faire le modèle, nous nous sommes basées sur ce que nous voyons. Ainsi quand on joue, on voit des trains, des lignes et des stations, d'où la présence de ces classes. Une des plus grosse interrogations que nous ayons eu a été les lignes. Pour pouvoir faire des modifications sur la lignes, nous avons décidés de divisée les lignes en sections qui correspond aux rails qui relie deux stations entre elles. Mais cette section peut être composé d'un angle et comme on devaient avoir les coordonnées de cette angle pour la vue, nous avons ainsi des sous-sections au nombre maximum de deux par section. De plus, ces sous-sections permettent de résoudre le problème des tunnels qui peuvent être sur une partie de la section et pas sur l'autre.
 			\begin{figure}[h!]
 				\centering
-				\includegraphics[width=1\textwidth]{figures/ModelClassDiagram} % or <figures/sample.jpg>
+				\includegraphics[width=1\textwidth]{figures/ModelClassDiagram}
 				\caption{Diagramme de Classe : Modèle}
 				\label{fig:ModelClassDiagram}
 			\end{figure}
-			\p{}
-			Comme on peut le voir sur le digramme \ref{fig:ModelClassDiagram}, nous avons un paquet lines qui contiendra toutes les classe qui décriront les lignes qu'on peut voir dans le jeu. Dans ce packages, les connections correspondent aux point qui séparent les sous-sections au sein de sections. Ces connexions peuvent être au sein d'une stations et permet de résoudre le problème de la connexion d'une station avec plusieurs lignes. En effet, on aura un nombre de connexion dans une station identique au nombre de lignes qui passera dans la station. On pourra ainsi définir une limite de 3 connexions (et donc de trois lignes) au sein d'une station. 
-			Une sous-section est composée de 2 connections qui serviront à délimiter la sous-section et ainsi connaitre sa longueur pour pouvoir faire par la suite du path-finding pour les passagers. On retiendra aussi avec le booléen si la sous-section est un tunnel ou pas pour pouvoir décrémenter ou non le compteur de tunnel et compter ceux-ci. On retiendra aussi la longueur de la sous-section. 
-			Dans la classe section, on aura le booléen hasTunnel qui permettra de savoir si la section possède un tunnel ou pas, la longueur de la section et les connections d'arrivée et de départ pour délimiter la section. On retiendra aussi  la ligne à laquelle appartient la section.
+			\subsubsection{Explication UML}
+			\subsubsection{Lines}
+			\p{Connection}
+			Comme on peut le voir sur le digramme \ref{fig:ModelClassDiagram}, nous avons un paquet lines qui contiendra toutes les classe qui décriront les lignes qu'on peut voir dans le jeu. Dans ce packages, les connections correspondent aux point qui séparent les sous-sections au sein de sections. Ces connexions peuvent être au sein d'une stations ce qui permet de résoudre le problème de la connexion d'une station avec plusieurs lignes. En effet, on aura un nombre de connexion dans une station identique au nombre de lignes qui passera dans la station. Donc, on pourra définir une limite de 3 connexions (et donc de trois lignes) au sein d'une station.
+			\p{Sous-section} 
+			Une sous-section est composée de 2 connections qui la délimitera et ainsi on connaitra sa longueur pour pouvoir faire par la suite du path-finding pour les passagers. On retiendra avec le booléen si la sous-section est un tunnel ou pas pour pouvoir décrémenter ou non le compteur de tunnel présent dans l'inventaire et compter ceux-ci. On retiendra aussi la longueur de la sous-section. 
+			Dans la classe section, on aura le booléen hasTunnel qui permettra de savoir si la section possède un tunnel ou pas, la longueur de la section et les connections d'arrivée et de départ pour délimiter la section. On retiendra aussi la ligne à laquelle appartient la section.
+			\p{Ligne}
 			Dans la classe Line, on retiendra les connections au sein de celle-ci (pour avoir ainsi les stations qui la constituent). On stocke aussi les trains qui sont présents au sein de la ligne pour le path-finding. On a décidé de faire une composition pour avec les sections. En effet, si on décide de retirer une ligne, on aura plus de section, celle-ci étant détruite.
-			\p{}
-			Pour les trains, on a la classe Train et PassengerCar où Train est l'objet qui se déplace et le PassengerCar l'objet qui va transporter les passagers. La classe Train est composé de sa vitesse maximum qui va être associé en fonction de l'enum TrainType. En effet, comme dans MiniMetro, on possède plusieurs types de Train en fonction du niveau. Pour pouvoir représenter, nous avons décidé de crée un enum qui aura les différents types de train. Nous avons aussi sa position à un temps donné. Nous avons décidés aussi de faire une state machine pour le problème de la vie du train. En effet, dans la boucle de jeu, le train va appeler la fonction live(). Ainsi, en fonction de s'il est en route ou arrêter en station, le jeu va appeler la fonction live() tout le temps. D'où la state machine qui va permettre au train d'avoir une fonction particulière en fonction de son état. Ainsi la state Machine TrainState va être l'interface qui sera hérité par InMovingState et AtStationState qui implémenteront la fonction live() différemment ce qui permettra d'appeler a fonction live() sans à se soucier de l'endroit où se trouve le train. Le train possède forcément au moins un wagon ou PassengerCar pour pouvoir prendre des passagers aux stations. Donc, le train saura sur quelle ligne il est. Mais le train peut se situer dans l'inventaire et dans ce cas là, le train n'aura pas de ligne.
-			\p{}
+			\subsection{Train}
+			Pour les trains, on a la classe Train et PassengerCar où Train est l'objet qui se déplace et le PassengerCar l'objet qui va transporter les passagers. La classe Train est composé de sa vitesse maximum qui va être associé en fonction de l'enum TrainType. Cette enum permettra d'avoir différents train en fonction du niveau. Le train possédera une ligne s'il est dans la GameMap. Le train possède forcément au moins un PassengerCar qui est l'unité qui transporte les personnes (les wagons).
+
+
+			TODO : Modifier la description de la stateMachine Train
+			Nous avons aussi sa position à un temps donné. Nous avons décidés aussi de faire une state machine pour le problème de la vie du train. En effet, dans la boucle de jeu, le train va appeler la fonction live(). Ainsi, en fonction de s'il est en route ou arrêter en station, le jeu va appeler la fonction live() tout le temps. D'où la state machine qui va permettre au train d'avoir une fonction particulière en fonction de son état. Ainsi la state Machine TrainState va être l'interface qui sera hérité par InMovingState et AtStationState qui implémenteront la fonction live() différemment ce qui permettra d'appeler a fonction live() sans à se soucier de l'endroit où se trouve le train.
+			\subsection{Station}
 			La classe Station va contenir les passagers qui veulent aller à une autre station, sa capacité maximum, les connections qu'elles possèdent pour le croisement de lignes et son type qui est ici représenté sous la forme d'un enum appelé StationType.
-			\p{}
+			\subsection{Réunificaiton avec le GameManager}
 			C'est différentes classes vont être manipulé par un objet appelé GameManager. Celui-ci va gérer le jeu et possédé la boucle de jeu. La GameMap va contenir tous les objets qui seront présents sur la map (station, lignes, train...). C'est cette objet qui va calculer le path-finding pour chaque passager qui va apparaitre à une station donnée. Celui-ci possédant une référence sur tous les objets présents sur la map, il pourra trouver le chemin optimal pour le passager en question.
 		\subsection{Vue}
 			La vue n'a pas de encore de conception définitive mais mais sont fonctionnement global a déjà été choisit.
@@ -127,9 +136,9 @@
 				\label{fig:ModelViewLinkClassDiagram}
 			\end{figure}
 			\p{Choix}
-				Nous avons décidés pour pouvoir faire la communication entre le modèle vers la view de faire une communication par interface. En effet, cette solution permet aux modèles d'intérragir de manière immédiat avec la vue et de lui demander une mise à jour de la view de manière simple et légère.
+				Nous avons décidés pour pouvoir faire la communication entre le modèle vers la view de faire une communication par interface. Cette solution permet de faire une séparation entre le modèle et la vue et permet une certaine indépendance avec l'implémentation de la vue.
 			\p{Fonctionnement}
-				Comme on peux le voir avec le diagramme UML \ref{fig:ModelViewLinkClassDiagram}, on a les différentes classes du modèle qui possèdent une interface qui correspond à la vue de celle-ci (par exemple le train possède une \jinterface{TrainView} etc...). Les classes de la vue elle vont implémenter leurs interfaces qui les correspondent(la classe \jclass{Train} du paquet \jpackage{View} va implémenter l'interface \jinterface{TrainView}). Ainsi on a une communication particulière entre les classes du model et de la view. Ainsi si le train veut prévenir la view qu'il existe, il suffira que le train par l’intermédiaire de l'interface signale à la classe \jclass{Train} du paquet \jpackage{View} qu'il existe en appelant une fonction de celle-ci.
+				Comme on peux le voir avec le diagramme UML \ref{fig:ModelViewLinkClassDiagram}, les Trains et les stations vont avoir une référence respectivement sur une TrainView et une StationView. Ces deux interfaces sont implémenté dans le package view. Ainsi le modèle va interagir avec la vue grâce à ces interfaces. De même pour les autres classes comme SubSection, Inventory et GameMap.
 		\subsection{Liaison vue -- modèle}
 			\subsubsection{Communication par event}
 				\p{Choix}
