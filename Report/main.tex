@@ -78,8 +78,8 @@
 					On arrive donc sur un modèle hybride entre modèle vue (MV) et modèle, vue et contrôleur (MCV) du fait que la séparation contrôleur -- vue qui n'apparait pas au niveau des package, cela étant du a l'utilisation d'une librairie graphique externe au projet. Néanmoins notre conception n'est pas dépendante de \textit{JavaFx} et autre librairie graphique pourrait très bien être utilisée.
 
 	\chapter{Classes et liaisons}
-		\subsection{Modèle}
-			\subsubsection{Problématiques}
+		\section{Modèle}
+			\subsection{Problématiques}
 			\p{}
 			Pour faire le modèle, nous nous sommes basées sur ce que nous voyons. Ainsi quand on joue, on voit des trains, des lignes et des stations, d'où la présence de ces classes. Une des plus grosse interrogations que nous ayons eu a été les lignes. Pour pouvoir faire des modifications sur la lignes, nous avons décidés de divisée les lignes en sections qui correspond aux rails qui relie deux stations entre elles. Mais cette section peut être composé d'un angle et comme on devaient avoir les coordonnées de cette angle pour la vue, nous avons ainsi des sous-sections au nombre maximum de deux par section. De plus, ces sous-sections permettent de résoudre le problème des tunnels qui peuvent être sur une partie de la section et pas sur l'autre.
 			\begin{figure}[h!]
@@ -88,8 +88,8 @@
 				\caption{Diagramme de Classe : Modèle}
 				\label{fig:ModelClassDiagram}
 			\end{figure}
-			\subsubsection{Explication UML}
-			\subsubsection{Lines}
+			\subsection{Explication UML}
+			\subsection{Lines}
 			\p{Connection}
 			Comme on peut le voir sur le digramme \ref{fig:ModelClassDiagram}, nous avons un paquet lines qui contiendra toutes les classe qui décriront les lignes qu'on peut voir dans le jeu. Dans ce packages, les connections correspondent aux point qui séparent les sous-sections au sein de sections. Ces connexions peuvent être au sein d'une stations ce qui permet de résoudre le problème de la connexion d'une station avec plusieurs lignes. En effet, on aura un nombre de connexion dans une station identique au nombre de lignes qui passera dans la station. Donc, on pourra définir une limite de 3 connexions (et donc de trois lignes) au sein d'une station.
 			\p{Sous-section} 
@@ -107,13 +107,13 @@
 			La classe Station va contenir les passagers qui veulent aller à une autre station, sa capacité maximum, les connections qu'elles possèdent pour le croisement de lignes et son type qui est ici représenté sous la forme d'un enum appelé StationType.
 			\subsection{Réunificaiton avec le GameManager}
 			C'est différentes classes vont être manipulé par un objet appelé GameManager. Celui-ci va gérer le jeu et possédé la boucle de jeu. La GameMap va contenir tous les objets qui seront présents sur la map (station, lignes, train...). C'est cette objet qui va calculer le path-finding pour chaque passager qui va apparaitre à une station donnée. Celui-ci possédant une référence sur tous les objets présents sur la map, il pourra trouver le chemin optimal pour le passager en question.
-		\subsection{Vue}
+		\section{Vue}
 			La vue n'a pas de encore de conception définitive mais mais sont fonctionnement global a déjà été choisit.
-			\subsubsection{Gestion centralisée}
+			\subsection{Gestion centralisée}
 				Notre vue sera gérée par le \jclass{ViewManager}. Ce dernier est celui qui communique avec le modèle (communication détaillé dans les sections suivantes). C'est lui qui instancie les éléments de la vue en fonction de la skin qui lui aura été passé en paramètre de constructeur. Cette skin (dont la conception reste encore a définir) est le groupe d'objets graphiques qui sera utilisé pour représenter les éléments a l'écran, la skin de base étant celle de \textit{MiniMetro} avec des rectangles colorés pour les trains et des formes (triangle, rond, \ldots) pour les stations. Lorsque le \jclass{GameManager} demande une vue pour un train il passe en paramètre le type du train, ainsi le \jclass{ViewManager} crée une vue du type associé avec la skin qui correspond au type du train. Lorsque le train est retiré de la carte, on passe par le \jclass{ViewManager} pour retirer la vue du train de la carte et mettre a jour le compteur de train de l'inventaire. C'est donc le \jclass{ViewManager} qui instancie et gère tout les éléments de la vue.
-			\subsubsection{Gestion déléguée}
+			\subsection{Gestion déléguée}
 				Une fois la référence sur la vue fournie au train ou a la station par le biais de l'interface, sa gestion est délégué au train ou station qu'elle représente. Les fonctions de l'interface permettant par exemple pour une station d'ajouter des passagers en précisant juste le type de station vers laquelle ce dernier veut aller et l'implémentation de la vue se charge de prendre le skin associé pour ajouter graphiquement un passager.
-			\subsubsection{Contrôle utilisateur}
+			\subsection{Contrôle utilisateur}
 				Le jeu se joue entièrement a la souris et les interactions de l'utilisateur et comme expliqué dans les cas d'utilisation (voir \ref{useCases}) une fois en jeux il y plusieurs types d'interaction: le contrôle du temps a l'aide de boutons, le choix des bonus lorsqu'il apparaissent et le déplacement d'éléments du jeux.
 				\p{Contrôle du temps}
 					L'interface graphique contiendra un slider pour régler la vitesse du jeu, un bouton lecture et un bouton pause. A la modification de la vitesse de jeu ou la mise en pause / reprise le \jclass{ViewManager} envoie un event et le \jclass{GameManager} réagit en conséquence pour modifier le temps.
@@ -128,7 +128,7 @@
 						\label{fig:ModificationStatesClassDiagram}
 					\end{figure}
 					TODO: Explication state en fonction de la souris
-		\subsection{Liaison modèle -- vue}
+		\section{Liaison modèle -- vue}
 			\begin{figure}[h!]
 				\centering
 				\includegraphics[width=\textwidth]{figures/ModelViewLinkClassDiagram}
@@ -139,13 +139,13 @@
 				Nous avons décidés pour pouvoir faire la communication entre le modèle vers la view de faire une communication par interface. Cette solution permet de faire une séparation entre le modèle et la vue et permet une certaine indépendance avec l'implémentation de la vue.
 			\p{Fonctionnement}
 				Comme on peux le voir avec le diagramme UML \ref{fig:ModelViewLinkClassDiagram}, les Trains et les stations vont avoir une référence respectivement sur une TrainView et une StationView. Ces deux interfaces sont implémenté dans le package view. Ainsi le modèle va interagir avec la vue grâce à ces interfaces. De même pour les autres classes comme SubSection, Inventory et GameMap.
-		\subsection{Liaison vue -- modèle}
-			\subsubsection{Communication par event}
+		\section{Liaison vue -- modèle}
+			\subsection{Communication par event}
 				\p{Choix}
 					Nous avons décider que la communication entre la vue et le modèle se ferait par event de façon a ce que la vue n'ait pas de référence sur les éléments du modèle. De cette façon on évite les problème de référencement circulaire qui en Java peuvent empêcher le \texttt{grabage collector} de libérer la mémoire. De plus cela accentue la séparation entre la vue et le modèle.
 				\p{Fonctionnement}
 					Le principe des events est que certains objets sont des \jclass{EventListener} (implémentent l'interface en Java), c'est a dire qu'il possède une fonction a appeler pour les notifier d'un event, cette fonction est souvent nommée \jfunc{onEvent} et elle contient les actions a effectuer lors de la réception d'un event. Tout ceci utilise des template sur les types des \jclass{Event} qui sont des extensions d'une base class \jclass{Event}. En java on utilisera les \texttt{Generics}.
-			\subsubsection{EventDispatcher}
+			\subsection{EventDispatcher}
 				\p{}
 					Nous avons décidé d'utiliser d'utiliser un \texttt{EventDispatcher} pour l'envoi de nos events afin d'éviter le stockage de liste d'\jclass{EventListener} dans toutes nos classes qui envoient des events. Ce dernier a déjà été codé avant le projet, voir figure \ref{fig:EventDispatcherClassDiagram}. Il utilise des \jclass{WeakReference} et n'est donc pas a prendre en compte dans la gestion de la mémoire. De plus il est thread safe.
 					\begin{figure}[h!]
@@ -156,7 +156,7 @@
 					\end{figure}
 				\p{Fonctionnement}
 					L'\jclass{EventDispatcher} est un singleton, il peut être utilisé de n'importe ou avec \jfunc{getInstance}. Les méthodes \jfunc{addListener} et \jfunc{removeListener} permettent de s'enregistrer ou dé-enregistrer en tant que \jclass{EventListener} pour un certain type d'\jclass{Event} passé en paramètre. Pour cela il faut implémenter l'interface \jinterface{EventListener}. Depuis \textit{Java 8} il est aussi possible de passer en paramètre une fonction lambda.
-			\subsubsection{Utilisation concrète}
+			\subsection{Utilisation concrète}
 				\p{}
 					La figure \ref{fig:ViewModelLinkClassDiagram} représente la liaison entre la vue et le modèle avec les event qui notifient des modification sur la vitesse et mise en pause du jeux a titre d'exemple. Différent types d'events seront crée pour chaque action de l'utilisateur mais la conception de la vue n'étant pas encore définitive et dépendante de \textit{JavaFx} nous n'avons pas encore décidé d'une représentation des données a envoyer dans les events (ex: description de la nouvelle position d'une ligne qui a été modifié).
 					\begin{figure}[h!]
