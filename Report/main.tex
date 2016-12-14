@@ -34,7 +34,7 @@
 				Il peut aussi ajouter ou retirer un train à une ligne. Si le train est retiré, celui-ci retourne dans l'inventaire du joueur. Le joueur peut déplacer un train, mais celui-ci reste immobile pendant 2-3 secondes et les passagers présents avant le déplacement retournent à la station d'origine.
 
 	\chapter{Conception globale du projet}
-		\section{Cas d'utilisation}
+		\section{Cas d'utilisation}\label{useCases}
 			\begin{figure}[h!]
 				\centering
 				\includegraphics[width=\textwidth]{figures/UseCaseDiagram}
@@ -99,7 +99,26 @@
 			\p{}
 			C'est différentes classes vont être manipulé par un objet appelé GameManager. Celui-ci va gérer le jeu et possédé la boucle de jeu. La GameMap va contenir tous les objets qui seront présents sur la map (station, lignes, train...). C'est cette objet qui va calculer le path-finding pour chaque passager qui va apparaitre à une station donnée. Celui-ci possédant une référence sur tous les objets présents sur la map, il pourra trouver le chemin optimal pour le passager en question.
 		\subsection{Vue}
-			Explication state en fonction de la souris
+			La vue n'a pas de encore de conception définitive mais mais sont fonctionnement global a déjà été choisit.
+			\subsubsection{Gestion centralisée}
+				Notre vue sera gérée par le \jclass{ViewManager}. Ce dernier est celui qui communique avec le modèle (communication détaillé dans les sections suivantes). C'est lui qui instancie les éléments de la vue en fonction de la skin qui lui aura été passé en paramètre de constructeur. Cette skin (dont la conception reste encore a définir) est le groupe d'objets graphiques qui sera utilisé pour représenter les éléments a l'écran, la skin de base étant celle de \textit{MiniMetro} avec des rectangles colorés pour les trains et des formes (triangle, rond, \ldots) pour les stations. Lorsque le \jclass{GameManager} demande une vue pour un train il passe en paramètre le type du train, ainsi le \jclass{ViewManager} crée une vue du type associé avec la skin qui correspond au type du train. Lorsque le train est retiré de la carte, on passe par le \jclass{ViewManager} pour retirer la vue du train de la carte et mettre a jour le compteur de train de l'inventaire. C'est donc le \jclass{ViewManager} qui instancie et gère tout les éléments de la vue.
+			\subsubsection{Gestion déléguée}
+				Une fois la référence sur la vue fournie au train ou a la station par le biais de l'interface, sa gestion est délégué au train ou station qu'elle représente. Les fonctions de l'interface permettant par exemple pour une station d'ajouter des passagers en précisant juste le type de station vers laquelle ce dernier veut aller et l'implémentation de la vue se charge de prendre le skin associé pour ajouter graphiquement un passager.
+			\subsubsection{Contrôle utilisateur}
+				Le jeu se joue entièrement a la souris et les interactions de l'utilisateur et comme expliqué dans les cas d'utilisation (voir \ref{useCases}) une fois en jeux il y plusieurs types d'interaction: le contrôle du temps a l'aide de boutons, le choix des bonus lorsqu'il apparaissent et le déplacement d'éléments du jeux.
+				\p{Contrôle du temps}
+					L'interface graphique contiendra un slider pour régler la vitesse du jeu, un bouton lecture et un bouton pause. A la modification de la vitesse de jeu ou la mise en pause / reprise le \jclass{ViewManager} envoie un event et le \jclass{GameManager} réagit en conséquence pour modifier le temps.
+				\p{Choix des bonus}
+					Pour le choix d'un bonus le \jclass{GameManager} appel une fonction du \jclass{ViewManager}. Le jeux est en pause le temps que le joueur choisisse un bonus, la fonction peut donc être bloquante. Au cas ou nous aurions besoin de continuer a exécuter des actions dans le thread du \jclass{GameManager}, nous réaliserons une fonction non bloquante qui retourne un \jclass{Futur}.
+				\p{Déplacement d'éléments}
+					Pour le déplacement des éléments nous avons décidé d'utiliser des états a la façon d'une state machine visibles sur la figure \ref{fig:ModificationStatesClassDiagram}. Le \jclass{ViewManager} aura une référence sur un \jclass{ModificationState}, au clic de la souris en fonction de l'objet pointé on l'assignera au l'état qui correspond (\jclass{MovingTrainState} si c'était un train\ldots) que l'objet soit sur la carte ou dans l'inventaire. On appel aussi la \jfunc{init} pour initialiser l'état (faire apparaitre le train sous la souris\ldots) et instancier les objets graphiques temporaire qui vont permettre une visualisation de la modification par l'utilisateur. Puis tout le long du drag n drop la fonction \jfunc{update} sera appelée pour actualiser ces objets temporaires en fonction (déplacer le train, tracer la ligne jusqu’à la souris\ldots). Au relâchement de la souris la fonction \jfunc{apply} est appelée pour que les objets temporaires soit supprimés, qu'un event soit envoyé et l'action validée par la logique qui modifiera la vue en conséquence (ajouter un train a une ligne\ldots).
+					\begin{figure}[h!]
+						\centering
+						\includegraphics[width=\textwidth]{figures/ModificationStatesClassDiagram.png}
+						\caption{Diagramme de classes: Modification states}
+						\label{fig:ModificationStatesClassDiagram}
+					\end{figure}
+					TODO: Explication state en fonction de la souris
 		\subsection{Liaison modèle -- vue}
 			\begin{figure}[h!]
 				\centering
