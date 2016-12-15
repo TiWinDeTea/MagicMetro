@@ -96,15 +96,16 @@
 				\p{Ligne}
 					Dans la classe Line, on retiendra les connections au sein de celle-ci (pour avoir ainsi les stations qui la constituent). On stocke aussi les trains qui sont présents au sein de la ligne pour le path-finding. On a décidé de faire une composition pour avec les sections. En effet, si on décide de retirer une ligne, on aura plus de section, celle-ci étant détruite.
 			\subsection{Train}
-				Pour les trains, on a la classe Train et PassengerCar où Train est l'objet qui se déplace et le PassengerCar l'objet qui va transporter les passagers. La classe Train est composé de sa vitesse maximum qui va être associé en fonction de l'enum TrainType. Cette enum permettra d'avoir différents train en fonction du niveau. Le train possédera une ligne s'il est dans la GameMap. Le train possède forcément au moins un PassengerCar qui est l'unité qui transporte les personnes (les wagons).
-
-
-				TODO : Modifier la description de la stateMachine Train
-				Nous avons aussi sa position à un temps donné. Nous avons décidés aussi de faire une state machine pour le problème de la vie du train. En effet, dans la boucle de jeu, le train va appeler la fonction live(). Ainsi, en fonction de s'il est en route ou arrêter en station, le jeu va appeler la fonction live() tout le temps. D'où la state machine qui va permettre au train d'avoir une fonction particulière en fonction de son état. Ainsi la state Machine TrainState va être l'interface qui sera hérité par InMovingState et AtStationState qui implémenteront la fonction live() différemment ce qui permettra d'appeler a fonction live() sans à se soucier de l'endroit où se trouve le train.
+				Pour les trains, on a la classe Train et PassengerCar où Train est l'objet qui se déplace et le PassengerCar l'objet qui va transporter les passagers. La classe Train est composé de sa vitesse maximum qui va être associé en fonction de l'enum TrainType. Cette enum permettra d'avoir différents train en fonction du niveau. Le train possédera une ligne s'il est dans la GameMap. Le train possède forcément au moins un PassengerCar qui est l'unité qui transporte les personnes (les wagons). Nous sauvegarderons aussi sa position à un temps donné.
+				\\Le Train possèdera aussi son état. L'état du train est une interface nommée \jinterface{TrainState} qui sera implémenté par \jinterface{InMovingState} et par \jinterface{AtStationState}. Ainsi, quand on sera dans une station, l'état du train sera AtStationState et quand ils se déplacera sur la ligne, son état sera une InMovingState. CE choix a été fait pour qu'on appelle la fonction live dans la boucle de jeu sans se soucier de l'endroit où est le train.
 			\subsection{Station}
 				La classe Station va contenir les passagers qui veulent aller à une autre station, sa capacité maximum, les connections qu'elles possèdent pour le croisement de lignes et son type qui est ici représenté sous la forme d'un enum appelé StationType.
 			\subsection{Réunificaiton avec le GameManager}
-				C'est différentes classes vont être manipulé par un objet appelé GameManager. Celui-ci va gérer le jeu et possédé la boucle de jeu. La GameMap va contenir tous les objets qui seront présents sur la map (station, lignes, train...). C'est cette objet qui va calculer le path-finding pour chaque passager qui va apparaitre à une station donnée. Celui-ci possédant une référence sur tous les objets présents sur la map, il pourra trouver le chemin optimal pour le passager en question.
+				C'est différentes classes vont être manipulé par un objet appelé GameManager. Celui-ci va gérer le jeu et possédé la boucle de jeu.
+				\subsubsection{la boucle de jeu}
+					La boucle de jeu est ce qui va réalisé le temps réel. Pour ce faire on va appeler celle-ci un certains nombre de fois fixe et regardera le \jclass{TimeManager} pour savoir s'il rafraichit ou pas. Dans cette boucle, on vérifie si on a une action à faire en consultant le MapScript. S'il y a une action à effectuer, il applique ce qui est précisé dans la MapScript (apparition d'un bonus, d'une station\ldots). Sinon, on ne fait rien et on continue. Ensuite, on applique a tous les trains présents dans la map la fonction live() qui permettra de mettre à jour les trains.
+				\subsection{attribut}
+				 La GameMap va contenir tous les objets qui seront présents sur la map (station, lignes, train\ldots). C'est cette objet qui va calculer le path-finding pour chaque passager qui va apparaitre à une station donnée. Celui-ci possédant une référence sur tous les objets présents sur la map, il pourra trouver le chemin optimal pour le passager en question.
 		\section{Vue}
 			La vue n'a pas de encore de conception définitive mais mais sont fonctionnement global a déjà été choisit.
 			\subsection{Gestion centralisée}
@@ -134,7 +135,7 @@
 				\label{fig:ModelViewLinkClassDiagram}
 			\end{figure}
 			\p{Choix}
-				Nous avons décidés pour pouvoir faire la communication entre le modèle vers la view de faire une communication par interface. Cette solution permet de faire une séparation entre le modèle et la vue et permet une certaine indépendance avec l'implémentation de la vue.
+				Nous avons décidés pour pouvoir faire la communication du modèle vers la view de faire une communication par interface. Cette solution permet de faire une séparation entre le modèle et la vue et permet une certaine indépendance avec l'implémentation de la vue.
 			\p{Fonctionnement}
 				Comme on peux le voir avec le diagramme UML \ref{fig:ModelViewLinkClassDiagram}, les Trains et les stations vont avoir une référence respectivement sur une TrainView et une StationView. Ces deux interfaces sont implémenté dans le package view. Ainsi le modèle va interagir avec la vue grâce à ces interfaces. De même pour les autres classes comme SubSection, Inventory et GameMap.
 		\section{Liaison vue -- modèle}
@@ -170,7 +171,7 @@
 		\section{Gestion du temps}
 			TODO: TimeManager\ldots
 		\section{Temps réel}
-			TODO: Moteur de gestion des trains\ldots
+			TODO: Synchronisation TimeManager et Boucle de jeu\ldots
 		\section{Description des cartes}
 			\p{problème}
 				Les cartes de MiniMetro sont plus qu'une simple description de zone puisqu'elles sont entièrement scriptées, les bonus qui apparètrons, le moment ou ils apparetrons, les apparitions de stations, leur forme, position\ldots Sont identiques a chaque partie sur la carte.
