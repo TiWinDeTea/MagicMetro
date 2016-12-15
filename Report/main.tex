@@ -104,7 +104,7 @@
 				C'est différentes classes vont être manipulé par un objet appelé GameManager. Celui-ci va gérer le jeu et possédé la boucle de jeu.
 				\subsubsection{la boucle de jeu}
 					La boucle de jeu est ce qui va réalisé le temps réel. Pour ce faire on va appeler celle-ci un certains nombre de fois fixe et regardera le \jclass{TimeManager} pour savoir s'il rafraichit ou pas. Dans cette boucle, on vérifie si on a une action à faire en consultant le MapScript. S'il y a une action à effectuer, il applique ce qui est précisé dans la MapScript (apparition d'un bonus, d'une station\ldots). Sinon, on ne fait rien et on continue. Ensuite, on applique a tous les trains présents dans la map la fonction live() qui permettra de mettre à jour les trains.
-				\subsection{attribut}
+				\subsubsection{attribut}
 				 La GameMap va contenir tous les objets qui seront présents sur la map (station, lignes, train\ldots). C'est cette objet qui va calculer le path-finding pour chaque passager qui va apparaitre à une station donnée. Celui-ci possédant une référence sur tous les objets présents sur la map, il pourra trouver le chemin optimal pour le passager en question.
 		\section{Vue}
 			La vue n'a pas de encore de conception définitive mais mais sont fonctionnement global a déjà été choisit.
