@@ -51,3 +51,9 @@ target/
 *.synctex.gz
 *.synctex.gz(busy)
 *.pdfsync
+
+########################
+### Temporary files
+########################
+
+.fuse_hidden*
