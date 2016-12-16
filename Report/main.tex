@@ -16,19 +16,19 @@
 	\chapter{Présentation de Mini Metro}
 		\section{Un peu d'histoire...}
 			\p{}
-				Mini Metro est un jeu développé par le studio indépendant Dinosaur Polo inc. Mini Métro a été présenté sous le nom de Mind The Gap à la 26ème édition du Ludum Dare qui a eu lieu le 26 avril 2013. Il est ensuite développé pour devenir un jeu complet et il est proposés aux Steam Greenlight qui permet au publique de choisir quel jeu indépendant va entrer dans le catalogue Steam de manière permanente ou temporaire. Il sort sous sa forme définitive sur Steam et GOG.com le 6 novembre 2015. Il est ensuite porté sur les plateformes mobiles Android et IOS le 18 octobre 2016.
+				Mini Metro est un jeu développé par le studio indépendant Dinosaur Polo inc. Mini Métro a été présenté sous le nom de Mind The Gap à la 26ème édition du Ludum Dare qui a eu lieu le 26 avril 2013. Il est ensuite développé pour devenir un jeu complet et il est proposés aux Steam Greenlight qui permet au public de choisir quel jeu indépendant va entrer dans le catalogue Steam de manière permanente ou temporaire. Il sort sous sa forme définitive sur Steam et GOG.com le 6 novembre 2015. Il est ensuite porté sur les plateformes mobiles Android et IOS le 18 octobre 2016.
 		\section{But du jeu}
 			\p{}
 				Mini Metro est un jeu de gestion de métro. On doit gérer les rames de métro pour pouvoir desservir toutes les stations de métro. Ces stations se remplissent, au fur et à mesure du temps, des passagers qui souhaitent aller à une station particulière. En effet, ces stations possèdent une forme et les passagers décident d'aller à une station avec une forme spécifique. Par exemple, un passager arrive à une station triangle et souhaite aller dans une station carré. Il faut donc relier les stations par des lignes et ainsi éviter qu’une station surcharge. Si une station surcharge, la partie se termine.
 			\p{}
-				Le jeu propose plusieurs niveaux qui se situent chacune dans une ville réelle (New York, Sydney\ldots). Dans chacun des niveaux, on peut rencontrer de nouveaux types de train et le niveau de difficulté change.
+				Le jeu propose plusieurs niveaux qui se situent chacun dans une ville réelle (New York, Sydney\ldots). Dans chacun des niveaux, on peut rencontrer de nouveaux types de train et le niveau de difficulté change.
 		\section{Analyse du jeu}
 			\p{}
 				Au démarrage du jeu, le joueur a accès à un succinct menu qui nous permet de choisir si on veut jouer, quitter le jeu ou modifier les paramètres de jeu. Si le joueur décide de jouer, il a accès à un autre menu qui lui propose tous les niveaux disponibles et le joueur choisit un niveau. Si celui-ci décide d'entrer dans les paramètres, il aura accès au contrôle de volume et la couleur du fond (blanc ou gris foncés).
 			\p{}
 				A l'intérieur d'un niveau, le joueur peut tracer des lignes entre les stations. Il possède un inventaire dans lequel il y a de base 3 lignes et 2 trains. Le jeu est en temps réels ainsi tous les éléments du jeu sont fonctions du temps (l'arrivée de station, de passager...). Tous les dimanches, le joueur reçoit des bonus de façon aléatoire avec parfois un choix possibles entre deux bonus.
 			\p{}
-				Le joueur modifie en temps réel les lignes voir retirer une ligne (il suffit de retirer la ligne de toutes les stations). Si elle est supprimée, la ligne revient dans l'inventaire du joueur. Après modification de la ligne, si un train se situé sur la section de la ligne modifié, celui-ci continue sur l'ancienne section avant la mise à jour. Si une section de la ligne passe dans une partie de l'eau, alors cette section devient un tunnel et on a un nombre limité de tunnel.
+				Le joueur peut modifier en temps réel les lignes voir retirer une ligne (il suffit de retirer la ligne de toutes les stations). Si elle est supprimée, la ligne revient dans l'inventaire du joueur. Après modification de la ligne, si un train se situait sur la section de la ligne modifié, celui-ci continue sur l'ancienne section avant la mise à jour. Si une section de la ligne passe dans une partie de l'eau, alors cette section devient un tunnel et on a un nombre limité de tunnel.
 			\p{}
 				Il peut aussi ajouter ou retirer un train à une ligne. Si le train est retiré, celui-ci retourne dans l'inventaire du joueur. Le joueur peut déplacer un train, mais celui-ci reste immobile pendant 2-3 secondes et les passagers présents avant le déplacement retournent à la station d'origine.
 
@@ -56,7 +56,7 @@
 							\item De la carte à l'inventaire
 							\item De l'inventaire à la carte
 							\item D'une position à l'autre (trains)
-							\item Même modifier une ligne revient à déplacer les connexion et sous-sections de cette ligne\footnote{La représentation des lignes expliquer ultérieurement}
+							\item Même modifier une ligne revient à déplacer les connexion et sous-sections de cette ligne\footnote{La représentation des lignes est expliquée ultérieurement}
 						\end{itemize}
 				\end{itemize}
 				Les actions décisives possibles une fois en jeux pour l'utilisateur sont donc toutes des déplacements.
@@ -77,33 +77,45 @@
 
 	\chapter{Classes et liaisons}
 		\section{Modèle}
+			\begin{figure}[h!]
+				\centering
+				\includegraphics[width=1\textwidth]{figures/ModelClassDiagram}
+				\caption{Diagramme de classes: Modèle}
+				\label{fig:ModelClassDiagram}
+			\end{figure}
 			\subsection{Problématiques}
 				\p{}
 					Pour faire le modèle, nous nous sommes basées sur les éléments visibles à l'écran (trains, lignes, stations\ldots voir digramme \ref{fig:ModelClassDiagram}). Un des problèmes que nous avons rencontré fut les lignes. Pour pouvoir faire des modifications sur la ligne, nous avons décidés de diviser les lignes en sections qui correspondent aux rails qui relient deux stations entre elles. Mais cette section peut être composé d'un angle dont on doit connaitre les coordonnées pour la vue, nous avons ainsi des sous-sections au nombre maximum de deux par section. De plus, ces sous-sections permettent de résoudre le problème des tunnels qui peuvent être sur une partie de la section et pas sur l'autre.
-					\begin{figure}[h!]
-						\centering
-						\includegraphics[width=1\textwidth]{figures/ModelClassDiagram}
-						\caption{Diagramme de classes: Modèle}
-						\label{fig:ModelClassDiagram}
-					\end{figure}
-			\subsection{Lines}
+			\subsection{Lignes}
+				\begin{figure}[h!]
+					\centering
+					\includegraphics[width=1\textwidth]{figures/LinesClassDiagram}
+					\caption{Diagramme de classes: Lignes}
+					\label{fig:LinesClassDiagram}
+				\end{figure}
 				\p{Connection}
-					Comme on peut le voir sur le digramme \ref{fig:ModelClassDiagram}, nous avons un package \jpackage{lines} qui contiendra toutes les classe qui décriront les lignes qu'on peut voir dans le jeu. Dans ce package, les connexions correspondent aux point qui séparent les sous-sections au sein de sections. Ces connexions peuvent être au sein d'une station ce qui permet de résoudre le problème de la connexion d'une station avec plusieurs lignes. En effet, on aura une liste de connexions de taille identique au nombre de lignes qui passera dans la station. Donc, on pourra définir une limite de 3 connexions (et donc de trois lignes) au sein d'une station.
+					Comme on peut le voir sur le digramme \ref{fig:LinesClassDiagram}, nous avons un package \jpackage{lines} qui contiendra toutes les classe qui décriront les lignes qu'on peut voir dans le jeu. Dans ce package, les connexions correspondent aux point qui séparent les sous-sections au sein de sections. Ces connexions peuvent être au sein d'une station ce qui permet de résoudre le problème de la connexion d'une station avec plusieurs lignes. En effet, on aura une liste de connexions de taille identique au nombre de lignes qui passera dans la station. Donc, on pourra définir une limite de 3 connexions (et donc de trois lignes) au sein d'une station.
 				\p{Sous-section}
 					Une sous-section est composée de 2 connections qui la délimite ainsi on connait sa longueur pour faire par la suite du path-finding pour les passagers. On retiendra avec un booléen si la sous-section est un tunnel ou pas pour pouvoir décrémenter ou non le compteur de tunnel présent dans l'inventaire et compter ceux-ci. On retiendra aussi la longueur de la sous-section.\\
 					Dans la classe \jclass{Section}, on aura le booléen hasTunnel qui permettra de savoir si la section possède un tunnel ou pas, sa longueur et les connexions d'arrivée et de départ pour délimiter la section. On retiendra aussi la ligne à laquelle appartient la section.
 				\p{Ligne}
 					Dans la classe \jclass{Line}, on retiendra les connections au sein de celle-ci (pour avoir ainsi les stations qui la constituent). On stocke aussi les trains qui sont présents au sein de la ligne pour la limite de train par ligne. On a décidé de faire une composition pour avec les sections. En effet, si on décide de retirer une ligne, on aura plus de section, celle-ci étant détruite.
-			\subsection{Train}
+			\subsection{Trains}
+				\begin{figure}[h!]
+					\centering
+					\includegraphics[width=1\textwidth]{figures/TrainClassDiagram}
+					\caption{Diagramme de classes: Trains}
+					\label{fig:TrainClassDiagram}
+				\end{figure}
 				Pour les trains, on a la classe \jclass{Train} et \jclass{PassengerCar} où \jclass{Train} est l'objet qui se déplace et le \jclass{PassengerCar} l'objet qui va transporter les passagers. La classe Train est composé de sa vitesse maximum qui va être associé en fonction de l'enum  \jclass{TrainType}. Cette enum permettra d'avoir différents train en fonction du niveau. Le train possédera une ligne s'il est sur la carte. Un  \jclass{Train} possède forcément au moins un  \jclass{PassengerCar} qui est l'unité qui transporte les personnes (les wagons). Nous sauvegarderons aussi sa position à un temps donné.\\
 				Le  \jclass{Train} possèdera aussi son état. L'état du train est une interface nommée \jinterface{TrainState} qui sera implémenté par \jinterface{MovingState} et par \jinterface{AtStationState}. Ainsi, quand on sera dans une station, l'état du train sera AtStationState et quand ils se déplacera sur la ligne, son état sera une  \jclass{MovingState}. Dans \jinterface{AtStationState}, le \jclass{Train} déposera les passagers qu'il transporte et qui veulent aller à la station présente, et prendra les passagers de la station en fonction de sa capacité. Dans \jinterface{MovingState}, le \jclass{Train} se déplacera en fonction de la ligne où il est affecté. Ce choix a été fait pour qu'on appelle la fonction live dans la boucle de jeu sans se soucier de l'endroit où est le train.
-			\subsection{Station}
+			\subsection{Stations}
 				La classe \jclass{Station} va contenir les passagers qui veulent aller à une autre station, sa capacité maximum, les connections qu'elles possèdent pour le croisement de lignes et son type qui est ici représenté sous la forme d'un enum appelé \jclass{StationType}.
 			\subsection{Réunificaiton avec le GameManager}
 				C'est différentes classes vont être manipulé par un objet appelé \jclass{GameManager}. Celui-ci va gérer le jeu et posséder la boucle de jeu.
 				\subsubsection{la boucle de jeu}\label{gameLoop}
 					La boucle de jeu est ce qui va réaliser le temps réel. Pour ce faire on va appeler celle-ci un certain nombre de fois fixe par secondes et regardera le \jclass{TimeManager} pour savoir si il faut rafraichir ou pas. Dans cette boucle, on vérifie si on a une action à faire en consultant le \jclass{MapScript}. S'il y a une action à effectuer, il applique ce qui est précisé dans le \jclass{MapScript} (apparition d'un bonus, d'une station\ldots). Sinon, on ne fait rien et on continue. Ensuite, on applique à tous les trains présents dans la map la fonction \jfunc{live} qui permettra de mettre à jour les trains.
-				\subsubsection{attribut}
+				\subsubsection{Path-finding}
 					La \jclass{GameMap} va contenir tous les objets qui seront présents sur la map (station, lignes, train\ldots). C'est cet objet qui va calculer le path-finding pour chaque passager qui va apparaitre à une station donnée. Celui-ci possédant une référence sur tous les objets présents sur la map, il pourra trouver le chemin optimal pour le passager en question.
 		\section{Vue}
 			La vue n'a pas encore de conception définitive mais son fonctionnement global a déjà été choisi.
@@ -114,14 +126,14 @@
 			\subsection{Contrôle utilisateur}
 				Le jeu se joue entièrement à la souris et les interactions de l'utilisateur et comme expliqué dans les cas d'utilisation (voir \ref{useCases}) une fois en jeux il y plusieurs types d'interaction: le contrôle du temps à l'aide de boutons, le choix des bonus lorsqu’ils apparaissent et le déplacement d'éléments du jeu.
 				\p{Contrôle du temps}
-					L'interface graphique contiendra un slider pour régler la vitesse du jeu, un bouton lecture et un bouton pause. A la modification de la vitesse de jeu ou la mise en pause / reprise le \jclass{ViewManager} envoie un event et le \jclass{GameManager} réagit en conséquence pour modifier le temps.
+					L'interface graphique contiendra un slider pour régler la vitesse du jeu, un bouton lecture et un bouton pause. A la modification de la vitesse de jeu ou la mise en pause / reprise le \jclass{ViewManager} utilise les fonction du \jclass{TimeManager} pour modifier le temps. (voir section \ref{timeControl})
 				\p{Choix des bonus}
-					Pour le choix d'un bonus le \jclass{GameManager} appel une fonction du \jclass{ViewManager}. Le jeu est en pause le temps que le joueur choisisse un bonus, la fonction peut donc être bloquante. Au cas où nous aurions besoin de continuer à exécuter des actions dans le thread du \jclass{GameManager}, nous réaliserons une fonction non bloquante qui retourne un \jclass{Futur}.
+					Pour le choix d'un bonus le \jclass{GameManager} appel une fonction du \jclass{ViewManager}. Le jeu est en pause le temps que le joueur choisisse un bonus, la fonction peut donc être bloquante. Au cas où nous aurions besoin de continuer à exécuter des actions dans le thread du \jclass{GameManager}, nous réaliserons une fonction non bloquante qui retourne un \jclass{Futur} ou notifierons le \jclass{GameManager du choix} par un event.
 				\p{Déplacement d'éléments}
 					Pour le déplacement des éléments nous avons décidé d'utiliser des états a la façon d'une state machine visibles sur la figure \ref{fig:ModificationStatesClassDiagram}. Le \jclass{ViewManager} aura une référence sur un \jclass{ModificationState}, au clic de la souris en fonction de l'objet pointé on l'assignera au l'état qui correspond (\jclass{MovingTrainState} si c'était un train\ldots) que l'objet soit sur la carte ou dans l'inventaire. On appelle aussi la \jfunc{init} pour initialiser l'état (faire apparaitre le train sous la souris\ldots) et instancier les objets graphiques temporaire qui vont permettre une visualisation de la modification par l'utilisateur. Puis tout le long du drag n drop la fonction \jfunc{update} sera appelée pour actualiser ces objets temporaires en fonction (déplacer le train, tracer la ligne jusqu’à la souris\ldots). Au relâchement de la souris la fonction \jfunc{apply} est appelée pour que les objets temporaires soit supprimés, qu'un event soit envoyé et l'action validée par la logique qui modifiera la vue en conséquence (ajouter un train a une ligne\ldots).
 					\begin{figure}[h!]
 						\centering
-						\includegraphics[width=\textwidth]{figures/ModificationStatesClassDiagram.png}
+						\includegraphics[width=\textwidth]{figures/ModificationStatesClassDiagram}
 						\caption{Diagramme de classes: Modification states}
 						\label{fig:ModificationStatesClassDiagram}
 					\end{figure}
@@ -171,11 +183,11 @@
 				Pour résoudre le problème de la gestion du temps (lecture, pause, changement de vitesse) dans le jeux nous avons décidé de créer un \jclass{TimeManager}, cette classe sera un \textit{singleton} qui possèdera son propre thread. Le \jclass{TimeManager} aura une variable qui représente le temps écoulé depuis son démarrage. Il sera possible d'obtenir se temp en secondes (pour l'affichage dans la vue) ou en millisecondes (pour le modèle). Là ou l'utilisation du \jclass{TimeManager} devient intéressant plutôt que d'utiliser le temps système c'est que sa vitesse d'écoulement du temps sera réglable. Sa variable de temps augmentera donc plus ou moins vite en fonction de la vitesse d'écoulement du temps précisé au \jclass{TimeManager}.
 			\subsection{Temps réel}
 				Le moteur du jeu, la boucle principale (déja abordée à la section \ref{gameLoop}) sera dans un thread géré par le \jclass{GameManager} et tournera à une vitesse fixe pour maintenir une fluidité. Pour les stations et bonus, à chaque tour de boucle on regarde le timecode de la prochaine apparition et on le compare au timecode actuel du \jclass{TimeManager}, si celui-ci est supérieur à celui de l'apparition on applique cette apparition. Pour les trains, il y aura un nombre fixe d'appel par seconde du jeu à leur fonction \jfunc{live}, secondes du \jclass{TimeManager} donc. Ainsi le nombre d'appel par secondes réelles (la vitesse du jeu) dépend de l'écoulement du temps du \jclass{TimeManager}, si celui-ci est en pause la fonction \jfunc{live} des trains n'est pas appelée et ceux-ci ne se déplacent donc plus. De même le timecode d'apparition des stations et bonus n'est pas atteint (le temps n'avance pas), le jeu est donc bien en pause.
-			\subsection{Contrôle du temps}
+			\subsection{Contrôle du temps}\label{timeControl}
 				La liaison entre le \jclass{ViewManager}, le \jclass{GameManager} et le \jclass{TimeManager} est visible sur la figure \ref{fig:TimeManagerLinkClassDiagram}. Le \jclass{ViewManager} lors de l'utilisation des boutons de contrôle du temps utilise les fonctions du \jclass{TimeManager} pour régler le temps en fonction des modifications de l'utilisateur. Le \jclass{GameManager} lui lit le temps écoulé dans sa boucle de jeux pour effectuer ou non des actions en fonction du temps écoulé. De plus lors de la modification de la vitesse de temps, sa mise en pause ou sa reprise le \jclass{TimeManager} envoie des events pour notifier de ces changements. Ces events sont écoutés par le \jclass{GameManager} qui pourra arrêter sa boucle de jeu pour un \jclass{PauseEvent} et la relancer pour un \jclass{StartEvent} pour ne pas tourner inutilement par exemple (à voir à l'implémentation).
 				\begin{figure}[h!]
 					\centering
-					\includegraphics[width=\textwidth]{figures/TimeManagerLinkClassDiagram.png}
+					\includegraphics[width=\textwidth]{figures/TimeManagerLinkClassDiagram}
 					\caption{Diagramme de classes: Liaison au TimeManager}
 					\label{fig:TimeManagerLinkClassDiagram}
 				\end{figure}
