@@ -101,7 +101,7 @@
 				La classe \jclass{Station} va contenir les passagers qui veulent aller à une autre station, sa capacité maximum, les connections qu'elles possèdent pour le croisement de lignes et son type qui est ici représenté sous la forme d'un enum appelé \jclass{StationType}.
 			\subsection{Réunificaiton avec le GameManager}
 				C'est différentes classes vont être manipulé par un objet appelé \jclass{GameManager}. Celui-ci va gérer le jeu et posséder la boucle de jeu.
-				\subsubsection{la boucle de jeu}
+				\subsubsection{la boucle de jeu}\label{gameLoop}
 					La boucle de jeu est ce qui va réaliser le temps réel. Pour ce faire on va appeler celle-ci un certain nombre de fois fixe par secondes et regardera le \jclass{TimeManager} pour savoir s'il faut rafraichir ou pas. Dans cette boucle, on vérifie si on a une action à faire en consultant le MapScript. S'il y a une action à effectuer, il applique ce qui est précisé dans la MapScript (apparition d'un bonus, d'une station\ldots). Sinon, on ne fait rien et on continue. Ensuite, on applique à tous les trains présents dans la map la fonction \jfunc{live} qui permettra de mettre à jour les trains.
 				\subsubsection{attribut}
 					La \jclass{GameMap} va contenir tous les objets qui seront présents sur la map (station, lignes, train\ldots). C'est cet objet qui va calculer le path-finding pour chaque passager qui va apparaitre à une station donnée. Celui-ci possédant une référence sur tous les objets présents sur la map, il pourra trouver le chemin optimal pour le passager en question.
@@ -168,12 +168,21 @@
 
 	\chapter{Solutions particulières}
 		\section{Gestion du temps}
-			TODO: TimeManager\ldots
-		\section{Temps réel}
-			TODO: Synchronisation TimeManager et Boucle de jeu\ldots
+			\subsection{TimeManager}
+				Pour résoudre le problème de la gestion du temps (lecture, pause, changement de vitesse) dans le jeux nous avons décidé de créer un \jclass{TimeManager}, cette classe sera un \textit{singleton} qui possèdera son propre thread. Le \jclass{TimeManager} aura une variable qui représente le temps écoulé depuis son démarrage. Il sera possible d'obtenir se temp en secondes (pour l'affichage dans la vue) ou en millisecondes (pour le modèle). La ou l'utilisation du \jclass{TimeManager} devient intéressant plutôt que d'utiliser le temps système c'est que sa vitesse d'écoulement du temps sera réglable. Sa variable de temps augmentera donc plus ou moins vite en fonction de la vitesse d'écoulement du temps précisé au \jclass{TimeManager}.
+			\subsection{Temps réel}
+				Le moteur du jeu, la boucle principale (déja abordée a la section \ref{gameLoop}) sera dans un thread géré par le \jclass{GameManager} et tournera a une vitesse fixe pour maintenir une fluidité. Pour les stations et bonus, a chaque tour de boucle on regarde le timecode de la prochaine apparition et on le compare au timecode actuel du \jclass{TimeManager}, si celui-ci est supérieur a celui de l'apparition on applique cette apparition. Pour les trains, il y aura un nombre fixe d'appel par seconde du jeu a leur fonction \jfunc{live}, secondes du \jclass{TimeManager} donc. Ainsi le nombre d'appel par secondes réelles (la vitesse du jeu) dépend de l'écoulement du temps du \jclass{TimeManager}, si celui-ci est en pause la fonction \jfunc{live} des trains n'est pas appelée et ceux ci ne se déplacent donc plus. De même le timecode d'apparition des stations et bonus n'est pas atteint (le temps n'avance pas), le jeu est donc bien en pause.
+			\subsection{Contrôle du temps}
+				La liaison entre le \jclass{ViewManager}, le \jclass{GameManager} et le \jclass{TimeManager} est visible sur la figure \ref{fig:TimeManagerLinkClassDiagram}. Le \jclass{ViewManager} lors de l'utilisation des boutons de contrôle du temps utilise les fonction du \jclass{TimeManager} pour régler le temps en fonction des modifications de l'utilisateur. Le \jclass{GameManager} lui lit le temps écoulé dans sa boucle de jeux pour effectuer ou non des actions en fonction du temps écoulé. De plus lors de la modification de la vitesse de temps, sa mise en pause ou sa reprise le \jclass{TimeManager} envoie des events pour notifier de ces changements. Ces events sont écoutés par le \jclass{GameManager} qui pourra arrêter sa boucle de jeu pour un \jclass{PauseEvent} et la relancer pour un \jclass{StartEvent} pour ne pas tourner inutilement par exemple (a voir a l'implémentation).
+				\begin{figure}[h!]
+					\centering
+					\includegraphics[width=\textwidth]{figures/TimeManagerLinkClassDiagram.png}
+					\caption{Diagramme de classes: Liaison au TimeManager}
+					\label{fig:TimeManagerLinkClassDiagram}
+				\end{figure}
 		\section{Description des cartes}
 			\p{problème}
-				Les cartes de MiniMetro sont plus qu'une simple description de zone puisqu'elles sont entièrement scriptées, les bonus qui apparètrons, le moment ou ils apparetrons, les apparitions de stations, leur forme, position\ldots Sont identiques a chaque partie sur la carte.
+				Les cartes de MiniMetro sont plus qu'une simple description de zone puisqu'elles sont entièrement scriptées, les bonus qui apparaitrons, le moment ou ils apparaitrons, les apparitions de stations, leur forme, position\ldots Sont identiques a chaque partie sur la carte.
 			\p{Scripts}
 				\begin{figure}[h!]
 					\centering
@@ -188,42 +197,6 @@
 				Dans le cas ou le timecode d'apparition de la prochaine station a été atteint, le \jclass{GameManager} instanciera une nouvelle \jclass{Station} avec les informations du \jclass{StationScript} tel que la position. Il utilisera la fonction \jfunc{createStationView} du \jclass{ViewManager} en passant en paramètre le type de la station pour obtenir une vue avec le skin associé au type de la station, le \jclass{StationView} retourné sera passé a la \jclass{Station}.
 			\p{Choix d'un bonus}
 				Les bonus dans Minimétro étant toujours des éléments a ajouté a l'inventaire (train, ligne\ldots), choisir un bonus revient juste a choisir un élément a ajouter a son inventaire. Dans le cas ou le timecode de la sélection du / des prochain bonus est dépassé, le \jclass{GameManager} utilisera les fonction (que nous n'avons pas encore définies) du \jclass{ViewManager} pour demander a l'utilisateur de choisir entre les différent bonus décrit dans le \jclass{ElementChoiceScript}. En fonction du choix de l'utilisateur le \jclass{GameManager} sélectionnera les scripts correspondants et suivra la même procédure que pour les \jclass{Station}. Il instanciera les éléments en fonction du script, leur associera une vue et les ajoutera a l'inventaire. L'énumération \jclass{ElementType} permet de sécuriser les cast.
-	\chapter{Notes}
-		\section{Modèle}
-			\begin{itemize}
-				\item Station
-				\item Ligne
-					\begin{itemize}
-						\item Section
-							\begin{itemize}
-								\item SubSection
-								\item Connection
-							\end{itemize}
-					\end{itemize}
-			\end{itemize}
-			Division de manière a pouvoir parcourir une ligne facilement avec un train en suivant les \textit{SubSection} et \textit{Connection} mais aussi éditer au niveau des lignes par les \textit{Section} en fonction de la vue.
-		\section{Temps réel}
-			\subsection{Nos solutions}
-				\subsubsection{Contrainte 1}
-					\begin{itemize}
-						\item Moteur du jeu: boucle de gestion des train
-						\item Appelé $X$ fois par secondes: dépendant de la vitesse du jeu qui est réglable
-						\item Appel la fonction \textit{live()} de tout les trains en circulation
-							\begin{itemize}
-								\item Le train est une state machine simplifiée, 2 états: en mouvement et a une station
-								\item Le train appel \textit{live()} de son état
-									\begin{itemize}
-										\item En mouvement: avance en fonction de son accélération / vitesse / direction (dépend de la ligne)
-										\item A une station: prend / dépose des passager a une certaine vitesse
-									\end{itemize}
-								\item A la ``fin'' d'un état (arrive a une station / a déposer et pris tout les passagers nécessaires) le train passe a l'état suivant
-							\end{itemize}
-						\item Un train enlevé d'une ligne est enlevé de la boucle de jeu et ajouté a l'inventaire
-					\end{itemize}
-		\section{Notes}
-			\begin{itemize}
-				\item Schéma de fonctionnement du menu? (genre de pushdown automaton)
-			\end{itemize}
 	%\theupmdockeywords
 	%\makebackcover
 \end{document}
