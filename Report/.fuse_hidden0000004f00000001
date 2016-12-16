@@ -1,0 +1,244 @@
+\documentclass[report, backcover, french, nodocumentinfo]{upmethodology-document}
+\include{settings}
+% For more information about UPmethodology: https://www.ctan.org/pkg/upmethodology
+
+\begin{document}
+
+	\upmdocumentsummary{}
+	\upmdocumentauthors{}
+	\upmdocumentinformedpeople{}
+	\upmpublicationpage{}
+
+	\tableofcontents{}
+	\listoffigures{}
+
+	\newpage{}
+	\chapter{Présentation de Mini Metro}
+		\section{Un peu d'histoire...}
+			\p{}
+				Mini Metro est un jeu développé par le studio indépendant Dinosaur Polo inc. Mini Métro a été présenté sous le nom de Mind The Gap à la 26ème édition du Ludum Dare qui a eu lieu le 26 avril 2013. Il est ensuite développé pour devenir un jeu complet et il est proposés aux Steam Greenlight qui permet au publique de choisir quel jeu indépendant va entrer dans le catalogue Steam de manière permanente ou temporaire. Il sort sous sa forme définitive sur Steam et GOG.com le 6 novembre 2015. Il est ensuite porté sur les plateformes mobiles Android et IOS le 18 octobre 2016.
+		\section{But du jeu}
+			\p{}
+				Mini Metro est un jeu de gestion de métro. On doit gérer les rames de métro pour pouvoir desservir toutes les stations de métro. Ces stations se remplissent, au fur et à mesure du temps, des passagers qui souhaitent aller à une station particulière. En effet, ces stations possèdent une forme et les passagers décident d'aller à une station avec une forme spécifique. Par exemple, un passager arrive à une station triangle et souhaite aller dans une station carré. Il faut donc relier les stations par des lignes et ainsi éviter qu’une station surcharge. Si une station surcharge, la partie se termine.
+			\p{}
+				Le jeu propose plusieurs niveaux qui se situent chacune dans une ville réelle (New York, Sydney\ldots). Dans chacun des niveaux, on peut rencontrer de nouveaux types de train et le niveau de difficulté change.
+
+		\section{Analyse du jeu}
+			\p{}
+				Au démarrage du jeu, le joueur a accès à un succinct menu qui nous permet de choisir si on veut jouer, quitter le jeu ou modifier les paramètres de jeu. Si le joueur décide de jouer, il a accès à un autre menu qui lui propose tous les niveaux disponibles et le joueur choisit un niveau. Si celui-ci décide d'entrer dans les paramètres, il aura accès au contrôle de volume et la couleur du fond (blanc ou gris foncés).
+			\p{}
+				A l'intérieur d'un niveau, le joueur peut tracer des lignes entre les stations. Il possède un inventaire dans lequel il y a de base 3 lignes et 2 trains. Le jeu est en temps réels ainsi tous les éléments du jeu sont fonctions du temps (l'arrivée de station, de passager...). Tous les dimanches, le joueur reçoit des bonus de façon aléatoire avec parfois un choix possibles entre deux bonus.
+			\p{}
+				Le joueur modifie en temps réel les lignes voir retirer une ligne (il suffit de retirer la lignes de toutes les stations). Si elle est supprimée, la ligne revient dans l'inventaire du joueur. Après modification de la ligne, si un train se situé sur la section de la ligne modifié, celui-ci continue sur l'ancienne section avant la mise à jour. Si une section de la ligne passe dans une partie de l'eau, alors cette section devient un tunnel et on a un nombre limité de tunnel.
+			\p{}
+				Il peut aussi ajouter ou retirer un train à une ligne. Si le train est retiré, celui-ci retourne dans l'inventaire du joueur. Le joueur peut déplacer un train, mais celui-ci reste immobile pendant 2-3 secondes et les passagers présents avant le déplacement retournent à la station d'origine.
+
+	\chapter{Conception globale du projet}
+		\section{Cas d'utilisation}
+			\begin{figure}[h!]
+				\centering
+				\includegraphics[width=\textwidth]{figures/UseCaseDiagram}
+				\caption{Diagramme des cas d'utilisation}
+				\label{fig:UseCaseDiagram}
+			\end{figure}
+			\p{Simulateur}
+				MiniMetro a pour particularité d'avoir un fonctionnement proche d'un simulateur, en effet a l'inverse d'un jeu d'échec par exemple qui attend sur l'utilisateur pour effectuer des action, MiniMetro lui a un fonctionnement en temps réel indépendant de l'utilisateur mais dépendant de l’environnement, que l'utilisateur peut modifier. En effet si l'utilisateur ne fait rien, le jeu continue mais cela mènera vite a la défaite, par conséquent l'utilisateur modifie l’environnement (trace des ligne, ajoute de wagons aux trains\ldots) pour empêcher la ``simulation'' d'aller a sa perte.
+			\p{Actions de l'utilisateur}
+				Les actions de l'utilisateur se répartissent en trois catégories:
+				\begin{itemize}
+					\item Choix (avant le début de la partie):
+						\begin{itemize}
+							\item De la carte
+							\item Des options de jeu
+						\end{itemize}
+					\item Ajustement de la vitesse de jeu
+					\item Déplacements d'éléments
+						\begin{itemize}
+							\item De la carte a l'inventaire
+							\item De l'inventaire a la carte
+							\item D'une position a l'autre (trains)
+							\item Même modifier une ligne revient a déplacer les connexion et sous-sections de cette ligne\footnote{La représentation des lignes expliquer ultérieurement}
+						\end{itemize}
+				\end{itemize}
+				Les actions décisives possible une fois en jeux pour l'utilisateur sont donc toutes des déplacements.
+
+		\section{Le modèle MVC}
+			\subsection{Adaptation a notre utilisation}
+				\p{Choix}
+					Nous avons choisit de séparer notre projet en 3 parties: modèle, vue et contrôleur (MCV) pour organiser le code et rendre chaque parie le plus indépendant des autres que possible. Ceci dans le but d'obtenir un code maintenable et facilement adaptable a une autre bibliothèque graphique par exemple puisqu'il suffirait de ré-implémenter une partie de la vue.
+				\p{Modèle}
+					Il possède toute la logique du jeu il décide a chaque instant de quoi faire et s'adapte en fonction de l’environnement. Environnement qu'il maintient a jour en fonction des modifications dont il est notifier.
+				\p{Vue}
+					Elle est composée de tout les éléments graphiques du projet et est donc directement dépendante de la bibliothèque graphique utilisé a l'implémentation. Nous utiliserons \textit{JavaFx}.
+				\p{Contrôleur}
+					Il s'occupe de donner un sens a la vue, transforme les actions abstraites du joueur (glisser sa souris de la position $(14,35)$ a la position $(452,128)$) en action concrète pour le modèle (tracer une ligne de la station $A$ a la station $B$). Il s’occupe aussi le l'action inverse de transformer les action du modèle (déplacer le train) en actions visuelles (déplacer la vue associée au train).
+				\p{Prise en compte de JavaFx}
+					Puisque notre vue est réalisée par une librairie graphique externe au projet (ici \textit{JavaFx}) nous avons décidé de fusionner le contrôleur et la vue au niveau de la répartition des packages, le package \jpackage{view} regroupant donc les classes de contrôle qui en interne utilisent les éléments de \textit{JavaFx}. On obtient donc deux packages principaux: \jpackage{modele} et \jpackage{view}.
+				\p{}
+					On arrive donc sur un modèle hybride entre modèle vue (MV) et modèle, vue et contrôleur (MCV) du fait que la séparation contrôleur -- vue qui n'apparait pas au niveau des package, cela étant du a l'utilisation d'une librairie graphique externe au projet. Néanmoins notre conception n'est pas dépendante de \textit{JavaFx} et autre librairie graphique pourrait très bien être utilisée.
+
+	\chapter{Classes et liaisons}
+		\subsection{Modèle}
+			TODO
+		\subsection{Vue}
+			Explication state en fonction de la souris
+		\subsection{Liaison modèle -- vue}
+			\begin{figure}[h!]
+				\centering
+				\includegraphics[width=\textwidth]{figures/ModelViewLinkClassDiagram}
+				\caption{Diagramme de classes: Liaison modèle -- vue}
+				\label{fig:ModelViewLinkClassDiagram}
+			\end{figure}
+			TODO
+		\subsection{Liaison vue -- modèle}
+			\subsubsection{Communication par event}
+				\p{Choix}
+					Nous avons décider que la communication entre la vue et le modèle se ferait par event de façon a ce que la vue n'ait pas de référence sur les éléments du modèle. De cette façon on évite les problème de référencement circulaire qui en Java peuvent empêcher le \texttt{grabage collector} de libérer la mémoire. De plus cela accentue la séparation entre la vue et le modèle.
+				\p{Fonctionnement}
+					Le principe des events est que certains objets sont des \jclass{EventListener} (implémentent l'interface en Java), c'est a dire qu'il possède une fonction a appeler pour les notifier d'un event, cette fonction est souvent nommée \jfunc{onEvent} et elle contient les actions a effectuer lors de la réception d'un event. Tout ceci utilise des template sur les types des \jclass{Event} qui sont des extensions d'une base class \jclass{Event}. En java on utilisera les \texttt{Generics}.
+			\subsubsection{EventDispatcher}
+				\p{}
+					Nous avons décidé d'utiliser d'utiliser un \texttt{EventDispatcher} pour l'envoi de nos events afin d'éviter le stockage de liste d'\jclass{EventListener} dans toutes nos classes qui envoient des events. Ce dernier a déjà été codé avant le projet, voir figure \ref{fig:EventDispatcherClassDiagram}.
+					\begin{figure}[h!]
+						\centering
+						\includegraphics[width=\textwidth]{figures/EventDispatcherClassDiagram}
+						\caption{Diagramme de classes: EventDispatcher}
+						\label{fig:EventDispatcherClassDiagram}
+					\end{figure}
+			\begin{figure}[h!]
+				\centering
+				\includegraphics[width=\textwidth]{figures/ViewModelLinkClassDiagram}
+				\caption{Diagramme de classes: Liaison vue -- modèle}
+				\label{fig:ViewModelLinkClassDiagram}
+			\end{figure}
+
+	\chapter{Solutions particulières}
+		TODO
+
+	\chapter{Notes}
+		\section{Modèle MVC}
+			\begin{itemize}
+				\item model = package model
+				\item controlleur = package view
+				\item vue = JavaFx, package view
+			\end{itemize}
+			Liaison vue $\rightarrow$ model:
+			\begin{itemize}
+				\item Events
+				\item Utilisation d'un event dispatcher
+			\end{itemize}
+			Liaison model $\rightarrow$ vue:
+			\begin{itemize}
+				\item Interfaces
+				\item La réalisation des interface que nous feront sera en JavaFx
+				\item Appel au \textit{ViewManager} pour obtenir l'instanciation des vues
+				\item ex: la logique demande un train de type \textit{FAST}, le viewManager instancie un \textit{ConcreteTrainView} avec le skin associé a \textit{FAST} et retourne l'interface \textit{TrainView} sur le \textit{ConcreteTrainView}
+			\end{itemize}
+		\section{Modèle}
+			\begin{itemize}
+				\item Station
+				\item Ligne
+					\begin{itemize}
+						\item Section
+							\begin{itemize}
+								\item SubSection
+								\item Connection
+							\end{itemize}
+					\end{itemize}
+			\end{itemize}
+			Division de manière a pouvoir parcourir une ligne facilement avec un train en suivant les \textit{SubSection} et \textit{Connection} mais aussi éditer au niveau des lignes par les \textit{Section} en fonction de la vue.
+		\section{Vue}
+			Est en réalité plutôt un contrôleur dans le sens ou JavaFx sera la vue dans notre implémentation.
+			\begin{itemize}
+				\item A une mini logique interne pour lier les stations par des sections
+				\item ViewManager:
+					\begin{itemize}
+						\item Instancie des réalisations des interfaces de contrôle de la vue
+						\item Écoute les events de JavaFx pour en fonction des actions de l'utilisateur prévenir par events le modèle des modifications de l'utilisateur
+					\end{itemize}
+				\item Éléments de la vue:
+					\begin{itemize}
+						\item Possède une skin qui est leur apparence graphique
+						\item Fonction de gestion de cette vue
+					\end{itemize}
+			\end{itemize}
+		\section{Temps réel}
+			\subsection{Contraintes}
+			On remarque:
+			\begin{itemize}
+				\item \textbf{Contrainte 1:} A carte fixe:
+					\begin{itemize}
+						\item Les éléments qui ont rapport au temp sont les trains
+						\item Les autres éléments dépendent des trains (passager qui montent et descendent des stations)
+					\end{itemize}
+				\item \textbf{Contrainte 2:} Mais la carte est dynamique:
+					\begin{itemize}
+						\item Apparition des stations
+						\item Apparition (dans l'inventaire après choix) des bonus
+					\end{itemize}
+				\item \textbf{Contrainte 3:} Plus l'utilisateur qui modifie en temp réel la carte
+			\end{itemize}
+			\subsection{Nos solutions}
+				\subsubsection{Contrainte 1}
+					\begin{itemize}
+						\item Moteur du jeu: boucle de gestion des train
+						\item Appelé $X$ fois par secondes: dépendant de la vitesse du jeu qui est réglable
+						\item Appel la fonction \textit{live()} de tout les trains en circulation
+							\begin{itemize}
+								\item Le train est une state machine simplifiée, 2 états: en mouvement et a une station
+								\item Le train appel \textit{live()} de son état
+									\begin{itemize}
+										\item En mouvement: avance en fonction de son accélération / vitesse / direction (dépend de la ligne)
+										\item A une station: prend / dépose des passager a une certaine vitesse
+									\end{itemize}
+								\item A la ``fin'' d'un état (arrive a une station / a déposer et pris tout les passagers nécessaires) le train passe a l'état suivant
+							\end{itemize}
+						\item Un train enlevé d'une ligne est enlevé de la boucle de jeu et ajouté a l'inventaire
+					\end{itemize}
+				\subsubsection{Contrainte 2}
+					\begin{itemize}
+						\item Lorsque l'utilisateur choisit la carte de jeu, un nouvelle partie commence. Pour cela on instancie un \textit{GamaManager} qui prend en paramètre un \textit{MapScript}
+						\item Le \textit{MapScript} décrit la carte (position des l'eau), mais aussi le propriétés associés au thème (quel skin utiliser pour les trains\ldots)
+						\item Le \textit{MapScript} décrit aussi les événements qui vont arriver au cour de la partie
+						\item A	chaque tout de la boucle de jeu on regarde dans le script si un évènement est a réalisé
+						\item Deux évènements peuvent avoir lieu:
+							\begin{itemize}
+								\item Apparition d'une station elle même décrite par un \textit{StationScript} (position, forme\ldots)
+								\item Choix d'un ou plusieurs bonus c'est a dire choix d'un élément a ajouter a son inventaire
+									\begin{itemize}
+										\item \textit{ElementChoiceScript} $\longrightarrow$ \textit{ElementScript} $\longrightarrow$ \textit{TrainScript}, \textit{LineScript}\ldots a expliquer
+									\end{itemize}
+							\end{itemize}
+					\end{itemize}
+				\subsubsection{Contrainte 3}
+					Les actions qui ne modifient pas la carte (modification de la vitesse de jeu, play, pause, choix de bonus\ldots) déclenchent l'envoi d'event a la logique.\\
+					pour les autres:
+					\begin{itemize}
+						\item Ce sont des déplacements
+							\begin{itemize}
+								\item De l'inventaire a la carte
+								\item De la carte a l'inventaire
+								\item A une position invalide $\rightarrow$ retour a la position précédente
+							\end{itemize}
+						\item Utilisation de state machine simplifiée
+						\item Lorsque l'utilisateur clique en fonction de la position de curseur on choisit sélectionne l'état:
+							\begin{itemize}
+								\item \textit{MovingTrainState}
+								\item \textit{DrawingState} (abstract, classes dérivées pour simple ou double ligne)
+								\item \ldots
+							\end{itemize}
+						\item Lorsqu’il bouche la souris on appel \textit{update()} de l'état
+						\item Lorsqu'il relâche le clique on appel \textit{apply()} de l'état
+							\begin{itemize}
+								\item Si le mouvement est valide l'action est effectuée
+								\item Sinon l'élément retourne a sa position précédente
+							\end{itemize}
+					\end{itemize}
+		\section{Notes}
+			\begin{itemize}
+				\item Listes $\Longrightarrow$ shémas
+				\item Schéma de fonctionnement du menu? (genre de pushdown automaton)
+			\end{itemize}
+	%\theupmdockeywords
+	%\makebackcover
+\end{document}
