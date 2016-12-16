@@ -156,7 +156,7 @@
 					L'\jclass{EventDispatcher} est un singleton, il peut être utilisé de n'importe ou avec \jfunc{getInstance}. Les méthodes \jfunc{addListener} et \jfunc{removeListener} permettent de s'enregistrer ou dé-enregistrer en tant que \jclass{EventListener} pour un certain type d'\jclass{Event} passé en paramètre. Pour cela il faut implémenter l'interface \jinterface{EventListener}. Depuis \textit{Java 8} il est aussi possible de passer en paramètre une fonction lambda.
 			\subsection{Utilisation concrète}
 				\p{}
-					La figure \ref{fig:ViewModelLinkClassDiagram} représente la liaison entre la vue et le modèle avec les event qui notifient des modification sur la vitesse et mise en pause du jeux a titre d'exemple. Différent types d'events seront crée pour chaque action de l'utilisateur mais la conception de la vue n'étant pas encore définitive et dépendante de \textit{JavaFx} nous n'avons pas encore décidé d'une représentation des données a envoyer dans les events (ex: description de la nouvelle position d'une ligne qui a été modifié).
+					La figure \ref{fig:ViewModelLinkClassDiagram} représente la liaison entre la vue et le modèle avec les event qui notifient des modification sur certains éléments du jeux a titre d'exemple. Différent types d'events seront crée pour chaque action de l'utilisateur mais la conception de la vue n'étant pas encore définitive et dépendante de \textit{JavaFx} nous n'avons pas encore décidé d'une représentation des données a envoyer dans les events (ex: description de la nouvelle position d'une ligne qui a été modifié).
 					\begin{figure}[h!]
 						\centering
 						\includegraphics[width=\textwidth]{figures/ViewModelLinkClassDiagram}
