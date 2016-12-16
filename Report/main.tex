@@ -101,7 +101,7 @@
 				\p{Connection}
 					Comme on peut le voir sur le diagramme \ref{fig:LinesClassDiagram}, nous avons un package \jpackage{lines} qui contiendra toutes les classes qui décriront les lignes qu'on peut voir dans le jeu. Les connexions correspondent aux point qui séparent les sous-sections au sein de sections. Ces connexions peuvent être au sein d'une station.
 				\p{Sous-section}
-					Une sous-section est composée de 2 connections qui la délimitent pour connaire sa longueur. On retiendra avec un booléen si la sous-section est un tunnel ou pas pour pouvoir décrémenter ou non le compteur de tunnel présent dans l'inventaire et compter ceux-ci. On retiendra aussi la longueur de la sous-section.\\
+					Une sous-section est composée de 2 connections qui la délimitent pour connaitre sa longueur. On retiendra avec un booléen si la sous-section est un tunnel ou pas pour pouvoir décrémenter ou non le compteur de tunnel présent dans l'inventaire et compter ceux-ci. On retiendra aussi la longueur de la sous-section.\\
 					Dans la classe \jclass{Section}, on aura le booléen hasTunnel qui permettra de savoir si la section possède un tunnel ou pas. On aura aussi sa longueur et les connexions d'arrivée et de départ pour délimiter celle-ci. On retiendra aussi la ligne à laquelle appartient la section.
 				\p{Ligne}
 					Dans la classe \jclass{Line}, on retiendra les connections des sections qui la composent. On stocke aussi les trains qui sont présents au sein de la ligne. On a décidé de faire une composition avec les sections. En effet, si on décide de retirer une ligne, on aura plus de section, celle-ci étant détruite.
