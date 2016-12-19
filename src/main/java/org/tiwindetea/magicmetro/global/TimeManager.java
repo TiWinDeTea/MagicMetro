@@ -24,6 +24,13 @@
 
 package org.tiwindetea.magicmetro.global;
 
+import org.tiwindetea.magicmetro.global.eventdispatcher.EventDispatcher;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.TimePauseEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.TimeResetEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.TimeSpeedChangeEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.TimeStartEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.TimeStopEvent;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -82,11 +89,19 @@ public class TimeManager {
 	 * Start or restart the time.
 	 */
 	public void start() {
+		boolean started = false;
 		if(this.stopped.get()) {
+			started = true;
 			this.stopped.set(false);
 			this.executorService.submit(this.timeLoop);
 		}
-		this.paused.set(false);
+		if(this.paused.get()) {
+			started = true;
+			this.paused.set(false);
+		}
+		if(started) {
+			EventDispatcher.getInstance().fire(new TimeStartEvent());
+		}
 	}
 
 	/**
@@ -94,7 +109,10 @@ public class TimeManager {
 	 * The time thread keep running.
 	 */
 	public void pause() {
-		this.paused.set(true);
+		if(!this.paused.get()) {
+			this.paused.set(true);
+			EventDispatcher.getInstance().fire(new TimePauseEvent());
+		}
 	}
 
 	/**
@@ -102,6 +120,7 @@ public class TimeManager {
 	 */
 	public void reset() {
 		this.actualTime.set(0);
+		EventDispatcher.getInstance().fire(new TimeResetEvent());
 	}
 
 	/**
@@ -110,7 +129,12 @@ public class TimeManager {
 	 * @param speed the speed
 	 */
 	public void setSpeed(double speed) {
-		this.added.set(Math.max((long) (10 * speed), (long) 1));
+		long oldSpeed = this.added.get() / 10;
+		long newSpeed = Math.max((long) (10 * speed), (long) 1);
+		if(newSpeed != oldSpeed) {
+			this.added.set(newSpeed);
+			EventDispatcher.getInstance().fire(new TimeSpeedChangeEvent(oldSpeed, newSpeed));
+		}
 	}
 
 	/**
@@ -136,7 +160,10 @@ public class TimeManager {
 	 * The time thread stop running.
 	 */
 	public void stop() {
-		this.stopped.set(true);
+		if(!this.stopped.get()) {
+			this.stopped.set(true);
+			EventDispatcher.getInstance().fire(new TimeStopEvent());
+		}
 	}
 
 }
