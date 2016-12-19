@@ -112,7 +112,7 @@ public class EventDispatcher {
 	}
 
 	/**
-	 * Fire an event. Notifie all listeners registered related to this event class.<p>
+	 * Fire an event. Notifies all listeners registered related to this event class.<p>
 	 * Also remove the listeners that no longer exist from the list of registered listeners related to the event class.
 	 *
 	 * @param <EventType> the event type
@@ -123,19 +123,27 @@ public class EventDispatcher {
 
 		List<WeakReference<EventListener<? extends Event>>> nullWeakReferences = new ArrayList<>();
 		this.readWriteLock.readLock().lock();
-		List<WeakReference<EventListener<? extends Event>>> listenerWeakReferenceList = new ArrayList<>(this.listenerMap
-		  .get(event.getClass()));
-		for(WeakReference<EventListener<? extends Event>> listenerWeakReference : listenerWeakReferenceList) {
-			// noinspection unchecked
-			EventListener<EventType> listener = (EventListener<EventType>) listenerWeakReference.get();
-			if(listener == null) {
-				nullWeakReferences.add(listenerWeakReference);
+		List<WeakReference<EventListener<? extends Event>>> listenerWeakReferenceList = this.listenerMap.get(event.getClass());
+		List<WeakReference<EventListener<? extends Event>>> listenerWeakReferenceListCopy;
+		if(listenerWeakReferenceList != null) {
+			listenerWeakReferenceListCopy = new ArrayList<>(listenerWeakReferenceList);
+			this.readWriteLock.readLock().unlock();
+			for(WeakReference<EventListener<? extends Event>> listenerWeakReference : listenerWeakReferenceListCopy) {
+				// noinspection unchecked
+				EventListener<EventType> listener = (EventListener<EventType>) listenerWeakReference.get();
+				if(listener == null) {
+					nullWeakReferences.add(listenerWeakReference);
+				}
+				else {
+					listener.onEvent(event);
+				}
 			}
-			else {
-				listener.onEvent(event);
-			}
+			this.readWriteLock.writeLock().lock();
+			listenerWeakReferenceList.removeAll(nullWeakReferences);
+			this.readWriteLock.writeLock().unlock();
 		}
-		listenerWeakReferenceList.removeAll(nullWeakReferences);
-		this.readWriteLock.readLock().unlock();
+		else {
+			this.readWriteLock.readLock().unlock();
+		}
 	}
 }
