@@ -30,6 +30,7 @@ import javax.annotation.Nullable;
  * SimplePair type, store a pair of objects of the same type.
  *
  * @author Maxime PINARD
+ * @see Pair
  * @since 0.1
  */
 public class SimplePair<T> extends Pair<T, T> {

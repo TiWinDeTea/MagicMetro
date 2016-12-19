@@ -30,6 +30,7 @@ import java.io.Serializable;
  * Pair type, store a pair of objects.
  *
  * @author Maxime PINARD
+ * @see SimplePair
  * @since 0.1
  */
 public class Pair<L, R> implements Serializable {
