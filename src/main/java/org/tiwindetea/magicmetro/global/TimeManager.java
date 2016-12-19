@@ -156,7 +156,7 @@ public class TimeManager {
 	}
 
 	/**
-	 * Stop.<p>
+	 * Stop the time.<p>
 	 * The time thread stop running.
 	 */
 	public void stop() {
