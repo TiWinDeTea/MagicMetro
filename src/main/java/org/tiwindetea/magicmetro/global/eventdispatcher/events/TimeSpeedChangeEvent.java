@@ -24,19 +24,28 @@
 
 package org.tiwindetea.magicmetro.global.eventdispatcher.events;
 
+import org.tiwindetea.magicmetro.global.eventdispatcher.Event;
+
 /**
- * Event send when the game speed has changed.
+ * Event send when the time speed has changed.
  *
  * @author Maxime PINARD
  * @since 0.1
  */
-public class SpeedChangeEvent {
+public class TimeSpeedChangeEvent implements Event {
+
+	public final long oldSpeed;
+	public final long newSpeed;
 
 	/**
-	 * Instantiates a new SpeedChangeEvent.
+	 * Instantiates a new TimeSpeedChangeEvent.
+	 *
+	 * @param oldSpeed the old time speed
+	 * @param newSpeed the new time speed
 	 */
-	public SpeedChangeEvent() {
-
+	public TimeSpeedChangeEvent(long oldSpeed, long newSpeed) {
+		this.oldSpeed = oldSpeed;
+		this.newSpeed = newSpeed;
 	}
 
 }

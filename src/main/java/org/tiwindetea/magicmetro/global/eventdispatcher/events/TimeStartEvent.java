@@ -27,17 +27,17 @@ package org.tiwindetea.magicmetro.global.eventdispatcher.events;
 import org.tiwindetea.magicmetro.global.eventdispatcher.Event;
 
 /**
- * Event send when the game was paused and restart.
+ * Event send when the time was paused and restart.
  *
  * @author Maxime PINARD
  * @since 0.1
  */
-public class StartEvent implements Event {
+public class TimeStartEvent implements Event {
 
 	/**
-	 * Instantiates a new StartEvent.
+	 * Instantiates a new TimeStartEvent.
 	 */
-	public StartEvent() {
+	public TimeStartEvent() {
 
 	}
 
