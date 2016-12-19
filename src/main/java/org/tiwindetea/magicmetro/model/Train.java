@@ -25,46 +25,89 @@
 package org.tiwindetea.magicmetro.model;
 
 import org.arakhne.afc.math.geometry.d2.d.Point2d;
+import org.tiwindetea.magicmetro.model.lines.Line;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * TODO
  */
 public class Train {
 
-	private void maxSpeed;
+    private final static int MAX_SPEED_DEFAULT = 5;
+	private int maxSpeed;
 	private final TrainView view;
+	private TrainState state;
 	private Point2d position;
+	private Line line;
+	private PassengerCar primaryPassengerCar;
+	private List<PassengerCar> optionalPassengerCars;
 
 	/**
 	 * Default constructor
 	 */
 	public Train() {
-
+		maxSpeed = MAX_SPEED_DEFAULT;
+		line = null;
+		primaryPassengerCar = new PassengerCar();
+		optionalPassengerCars = new ArrayList<>();
 	}
 
 	/**
-	 * TODO
-	 *
-	 * @param passenger TODO
+	 * add a Passenger to the train
+	 * try to add a passenger to the primaryPassengerCar and next to the optionalPassengerCars
+	 * @param passenger the passenger we want to add to the train
 	 */
 	private void addPassenger(Passenger passenger) {
-		// TODO
+		if(!primaryPassengerCar.isFull()){
+		    primaryPassengerCar.addPassenger(passenger);
+        } else {
+		    if(optionalPassengerCars.size() != 0) {
+                int i = 0;
+                while (optionalPassengerCars.get(i) != null && optionalPassengerCars.get(i).isFull()) {
+                    ++i;
+                }
+                if (optionalPassengerCars.get(i) != null) {
+                    optionalPassengerCars.get(i).addPassenger(passenger);
+                }
+            }
+        }
 	}
 
 	/**
-	 * TODO
-	 *
-	 * @param passenger TODO
+	 * remove a passager of the train
+	 * try to remove the passenger first in the Bonus Passengercars if exist and next the primary passengercar
+	 * @param passenger the passenger we want to remove
 	 */
 	private void removePassenger(Passenger passenger) {
-		// TODO
+	    int i = optionalPassengerCars.size()-1;
+	    if(i != 0){
+	        while (optionalPassengerCars.get(i).isEmpty()){
+	            --i;
+            }
+            if(i != -1){
+	            optionalPassengerCars.get(i).removePassenger(passenger);
+            }
+        } else {
+	        if(!primaryPassengerCar.isEmpty()){
+	            primaryPassengerCar.removePassenger(passenger);
+            }
+        }
 	}
 
 	/**
 	 * TODO
 	 */
 	public void live() {
-		// TODO
+		state.live();
+		switch (state.getStateChangement()){
+            case 1 : state = new MovingState();
+            break;
+            case 2 : state = new AtStationState();
+            break;
+            default: break;
+        }
 	}
 
 	/**
@@ -77,12 +120,15 @@ public class Train {
 		 */
 		public void live();
 
+        public byte getStateChangement();
 	}
 
 	/**
 	 * TODO
 	 */
-	public class MovingState extends TrainState {
+	public class MovingState implements TrainState {
+
+	    private byte stateChangement;
 
 		/**
 		 * Default constructor
@@ -90,19 +136,39 @@ public class Train {
 		public MovingState() {
 		}
 
-	}
+        @Override
+        public void live() {
+
+        }
+
+        @Override
+        public byte getStateChangement() {
+            return stateChangement;
+        }
+
+    }
 
 	/**
 	 * TODO
 	 */
-	public class AtStationState extends TrainState {
+	public class AtStationState implements TrainState {
 
+	    private byte stateChangement;
 		/**
 		 * Default constructor
 		 */
 		public AtStationState() {
 		}
 
-	}
+        @Override
+        public void live() {
+
+        }
+
+        @Override
+        public byte getStateChangement() {
+            return stateChangement;
+        }
+    }
 
 }

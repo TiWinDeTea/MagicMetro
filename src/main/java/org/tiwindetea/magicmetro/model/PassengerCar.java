@@ -24,19 +24,42 @@
 
 package org.tiwindetea.magicmetro.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * TODO
  */
 public class PassengerCar {
 
-	private int capacity;
+    private final static int CAPACITY_PASSENGER_CARS_MAX = 6;
+	private final int capacityMax;
+	List<Passenger> passengers;
+
 
 	/**
 	 * Default constructor
 	 */
 	public PassengerCar() {
-
+		capacityMax = CAPACITY_PASSENGER_CARS_MAX;
+		passengers = new ArrayList<>();
 	}
+
+    /**
+     * verify if the list is full or not
+     * @return true if it's full, false else
+     */
+	boolean isFull(){
+	    return passengers.size() >= capacityMax;
+    }
+
+    /**
+     * verify if the list is empty or not
+     * @return true if it's empty, false else
+     */
+    boolean isEmpty(){
+	    return passengers.isEmpty();
+    }
 
 	/**
 	 * TODO
@@ -44,7 +67,9 @@ public class PassengerCar {
 	 * @param passenger TODO
 	 */
 	public void addPassenger(Passenger passenger) {
-		// TODO
+		if(!this.isFull()){
+		    passengers.add(passenger);
+        }
 	}
 
 	/**
@@ -53,7 +78,9 @@ public class PassengerCar {
 	 * @param passenger TODO
 	 */
 	public void removePassenger(Passenger passenger) {
-		// TODO
+		if(this.isEmpty()){
+		    passengers.remove(passenger);
+        }
 	}
 
 }

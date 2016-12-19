@@ -29,13 +29,22 @@ package org.tiwindetea.magicmetro.model;
  */
 public class StationUpgrade {
 
+	private final static int CAPACITY_BONUS_DEFAULT = 5;
 	private int capacityBonus;
 
 	/**
 	 * Default constructor
 	 */
 	public StationUpgrade() {
+		capacityBonus = CAPACITY_BONUS_DEFAULT;
+	}
 
+	/**
+	 * Constructor with the capacityBonus in argument
+	 * @param bonus the bonus of the upgrade
+	 */
+	public StationUpgrade(int bonus){
+		capacityBonus = bonus;
 	}
 
 }
