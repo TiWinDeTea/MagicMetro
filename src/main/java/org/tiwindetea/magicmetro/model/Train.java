@@ -253,6 +253,8 @@ public class Train {
 			this.finishedIn = false;
 
 			this.passengersOut = new LinkedList<>();
+			//TODO: problem: only find passenger for which the final destination is StationType
+			//TODO: list of passenger that want to go to the Station -> depend on path-finding
 			for(Passenger passenger : Train.this.passengers) {
 				if(passenger.getWantedStation() == this.actualStation.getType()) {
 					this.passengersOut.add(passenger);
