@@ -37,7 +37,11 @@ import java.util.List;
 import java.util.Queue;
 
 /**
- * TODO: train is the first passengercar
+ * A train, move by following connections and subsections of a line.<p>
+ * Exchange passenger with stations depending on the passenger path.
+ *
+ * @author Maxime PINARD
+ * @since 0.1
  */
 public class Train {
 
@@ -63,11 +67,11 @@ public class Train {
 	private Connection nextConnection;
 
 	/**
-	 * TODO
+	 * Instantiates a new Train.
 	 *
-	 * @param maxSpeed
-	 * @param acceleration
-	 * @param view
+	 * @param maxSpeed     the max speed
+	 * @param acceleration the acceleration
+	 * @param view         the view
 	 */
 	public Train(double maxSpeed, double acceleration, TrainView view) {
 		this.maxSpeed = maxSpeed;
@@ -75,15 +79,30 @@ public class Train {
 		this.view = view;
 	}
 
+	/**
+	 * Add a passenger car.
+	 *
+	 * @param passengerCar the passenger car
+	 */
 	public synchronized void addPassengerCar(PassengerCar passengerCar) {
 		this.passengerCars.add(passengerCar);
 	}
 
+	/**
+	 * Remove a passenger car.
+	 *
+	 * @param passengerCar the passenger car
+	 */
 	public synchronized void removePassengerCar(PassengerCar passengerCar) {
 		//TODO: move passengers in other passengerCars or send them back to their initial station
 		this.passengerCars.remove(passengerCar);
 	}
 
+	/**
+	 * Determine if the train (and the passenger cars) is full.
+	 *
+	 * @return true if full, false otherwise
+	 */
 	public synchronized boolean isFull() {
 		boolean full = this.passengers.size() == CAPACITY;
 		if(full) {
@@ -141,32 +160,27 @@ public class Train {
 	}
 
 	/**
-	 * TODO
+	 * Function called by the game loop to make the train live.<p>
+	 * The train will move and exchange passengers with station on it way.
 	 */
 	public synchronized void live() {
 		this.currentState.live();
 	}
 
-	/**
-	 * TODO
-	 */
 	private interface TrainState {
 
 		/**
-		 * TODO
+		 * Init the state.
 		 */
 		void init();
 
 		/**
-		 * TODO
+		 * Apply actions depending on the train state.
 		 */
 		void live();
 
 	}
 
-	/**
-	 * TODO
-	 */
 	private class MovingState implements TrainState {
 
 		private double angleToNextConnection;
@@ -222,9 +236,6 @@ public class Train {
 		}
 	}
 
-	/**
-	 * TODO
-	 */
 	private class AtStationState implements TrainState {
 
 		private int delayCounter;
