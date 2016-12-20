@@ -40,4 +40,10 @@ public interface StationView {
 	void addPassenger(StationType wantedStation);
 
 	void removePassenger(StationType wantedStation);
+
+	void makeBigger();
+
+	void warn(int seconds);
+
+	void unWard();
 }
