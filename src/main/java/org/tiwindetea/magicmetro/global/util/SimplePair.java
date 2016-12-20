@@ -59,4 +59,14 @@ public class SimplePair<T> extends Pair<T, T> {
 		return null;
 	}
 
+	/**
+	 * Determine if the pair contains an value.
+	 *
+	 * @param value The value
+	 * @return true if the pair contains the value, false otherwise
+	 */
+	public boolean contains(@Nullable T value) {
+		return ((this.left == value) || (this.right == value));
+	}
+
 }
