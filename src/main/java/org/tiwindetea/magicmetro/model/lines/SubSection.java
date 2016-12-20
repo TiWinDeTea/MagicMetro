@@ -121,4 +121,25 @@ public class SubSection {
 		this.sectionRef = new WeakReference<>(sectionRef);
 	}
 
+	/**
+	 * Determine if the subsection contains an connection.
+	 *
+	 * @param connection The connection
+	 * @return true if the subsection contains the connection, false otherwise
+	 */
+	public boolean contains(Connection connection) {
+		return this.connections.contains(connection);
+	}
+
+	/**
+	 * Gets the other connection.
+	 *
+	 * @param connection the connection
+	 * @return the other connection
+	 */
+	@Nullable
+	public Connection getOther(Connection connection) {
+		return this.connections.getOther(connection);
+	}
+
 }
