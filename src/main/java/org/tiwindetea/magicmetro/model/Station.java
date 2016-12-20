@@ -24,56 +24,41 @@
 
 package org.tiwindetea.magicmetro.model;
 
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * TODO
  */
 public class Station {
 
 	private int maxCapacity;
-	private StationView view;
-	private List<Passenger> passengers;
+	//private StationView view;
 
 	/**
 	 * Default constructor
 	 */
 	public Station() {
-		passengers = new ArrayList<>();
-		maxCapacity = 6;
-	}
 
-	public Station(int maxCapacity){
-		this.maxCapacity = maxCapacity;
-		passengers = new ArrayList<>(maxCapacity);
 	}
 
 	/**
-	 * Add a passenger inside the list of passengers
+	 * TODO
 	 *
-	 * @param passenger the passenger we want to add
+	 * @param passenger TODO
 	 */
 	public void addPassenger(Passenger passenger) {
-		if(passengers.size() < maxCapacity){
-			passengers.add(passenger);
-		}
+		// TODO
 	}
 
 	/**
-	 * remove passenger of a station
+	 * TODO
 	 *
-	 * @param passenger the passenger we want to remove of the station
+	 * @param passenger TODO
 	 */
 	public void removePassenger(Passenger passenger) {
-		if(passengers.size() > 0){
-			passengers.remove(passenger);
-		}
+		// TODO
 	}
 
-	void setView(StationView stationView){
-		this.view = stationView;
+	public StationType getType() {
+		//TODO
 	}
 
 }

@@ -25,150 +25,277 @@
 package org.tiwindetea.magicmetro.model;
 
 import org.arakhne.afc.math.geometry.d2.d.Point2d;
-import org.tiwindetea.magicmetro.model.lines.Line;
+import org.arakhne.afc.math.geometry.d2.d.Vector2d;
+import org.tiwindetea.magicmetro.global.util.Utils;
+import org.tiwindetea.magicmetro.model.lines.Connection;
+import org.tiwindetea.magicmetro.model.lines.SubSection;
+import org.tiwindetea.magicmetro.view.TrainView;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /**
- * TODO
+ * TODO: train is the first passengercar
  */
 public class Train {
 
-    private final static int MAX_SPEED_DEFAULT = 5;
-	private int maxSpeed;
-	private final TrainView view;
-	private TrainState state;
+	private static final int CAPACITY = 6;
+	private static final double STATION_SLOW_DOWN_DISTANCE = 15; // TODO: choose a real value
+	private static final int PASSENGER_MOVE_DELAY = 7; // TODO: choose a real value
+
+	private final double maxSpeed;
+	private final double acceleration;
+	private double speed;
 	private Point2d position;
-	private Line line;
-	private PassengerCar primaryPassengerCar;
-	private List<PassengerCar> optionalPassengerCars;
+	private double rotation;
+
+	private List<PassengerCar> passengerCars = new ArrayList<>();
+	private final TrainView view;
+	private final List<Passenger> passengers = new ArrayList<>(CAPACITY);
+
+	private final TrainState movingState = new MovingState();
+	private final TrainState atStationState = new MovingState();
+	private TrainState currentState = this.movingState;
+
+	private Connection lastConnection;
+	private Connection nextConnection;
 
 	/**
-	 * Default constructor
+	 * TODO
+	 *
+	 * @param maxSpeed
+	 * @param acceleration
+	 * @param view
 	 */
-	public Train() {
-		maxSpeed = MAX_SPEED_DEFAULT;
-		line = null;
-		primaryPassengerCar = new PassengerCar();
-		optionalPassengerCars = new ArrayList<>();
+	public Train(double maxSpeed, double acceleration, TrainView view) {
+		this.maxSpeed = maxSpeed;
+		this.acceleration = acceleration;
+		this.view = view;
 	}
 
-	/**
-	 * add a Passenger to the train
-	 * try to add a passenger to the primaryPassengerCar and next to the optionalPassengerCars
-	 * @param passenger the passenger we want to add to the train
-	 */
-	private void addPassenger(Passenger passenger) {
-		if(!primaryPassengerCar.isFull()){
-		    primaryPassengerCar.addPassenger(passenger);
-        } else {
-		    if(optionalPassengerCars.size() != 0) {
-                int i = 0;
-                while (optionalPassengerCars.get(i) != null && optionalPassengerCars.get(i).isFull()) {
-                    ++i;
-                }
-                if (optionalPassengerCars.get(i) != null) {
-                    optionalPassengerCars.get(i).addPassenger(passenger);
-                }
-            }
-        }
+	public synchronized void addPassengerCar(PassengerCar passengerCar) {
+		this.passengerCars.add(passengerCar);
 	}
 
-	/**
-	 * remove a passager of the train
-	 * try to remove the passenger first in the Bonus Passengercars if exist and next the primary passengercar
-	 * @param passenger the passenger we want to remove
-	 */
-	private void removePassenger(Passenger passenger) {
-	    int i = optionalPassengerCars.size()-1;
-	    if(i != 0){
-	        while (optionalPassengerCars.get(i).isEmpty()){
-	            --i;
-            }
-            if(i != -1){
-	            optionalPassengerCars.get(i).removePassenger(passenger);
-            }
-        } else {
-	        if(!primaryPassengerCar.isEmpty()){
-	            primaryPassengerCar.removePassenger(passenger);
-            }
-        }
+	public synchronized void removePassengerCar(PassengerCar passengerCar) {
+		//TODO: move passengers in other passengerCars or send them back to their initial station
+		this.passengerCars.remove(passengerCar);
+	}
+
+	public synchronized boolean isFull() {
+		boolean full = this.passengers.size() == CAPACITY;
+		if(full) {
+			for(PassengerCar passengerCar : this.passengerCars) {
+				full = passengerCar.isFull();
+				if(!full) {
+					break;
+				}
+			}
+		}
+		return full;
+	}
+
+	private synchronized boolean addPassenger(Passenger passenger) {
+		if(this.passengers.size() < CAPACITY) {
+			this.passengers.add(passenger);
+			this.view.addPassenger(passenger.getWantedStation());
+			return true;
+		}
+		for(PassengerCar passengerCar : this.passengerCars) {
+			if(!passengerCar.isFull()) {
+				passengerCar.addPassenger(passenger);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private synchronized boolean removePassenger(Passenger passenger) {
+		if(this.passengers.remove(passenger)) {
+			this.view.removePassenger(passenger.getWantedStation());
+			return true;
+		}
+		for(PassengerCar passengerCar : this.passengerCars) {
+			if(passengerCar.removePassenger(passenger)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void setPosition(Point2d position) {
+		this.position = position;
+		this.view.setPosition(this.position);
+	}
+
+	private void move(Vector2d move) {
+		this.position.add(move);
+		this.view.setPosition(this.position);
+	}
+
+	private void setRotation(double rotation) {
+		this.rotation = rotation;
+		this.view.setRotation(this.rotation);
 	}
 
 	/**
 	 * TODO
 	 */
-	public void live() {
-		state.live();
-		switch (state.getStateChangement()){
-            case 1 : state = new MovingState();
-            break;
-            case 2 : state = new AtStationState();
-            break;
-            default: break;
-        }
+	public synchronized void live() {
+		this.currentState.live();
 	}
 
 	/**
 	 * TODO
 	 */
-	public interface TrainState {
+	private interface TrainState {
 
 		/**
 		 * TODO
 		 */
-		public void live();
+		void init();
 
-        public byte getStateChangement();
+		/**
+		 * TODO
+		 */
+		void live();
+
 	}
 
 	/**
 	 * TODO
 	 */
-	public class MovingState implements TrainState {
+	private class MovingState implements TrainState {
 
-	    private byte stateChangement;
+		private double angleToNextConnection;
 
-		/**
-		 * Default constructor
-		 */
-		public MovingState() {
+		@Override
+		public void init() {
+			this.angleToNextConnection = Math.atan2(
+			  Train.this.nextConnection.getPosition().getY() - Train.this.position.getY(),
+			  Train.this.nextConnection.getPosition().getX() - Train.this.position.getX()
+			);
+			setRotation(Math.toDegrees(this.angleToNextConnection));
 		}
 
-        @Override
-        public void live() {
+		@Override
+		public void live() {
+			Train.this.speed = Math.max(Train.this.speed += Train.this.acceleration, Train.this.maxSpeed);
+			double dx = Train.this.speed * Math.cos(this.angleToNextConnection);
+			double dy = Train.this.speed * Math.sin(this.angleToNextConnection);
 
-        }
+			// if next connection is in station
+			if(Train.this.nextConnection.isInStation()) {
 
-        @Override
-        public byte getStateChangement() {
-            return stateChangement;
-        }
+				// if closer to slow down distance
+				if(Train.this.position.getDistance(Train.this.nextConnection.getPosition()) > STATION_SLOW_DOWN_DISTANCE) {
+					dx = Utils.map(dx, 0, STATION_SLOW_DOWN_DISTANCE, 0, dx);
+					dy = Utils.map(dy, 0, STATION_SLOW_DOWN_DISTANCE, 0, dy);
+				}
+			}
+			Point2d oldPosition = new Point2d(Train.this.position);
+			move(new Vector2d(dx, dy));
 
-    }
+			// if train was before connection and is now at or after connection
+			if(Math.min(oldPosition.getX(), Train.this.position.getX()) < Train.this.nextConnection.getPosition()
+			  .getX() && Math.max(oldPosition.getX(),
+			  Train.this.position.getX()) >= Train.this.nextConnection.getPosition().getX()) {
+
+				// put next connection in nextConnection (and nextConnection old value in lastConnection)
+				SubSection nextSubsection = Train.this.nextConnection.getLeftSubSection()
+				  .contains(Train.this.nextConnection) ? Train.this.nextConnection
+				  .getLeftSubSection() : Train.this.nextConnection.getRightSubSection();
+				Connection tmpConnection = Train.this.nextConnection;
+				Train.this.nextConnection = nextSubsection.getOther(Train.this.nextConnection);
+				Train.this.lastConnection = tmpConnection;
+
+				Train.this.currentState.init();
+
+				// if at station, change state
+				if(Train.this.lastConnection.isInStation()) {
+					Train.this.currentState = Train.this.atStationState;
+					Train.this.currentState.init();
+				}
+			}
+		}
+	}
 
 	/**
 	 * TODO
 	 */
-	public class AtStationState implements TrainState {
+	private class AtStationState implements TrainState {
 
-	    private byte stateChangement;
-		/**
-		 * Default constructor
-		 */
-		public AtStationState() {
+		private int delayCounter;
+		private Station actualStation;
+		private boolean finishedOut; // from train to station
+		private boolean finishedIn; // from station to train
+		private Queue<Passenger> passengersOut;
+		private Queue<Passenger> passengersIn;
+
+		@Override
+		public void init() {
+			this.delayCounter = 0;
+			this.actualStation = Train.this.lastConnection.getStationRef();
+			this.finishedOut = false;
+			this.finishedIn = false;
+
+			this.passengersOut = new LinkedList<>();
+			for(Passenger passenger : Train.this.passengers) {
+				if(passenger.getWantedStation() == this.actualStation.getType()) {
+					this.passengersOut.add(passenger);
+				}
+			}
+			for(PassengerCar passengerCar : Train.this.passengerCars) {
+				this.passengersOut.addAll(passengerCar.getPassengers(this.actualStation.getType()));
+			}
+
+			this.passengersIn = new LinkedList<>();
+			//TODO: list of passenger that want to take the train -> depend on path-finding
 		}
 
-        @Override
-        public void live() {
+		@Override
+		public void live() {
 
-        }
+			if(this.delayCounter == 0) {
+				if(!this.finishedOut) {
+					Passenger passenger = this.passengersOut.peek();
+					if(passenger != null) {
+						removePassenger(passenger); // boolean check ?
+						this.actualStation.addPassenger(passenger);
+					}
+					else {
+						this.finishedOut = true;
+					}
+				}
+				else {
+					if(!this.finishedIn) {
+						Passenger passenger = this.passengersIn.peek();
+						if(passenger != null) {
+							if(addPassenger(passenger)) {
+								this.actualStation.removePassenger(passenger);
+							}
+							else {
+								this.finishedIn = true;
+							}
+						}
+						else {
+							this.finishedIn = true;
+						}
+					}
+				}
+			}
 
-        @Override
-        public byte getStateChangement() {
-            return stateChangement;
-        }
-    }
+			++this.delayCounter;
+			this.delayCounter = this.delayCounter % PASSENGER_MOVE_DELAY;
+
+			// if finishedOut to move passengers, change state
+			if(this.finishedOut && this.finishedIn) {
+				Train.this.currentState = Train.this.movingState;
+				Train.this.currentState.init();
+			}
+		}
+	}
 
 }

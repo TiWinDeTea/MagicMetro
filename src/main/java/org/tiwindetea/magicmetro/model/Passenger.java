@@ -41,4 +41,8 @@ public class Passenger {
 	public Passenger() {
 	}
 
+	public StationType getWantedStation() {
+		//TODO
+	}
+
 }

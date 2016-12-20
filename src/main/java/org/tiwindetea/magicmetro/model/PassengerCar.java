@@ -24,7 +24,10 @@
 
 package org.tiwindetea.magicmetro.model;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -32,44 +35,55 @@ import java.util.List;
  */
 public class PassengerCar {
 
-    private final static int CAPACITY_PASSENGER_CARS_MAX = 6;
-	private final int capacityMax;
-	List<Passenger> passengers;
+	private static final int CAPACITY = 6;
 
+	private final List<Passenger> passengers = new ArrayList<>(CAPACITY);
+	private int capacity;
+
+	public boolean isFull() {
+		return this.passengers.size() == CAPACITY;
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @param wantedStation
+	 * @return
+	 */
+	@Nullable
+	public Passenger getPassenger(@Nonnull StationType wantedStation) {
+		Passenger wantedPassenger = null;
+		for(Passenger passenger : this.passengers) {
+			if(passenger.getWantedStation() == wantedStation) {
+				wantedPassenger = passenger;
+				break;
+			}
+		}
+		return wantedPassenger;
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @param wantedStation
+	 * @return
+	 */
+	@Nonnull
+	public List<Passenger> getPassengers(@Nonnull StationType wantedStation) {
+		List<Passenger> wantedPassengers = new LinkedList<>();
+		for(Passenger passenger : this.passengers) {
+			if(passenger.getWantedStation() == wantedStation) {
+				wantedPassengers.add(passenger);
+			}
+		}
+		return wantedPassengers;
+	}
 
 	/**
 	 * Default constructor
 	 */
 	public PassengerCar() {
-		capacityMax = CAPACITY_PASSENGER_CARS_MAX;
-		passengers = new ArrayList<>();
-	}
 
-    /**
-     * verify if the list is full or not
-     * @return true if it's full, false else
-     */
-	boolean isFull(){
-	    return passengers.size() >= capacityMax;
-    }
-
-    /**
-     * verify if the list is empty or not
-     * @return true if it's empty, false else
-     */
-    boolean isEmpty(){
-	    return passengers.isEmpty();
-    }
-
-	/**
-	 * TODO
-	 *
-	 * @param passenger TODO
-	 */
-	public void addPassenger(Passenger passenger) {
-		if(!this.isFull()){
-		    passengers.add(passenger);
-        }
 	}
 
 	/**
@@ -77,10 +91,17 @@ public class PassengerCar {
 	 *
 	 * @param passenger TODO
 	 */
-	public void removePassenger(Passenger passenger) {
-		if(this.isEmpty()){
-		    passengers.remove(passenger);
-        }
+	public boolean addPassenger(@Nonnull Passenger passenger) {
+		// TODO
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @param passenger TODO
+	 */
+	public boolean removePassenger(@Nonnull Passenger passenger) {
+		// TODO
 	}
 
 }
