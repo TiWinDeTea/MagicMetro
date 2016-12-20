@@ -24,6 +24,8 @@
 
 package org.tiwindetea.magicmetro.model;
 
+import org.tiwindetea.magicmetro.view.PassengerCarView;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -31,24 +33,42 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * TODO
+ * A passenger car, contains passengers and is moved by a train.
+ *
+ * @author Maxime PINARD
+ * @since 0.1
  */
 public class PassengerCar {
 
 	private static final int CAPACITY = 6;
 
+	private final PassengerCarView view;
 	private final List<Passenger> passengers = new ArrayList<>(CAPACITY);
 	private int capacity;
 
+	/**
+	 * Instantiates a new PassengerCar.
+	 *
+	 * @param view the passenger view
+	 */
+	public PassengerCar(PassengerCarView view) {
+		this.view = view;
+	}
+
+	/**
+	 * Determine if the passenger car is full.
+	 *
+	 * @return true if full, false otherwise
+	 */
 	public boolean isFull() {
 		return this.passengers.size() == CAPACITY;
 	}
 
 	/**
-	 * TODO
+	 * Gets a passenger with a given wanted station.
 	 *
-	 * @param wantedStation
-	 * @return
+	 * @param wantedStation the station wanted by the passenger
+	 * @return the passenger if it exist, null otherwise
 	 */
 	@Nullable
 	public Passenger getPassenger(@Nonnull StationType wantedStation) {
@@ -63,10 +83,10 @@ public class PassengerCar {
 	}
 
 	/**
-	 * TODO
+	 * Gets all passenger with a given wanted station.
 	 *
-	 * @param wantedStation
-	 * @return
+	 * @param wantedStation the station wanted by the passengers
+	 * @return the passengers
 	 */
 	@Nonnull
 	public List<Passenger> getPassengers(@Nonnull StationType wantedStation) {
@@ -80,28 +100,32 @@ public class PassengerCar {
 	}
 
 	/**
-	 * Default constructor
-	 */
-	public PassengerCar() {
-
-	}
-
-	/**
-	 * TODO
+	 * Add a passenger.
 	 *
-	 * @param passenger TODO
+	 * @param passenger the passenger
+	 * @return true if the passenger was added, false if the passenger car is full
 	 */
 	public boolean addPassenger(@Nonnull Passenger passenger) {
-		// TODO
+		if(this.passengers.size() < CAPACITY) {
+			this.passengers.add(passenger);
+			this.view.addPassenger(passenger.getWantedStation());
+			return true;
+		}
+		return false;
 	}
 
 	/**
-	 * TODO
+	 * Remove a passenger.
 	 *
-	 * @param passenger TODO
+	 * @param passenger the passenger
+	 * @return true if the passenger was removed, false if the passenger is not in the passenger car
 	 */
 	public boolean removePassenger(@Nonnull Passenger passenger) {
-		// TODO
+		if(this.passengers.remove(passenger)) {
+			this.view.removePassenger(passenger.getWantedStation());
+			return true;
+		}
+		return false;
 	}
 
 }
