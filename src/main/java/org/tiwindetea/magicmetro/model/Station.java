@@ -44,6 +44,8 @@ public class Station {
 	private static final int STATION_FULL_DELAY = 10; // TODO: real value
 	private static final int STATION_MAX_CONNECTIONS = 10; // TODO: real value
 
+	public static final int NB_STATION_TYPE = 5;
+
 	private final Point2d position;
 	private final StationType type;
 	private final StationView view;
@@ -130,6 +132,15 @@ public class Station {
 	 */
 	public boolean removeConnection(@Nonnull Connection connection) {
 		return this.connections.remove(connection);
+	}
+
+    /**
+     * getters of the connections inside the station
+     *
+     * @return the list of connections present inside the station
+     */
+	public List<Connection> getConnections(){
+		return connections;
 	}
 
 }
