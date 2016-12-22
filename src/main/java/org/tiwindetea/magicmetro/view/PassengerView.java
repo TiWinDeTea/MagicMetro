@@ -44,6 +44,16 @@ public class PassengerView extends Parent {
 	/**
 	 * Instantiates a new passenger view.
 	 *
+	 * @param wantedStation the wanted station
+	 * @param sprite        the sprite
+	 */
+	public PassengerView(StationType wantedStation, Shape sprite) {
+		this(new Point2d(), wantedStation, sprite);
+	}
+
+	/**
+	 * Instantiates a new passenger view.
+	 *
 	 * @param position      the position
 	 * @param wantedStation the wanted station
 	 * @param sprite        the sprite

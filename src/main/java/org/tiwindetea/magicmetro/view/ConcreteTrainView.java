@@ -65,11 +65,11 @@ public class ConcreteTrainView extends Parent implements TrainView {
 	                         List<Point2d> passengersPositions,
 	                         PassengerViewFactory passengerViewFactory) {
 		this.sprite = sprite;
-		getChildren().add(this.sprite);
+		this.getChildren().add(this.sprite);
 		this.sprite.setTranslateX(0);
 		this.sprite.setTranslateY(0);
-		setLayoutX(-spriteWidth / 2);
-		setLayoutY(-spriteHeight / 2);
+		this.setLayoutX(-spriteWidth / 2);
+		this.setLayoutY(-spriteHeight / 2);
 		this.passengersPositions = passengersPositions;
 		this.freePassengersPositionsIndex = new LinkedList<>();
 		for(int i = 0; i < this.passengersPositions.size(); ++i) {
