@@ -25,12 +25,16 @@
 package org.tiwindetea.magicmetro.view;
 
 import org.arakhne.afc.math.geometry.d2.d.Point2d;
+import org.tiwindetea.magicmetro.model.PassengerCar;
 import org.tiwindetea.magicmetro.model.StationType;
 
+import javax.annotation.Nonnull;
+
 /**
- * TODO
+ * View of a PassengerCar, control a graphical representation of a PassengerCar.
  *
  * @author Maxime PINARD
+ * @see PassengerCar
  * @since 0.1
  */
 public interface PassengerCarView {
@@ -39,9 +43,9 @@ public interface PassengerCarView {
 
 	void setRotation(double angle);
 
-	void setPosition(Point2d position);
+	void setPosition(@Nonnull Point2d position);
 
-	void addPassenger(StationType wantedStation);
+	void addPassenger(@Nonnull StationType wantedStation);
 
-	void removePassenger(StationType wantedStation);
+	void removePassenger(@Nonnull StationType wantedStation);
 }

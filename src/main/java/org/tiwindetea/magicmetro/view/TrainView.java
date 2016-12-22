@@ -24,10 +24,13 @@
 
 package org.tiwindetea.magicmetro.view;
 
+import org.tiwindetea.magicmetro.model.Train;
+
 /**
- * TODO
+ * View of a Train, control a graphical representation of a Train.
  *
  * @author Maxime PINARD
+ * @see Train
  * @since 0.1
  */
 public interface TrainView extends PassengerCarView {

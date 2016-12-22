@@ -25,21 +25,25 @@
 package org.tiwindetea.magicmetro.view;
 
 import org.arakhne.afc.math.geometry.d2.d.Point2d;
+import org.tiwindetea.magicmetro.model.Station;
 import org.tiwindetea.magicmetro.model.StationType;
 
+import javax.annotation.Nonnull;
+
 /**
- * TODO
+ * View of a Station, control a graphical representation of a Station.
  *
  * @author Maxime PINARD
+ * @see Station
  * @since 0.1
  */
 public interface StationView {
 
-	void setPosition(Point2d position);
+	void setPosition(@Nonnull Point2d position);
 
-	void addPassenger(StationType wantedStation);
+	void addPassenger(@Nonnull StationType wantedStation);
 
-	void removePassenger(StationType wantedStation);
+	void removePassenger(@Nonnull StationType wantedStation);
 
 	void makeBigger();
 
