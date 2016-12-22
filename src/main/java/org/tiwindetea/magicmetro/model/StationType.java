@@ -25,7 +25,11 @@
 package org.tiwindetea.magicmetro.model;
 
 /**
- * TODO
+ * StationType, possible types of a Station.
+ *
+ * @author Maxime PINARD
+ * @see Station
+ * @since 0.1
  */
 public enum StationType {
 	SQUARE,
