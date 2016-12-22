@@ -42,8 +42,11 @@ public class ViewManager {
 		  Skin.TRAIN_VIEW_WIDTH, Skin.TRAIN_VIEW_HEIGHT, this.skin.getTrainPassengerPositions(), this.skin);
 	}
 
-	public void createStationView(StationType type) {
-		//TODO
+	public StationView createStationView(StationType type) {
+		return new ConcreteStationView(this.skin.newStationView(type),
+		  Skin.STATION_VIEW_WIDTH,
+		  Skin.STATION_VIEW_HEIGHT,
+		  this.skin);
 	}
 
 	public void createLineView() {

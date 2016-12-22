@@ -48,6 +48,8 @@ public class Skin implements PassengerViewFactory {
 
 	public static final int TRAIN_VIEW_WIDTH = 150;
 	public static final int TRAIN_VIEW_HEIGHT = 80;
+	public static final int STATION_VIEW_WIDTH = 80;
+	public static final int STATION_VIEW_HEIGHT = 80;
 
 	private static final Color PASSENGERS_COLOR = Color.GRAY;
 	private static final Color STATIONS_COLOR1 = Color.DARKGRAY;
