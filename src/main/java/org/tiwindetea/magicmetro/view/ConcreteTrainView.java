@@ -24,15 +24,17 @@
 
 package org.tiwindetea.magicmetro.view;
 
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.shape.Shape;
 import org.arakhne.afc.math.geometry.d2.d.Point2d;
-import org.tiwindetea.magicmetro.global.util.Pair;
 import org.tiwindetea.magicmetro.model.StationType;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A JavaFx implementation of TrainView.
@@ -46,7 +48,8 @@ public class ConcreteTrainView extends Parent implements TrainView {
 
 	private final Shape sprite;
 	private final List<Point2d> passengersPositions;
-	private final List<Pair<StationType, Shape>> passengers = new ArrayList<>(MAX_PASSENGERS);
+	private final List<Integer> freePassengersPositionsIndex;
+	private final List<PassengerView> passengers = new ArrayList<>(MAX_PASSENGERS);
 	private final PassengerViewFactory passengerViewFactory;
 
 	/**
@@ -57,13 +60,21 @@ public class ConcreteTrainView extends Parent implements TrainView {
 	 * @param passengerViewFactory the PassengerView factory
 	 */
 	public ConcreteTrainView(Shape sprite,
+	                         int spriteWidth,
+	                         int spriteHeight,
 	                         List<Point2d> passengersPositions,
 	                         PassengerViewFactory passengerViewFactory) {
 		this.sprite = sprite;
 		getChildren().add(this.sprite);
-		sprite.setTranslateX(0);
-		sprite.setTranslateY(0);
+		this.sprite.setTranslateX(0);
+		this.sprite.setTranslateY(0);
+		setLayoutX(-spriteWidth / 2);
+		setLayoutY(-spriteHeight / 2);
 		this.passengersPositions = passengersPositions;
+		this.freePassengersPositionsIndex = new LinkedList<>();
+		for(int i = 0; i < this.passengersPositions.size(); ++i) {
+			this.freePassengersPositionsIndex.add(i);
+		}
 		this.passengerViewFactory = passengerViewFactory;
 	}
 
@@ -81,22 +92,28 @@ public class ConcreteTrainView extends Parent implements TrainView {
 	@Override
 	public void addPassenger(@Nonnull StationType wantedStation) {
 		if(this.passengers.size() < MAX_PASSENGERS) {
-			Shape passenger = this.passengerViewFactory.newPassengerView(wantedStation);
-			Pair<StationType, Shape> pair = new Pair<>(wantedStation, passenger);
-			this.passengers.add(pair);
-			Point2d position = this.passengersPositions.get(this.passengers.indexOf(pair));
-			passenger.setTranslateX(position.getX());
-			passenger.setTranslateY(position.getY());
-			getChildren().add(passenger);
+			Optional<Integer> minIndexOption = this.freePassengersPositionsIndex.parallelStream()
+			  .min(Integer::compareTo);
+			if(minIndexOption.isPresent()) {
+				Integer minIndex = minIndexOption.get();
+				System.out.println("minIndex = " + minIndex);
+				this.freePassengersPositionsIndex.removeIf(integer -> integer.equals(minIndex));
+				PassengerView passenger = new PassengerView(this.passengersPositions.get(minIndex), wantedStation,
+				  this.passengerViewFactory.newPassengerView(wantedStation));
+				this.passengers.add(passenger);
+				Platform.runLater(() -> getChildren().add(passenger));
+				System.out.println("passenger.getPosition()" + passenger.getPosition());
+			}
 		}
 	}
 
 	@Override
 	public void removePassenger(@Nonnull StationType wantedStation) {
-		for(Pair<StationType, Shape> passenger : this.passengers) {
-			if(passenger.getLeft() == wantedStation) {
+		for(PassengerView passenger : this.passengers) {
+			if(passenger.getWantedStation() == wantedStation) {
+				this.freePassengersPositionsIndex.add(this.passengersPositions.indexOf(passenger.getPosition()));
 				this.passengers.remove(passenger);
-				getChildren().remove(passenger.getRight());
+				Platform.runLater(() -> getChildren().remove(passenger));
 				break;
 			}
 		}
