@@ -96,13 +96,11 @@ public class ConcreteTrainView extends Parent implements TrainView {
 			  .min(Integer::compareTo);
 			if(minIndexOption.isPresent()) {
 				Integer minIndex = minIndexOption.get();
-				System.out.println("minIndex = " + minIndex);
 				this.freePassengersPositionsIndex.removeIf(integer -> integer.equals(minIndex));
 				PassengerView passenger = new PassengerView(this.passengersPositions.get(minIndex), wantedStation,
 				  this.passengerViewFactory.newPassengerView(wantedStation));
 				this.passengers.add(passenger);
 				Platform.runLater(() -> getChildren().add(passenger));
-				System.out.println("passenger.getPosition()" + passenger.getPosition());
 			}
 		}
 	}
