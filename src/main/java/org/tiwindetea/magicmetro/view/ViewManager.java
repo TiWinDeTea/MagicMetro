@@ -32,35 +32,22 @@ import org.tiwindetea.magicmetro.model.TrainType;
  */
 public class ViewManager {
 
-	/**
-	 * Default constructor
-	 */
+	private final Skin skin = new Skin();
+
 	public ViewManager() {
 	}
 
-	/**
-	 * TODO
-	 *
-	 * @param type TODO
-	 */
-	public void createTrainView(TrainType type) {
-		// TODO
+	public TrainView createTrainView(TrainType type) {
+		return new ConcreteTrainView(this.skin.newTrainView(type),
+		  Skin.TRAIN_VIEW_WIDTH, Skin.TRAIN_VIEW_HEIGHT, this.skin.getTrainPassengerPositions(), this.skin);
 	}
 
-	/**
-	 * TODO
-	 *
-	 * @param type TODO
-	 */
 	public void createStationView(StationType type) {
-		// TODO
+		//TODO
 	}
 
-	/**
-	 * TODO
-	 */
 	public void createLineView() {
-		// TODO
+		//TODO
 	}
 
 }
