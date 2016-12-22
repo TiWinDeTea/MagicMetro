@@ -46,7 +46,6 @@ public class Connection {
 	private Point2d position;
 	private SimplePair<SubSection> subSections;
 	private WeakReference<Station> stationRef = new WeakReference<>(null);
-	private WeakReference<Section> sectionRef = new WeakReference<>(null);
 
 	/**
 	 * Instantiates a new Connection.
@@ -156,27 +155,6 @@ public class Connection {
 	public void setStationRef(@Nullable Station stationRef) {
 
 		this.stationRef = new WeakReference<>(stationRef);
-	}
-
-	/**
-	 * Gets section reference.
-	 *
-	 * @return the section reference
-	 */
-	@Nullable
-	public Section getSectionRef() {
-
-		return this.sectionRef.get();
-	}
-
-	/**
-	 * Sets section reference.
-	 *
-	 * @param sectionRef the section reference
-	 */
-	public void setSectionRef(Section sectionRef) {
-
-		this.sectionRef = new WeakReference<>(sectionRef);
 	}
 
 }
