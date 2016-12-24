@@ -24,12 +24,41 @@
 
 package org.tiwindetea.magicmetro;
 
+import javafx.application.Application;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.stage.Stage;
+import org.tiwindetea.magicmetro.global.eventdispatcher.EventDispatcher;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.FullScreenToggleEvent;
+import org.tiwindetea.magicmetro.view.menus.MenuManager;
+
 /**
- * Created by Maxime on 02/12/2016.
+ * Main class, launch the MainMenu.
+ *
+ * @author Maxime PINARD
+ * @since 0.1
  */
-public class Main {
+public class Main extends Application {
 
 	public static void main(String[] args) {
-		System.out.println("MagicMetro");
+		launch(args);
 	}
+
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		MenuManager menuManager = new MenuManager(primaryStage);
+		menuManager.DisplayMenus();
+		primaryStage.show();
+
+		//TODO: shortcut to go fullscreen?
+
+		// shortcut to exit fullscreen
+		primaryStage.setFullScreenExitKeyCombination(new KeyCodeCombination(KeyCode.F, KeyCombination.SHIFT_DOWN));
+
+		EventDispatcher.getInstance().addListener(FullScreenToggleEvent.class, event -> {
+			primaryStage.setFullScreen(event.fullScreen);
+		});
+	}
+
 }
