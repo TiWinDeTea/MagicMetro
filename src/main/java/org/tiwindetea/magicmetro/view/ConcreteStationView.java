@@ -24,10 +24,15 @@
 
 package org.tiwindetea.magicmetro.view;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.scene.Parent;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.TilePane;
 import javafx.scene.shape.Shape;
+import javafx.util.Duration;
 import org.arakhne.afc.math.geometry.d2.d.Point2d;
 import org.tiwindetea.magicmetro.model.StationType;
 
@@ -51,6 +56,9 @@ public class ConcreteStationView extends Parent implements StationView {
 	private final List<PassengerView> passengers = new LinkedList<>();
 	private final PassengerViewFactory passengerViewFactory;
 	private final TilePane tilePane = new TilePane();
+	private final ProgressIndicator progressIndicator = new ProgressIndicator();
+
+	private Timeline timeline;
 
 	public ConcreteStationView(Shape sprite,
 	                           int spriteWidth,
@@ -68,6 +76,15 @@ public class ConcreteStationView extends Parent implements StationView {
 		this.tilePane.setPrefColumns(PASSENGER_COLUMNS);
 		this.tilePane.setTranslateX(spriteWidth + PASSENGER_OFFSET_X);
 		this.tilePane.setTranslateY(PASSENGER_OFFSET_Y);
+
+		this.progressIndicator.setMinSize(2 * spriteWidth, 2 * spriteHeight);
+		this.progressIndicator.setTranslateX(-spriteWidth / 2);
+		this.progressIndicator.setTranslateY(-spriteHeight / 2);
+		this.progressIndicator.setStyle(" -fx-progress-color: darkgray;");
+		this.progressIndicator.setProgress(0.7);
+		this.progressIndicator.setVisible(false);
+		this.getChildren().add(this.progressIndicator);
+		this.progressIndicator.toBack();
 	}
 
 	@Override
@@ -102,11 +119,23 @@ public class ConcreteStationView extends Parent implements StationView {
 
 	@Override
 	public void warn(int seconds) {
-		//TODO
+		//TODO: speed depend on TimeManager
+		Platform.runLater(() -> {
+			this.progressIndicator.setProgress(0);
+			this.progressIndicator.setVisible(true);
+			this.timeline = new Timeline();
+			this.timeline.setCycleCount(1);
+			this.timeline.setAutoReverse(false);
+			this.timeline.getKeyFrames().add(new KeyFrame(Duration.millis(seconds * 1000),
+			  new KeyValue(this.progressIndicator.progressProperty(), 1)));
+			this.timeline.play();
+		});
 	}
 
 	@Override
 	public void unWard() {
-		//TODO
+		this.progressIndicator.setVisible(false);
+		this.timeline.stop();
 	}
+
 }
