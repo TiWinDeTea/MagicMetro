@@ -44,11 +44,19 @@ public class MenuManager implements MenuController {
 	private final Stack<Menu> menuQueue = new Stack<>();
 	private Menu currentMenu;
 
+	/**
+	 * Instantiates a new MenuManager.
+	 *
+	 * @param stage the stage
+	 */
 	public MenuManager(Stage stage) {
 		this.stage = stage;
 		stage.setScene(this.scene);
 	}
 
+	/**
+	 * Display menus.
+	 */
 	public void DisplayMenus() {
 		this.currentMenu = new MainMenu(this);
 		this.scene.setRoot(this.currentMenu.getRoot());

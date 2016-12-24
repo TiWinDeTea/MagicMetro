@@ -45,6 +45,9 @@ public class MainMenuController {
 	@FXML
 	public Button exitButton;
 
+	/**
+	 * Instantiates a new MainMenuController.
+	 */
 	public MainMenuController() {
 
 	}

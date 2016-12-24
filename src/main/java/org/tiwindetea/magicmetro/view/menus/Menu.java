@@ -34,6 +34,11 @@ import javafx.scene.Parent;
  */
 public interface Menu {
 
+	/**
+	 * Gets the menu root.
+	 *
+	 * @return the root
+	 */
 	Parent getRoot();
 
 }

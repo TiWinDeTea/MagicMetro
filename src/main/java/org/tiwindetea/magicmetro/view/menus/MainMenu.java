@@ -43,6 +43,11 @@ public class MainMenu implements Menu {
 	private StackPane mainStackPane;
 	private MainMenuController mainMenuController;
 
+	/**
+	 * Instantiates a new MainMenu.
+	 *
+	 * @param menuController the menu controller
+	 */
 	public MainMenu(MenuController menuController) {
 
 		this.menuController = menuController;//TODO
@@ -75,6 +80,7 @@ public class MainMenu implements Menu {
 		this.menuController.exitMenu();
 	}
 
+	@Override
 	public Parent getRoot() {
 		return this.mainStackPane;
 	}

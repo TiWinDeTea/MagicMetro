@@ -49,6 +49,9 @@ public class OptionMenuController {
 	@FXML
 	public Button applyButton;
 
+	/**
+	 * Instantiates a new OptionMenuController.
+	 */
 	public OptionMenuController() {
 
 	}

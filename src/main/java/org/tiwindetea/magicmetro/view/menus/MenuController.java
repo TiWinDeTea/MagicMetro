@@ -32,10 +32,21 @@ package org.tiwindetea.magicmetro.view.menus;
  */
 public interface MenuController {
 
+	/**
+	 * Exit the current menu.
+	 */
 	void exitMenu();
 
+	/**
+	 * Go to option menu.
+	 */
 	void goToOptionMenu();
 
+	/**
+	 * Determinate if the stage is fullscreen.
+	 *
+	 * @return true if fullscreen, false otherwise
+	 */
 	boolean isFullScreen();
 
 }

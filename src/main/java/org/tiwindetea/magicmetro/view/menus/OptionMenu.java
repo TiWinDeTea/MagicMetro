@@ -45,6 +45,11 @@ public class OptionMenu implements Menu {
 	private StackPane mainStackPane;
 	private OptionMenuController optionMenuController;
 
+	/**
+	 * Instantiates a new OptionMenu.
+	 *
+	 * @param menuController the menu controller
+	 */
 	public OptionMenu(MenuController menuController) {
 
 		this.menuController = menuController;
@@ -79,6 +84,7 @@ public class OptionMenu implements Menu {
 		this.menuController.exitMenu();
 	}
 
+	@Override
 	public Parent getRoot() {
 		return this.mainStackPane;
 	}
