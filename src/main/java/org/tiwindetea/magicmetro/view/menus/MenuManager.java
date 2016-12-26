@@ -81,6 +81,13 @@ public class MenuManager implements MenuController {
 	}
 
 	@Override
+	public void goToMapMenu() {
+		this.menuQueue.push(this.currentMenu);
+		this.currentMenu = new MapMenu(this);
+		this.scene.setRoot(this.currentMenu.getRoot());
+	}
+
+	@Override
 	public boolean isFullScreen() {
 		return this.stage.isFullScreen();
 	}

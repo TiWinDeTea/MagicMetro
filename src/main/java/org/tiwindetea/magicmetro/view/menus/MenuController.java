@@ -43,6 +43,11 @@ public interface MenuController {
 	void goToOptionMenu();
 
 	/**
+	 * Go to map menu.
+	 */
+	void goToMapMenu();
+
+	/**
 	 * Determinate if the stage is fullscreen.
 	 *
 	 * @return true if fullscreen, false otherwise

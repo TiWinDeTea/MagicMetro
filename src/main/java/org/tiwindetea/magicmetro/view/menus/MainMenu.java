@@ -63,7 +63,7 @@ public class MainMenu implements Menu {
 
 		this.mainMenuController = loader.getController();
 
-		this.mainMenuController.playButton.setOnAction(event -> System.out.println("TODO: play")); //TODO
+		this.mainMenuController.playButton.setOnAction(event -> this.menuController.goToMapMenu());
 
 		this.mainMenuController.optionButton.setOnAction(event -> this.menuController.goToOptionMenu());
 
