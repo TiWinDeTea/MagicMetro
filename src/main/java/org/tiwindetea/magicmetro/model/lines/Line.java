@@ -24,15 +24,54 @@
 
 package org.tiwindetea.magicmetro.model.lines;
 
+import org.tiwindetea.magicmetro.model.Station;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * TODO
+ * @author Julien Barbier
+ * @since 0.1
  */
 public class Line {
+
+	private List<Station> stationInTheLine;
 
 	/**
 	 * Default constructor
 	 */
 	public Line() {
+		stationInTheLine = new ArrayList<>();
+	}
+
+	/**
+	 * Allow to add a station inside the line
+	 *
+	 * @param station the station we want to add
+	 * @return true if the station is added, false if error
+	 */
+	public boolean add(Station station){
+		return stationInTheLine.add(station);
+	}
+
+	/**
+	 * allow to remove a station of a line
+	 *
+	 * @param station the station we want to remove
+	 * @return true if the station is removed, false if error (don't contain...)
+	 */
+	public boolean remove(Station station){
+		return stationInTheLine.remove(station);
+	}
+
+	/**
+	 * verify if a station is inside the line
+	 *
+	 * @param station the station we want to verify if it's inside the line
+	 * @return true if contains, false else
+	 */
+	public boolean isStationInside(Station station){
+		return stationInTheLine.contains(station);
 	}
 
 }
