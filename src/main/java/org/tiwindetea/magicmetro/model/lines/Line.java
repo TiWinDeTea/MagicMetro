@@ -24,54 +24,63 @@
 
 package org.tiwindetea.magicmetro.model.lines;
 
+import org.tiwindetea.magicmetro.global.util.SimplePair;
 import org.tiwindetea.magicmetro.model.Station;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.LinkedList;
 
 /**
+ * A line composed of several sections each composed of connections and subsections.
+ *
+ * @author Maxime PINARD
  * @author Julien Barbier
+ * @see Connection
+ * @see Section
+ * @see SubSection
  * @since 0.1
  */
 public class Line {
 
-	private List<Station> stationInTheLine;
+	private Collection<Station> stations;
+	private SimplePair<Connection> lastConnections;
+	private Collection<Section> sections;
 
 	/**
-	 * Default constructor
+	 * Default constructor.
 	 */
 	public Line() {
-		stationInTheLine = new ArrayList<>();
+		this.stations = new LinkedList<>();
 	}
 
 	/**
-	 * Allow to add a station inside the line
+	 * Add a station to the line.
 	 *
-	 * @param station the station we want to add
-	 * @return true if the station is added, false if error
+	 * @param station the station to add
+	 * @return true if the stations of the line changed
 	 */
 	public boolean add(Station station){
-		return stationInTheLine.add(station);
+		return this.stations.add(station);
 	}
 
 	/**
-	 * allow to remove a station of a line
+	 * Remove a station of a line.
 	 *
-	 * @param station the station we want to remove
-	 * @return true if the station is removed, false if error (don't contain...)
+	 * @param station the station to remove
+	 * @return true if the station was removed, false otherwise
 	 */
 	public boolean remove(Station station){
-		return stationInTheLine.remove(station);
+		return this.stations.remove(station);
 	}
 
 	/**
-	 * verify if a station is inside the line
+	 * Determine if a line contains a station.
 	 *
-	 * @param station the station we want to verify if it's inside the line
-	 * @return true if contains, false else
+	 * @param station the station
+	 * @return true if the line contains the station, false otherwise
 	 */
 	public boolean isStationInside(Station station){
-		return stationInTheLine.contains(station);
+		return this.stations.contains(station);
 	}
 
 }
