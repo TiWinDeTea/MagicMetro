@@ -134,8 +134,8 @@ public class Skin implements PassengerViewFactory {
 	@Nonnull
 	public Shape newStationView(@Nonnull StationType type) {
 		Shape shape = newPassengerView(type);
-		shape.setScaleX(2);
-		shape.setScaleY(2);
+		shape.setScaleX(1.5);
+		shape.setScaleY(1.5);
 		shape.setFill(STATIONS_COLOR1);
 		shape.setStrokeWidth(5);
 		shape.setStroke(STATIONS_COLOR2);

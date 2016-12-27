@@ -65,6 +65,7 @@ public class Station {
 		this.position = position;
 		this.type = type;
 		this.view = view;
+		this.view.setPosition(this.position);
 	}
 
 	/**
@@ -140,7 +141,7 @@ public class Station {
      * @return the list of connections present inside the station
      */
 	public List<Connection> getConnections(){
-		return connections;
+		return this.connections;
 	}
 
 }
