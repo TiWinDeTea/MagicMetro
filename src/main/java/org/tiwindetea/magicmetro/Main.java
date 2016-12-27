@@ -30,12 +30,16 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
 import org.arakhne.afc.math.geometry.d2.d.MultiShape2d;
+import org.arakhne.afc.math.geometry.d2.d.Point2d;
 import org.arakhne.afc.math.geometry.d2.d.Rectangle2d;
 import org.tiwindetea.magicmetro.global.eventdispatcher.EventDispatcher;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.FullScreenToggleEvent;
 import org.tiwindetea.magicmetro.global.scripts.MapScript;
+import org.tiwindetea.magicmetro.global.scripts.StationScript;
+import org.tiwindetea.magicmetro.model.StationType;
 import org.tiwindetea.magicmetro.view.menus.MenuManager;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -87,6 +91,18 @@ public class Main extends Application {
 		multiShape2d.add(new Rectangle2d(1690, 450, 50, 270));
 		multiShape2d.add(new Rectangle2d(1740, 450, 500, 50));
 		MapScript testMapScript = new MapScript("test map", multiShape2d);
+		testMapScript.stationScripts.add(
+		  new StationScript(Duration.ofSeconds(0),
+			new Point2d(450, 620),
+			StationType.TRIANGLE));
+		testMapScript.stationScripts.add(
+		  new StationScript(Duration.ofSeconds(0),
+			new Point2d(900, 750),
+			StationType.SQUARE));
+		testMapScript.stationScripts.add(
+		  new StationScript(Duration.ofSeconds(0),
+			new Point2d(750, 320),
+			StationType.DIAMOND));
 		this.mapScripts.add(testMapScript);
 	}
 
