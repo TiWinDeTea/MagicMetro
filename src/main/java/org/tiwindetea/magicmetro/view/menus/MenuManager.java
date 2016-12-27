@@ -27,6 +27,7 @@ package org.tiwindetea.magicmetro.view.menus;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.tiwindetea.magicmetro.global.TimeManager;
 import org.tiwindetea.magicmetro.global.scripts.MapScript;
 import org.tiwindetea.magicmetro.model.GameManager;
 import org.tiwindetea.magicmetro.view.ViewManager;
@@ -103,6 +104,8 @@ public class MenuManager implements MenuController {
 	public void launchGame(MapScript mapScript) {
 		ViewManager viewManager = new ViewManager();
 		GameManager gameManager = new GameManager(viewManager, mapScript);
+		TimeManager.getInstance().reset();
+		TimeManager.getInstance().start();
 		this.scene.setRoot(viewManager.getRoot());
 		//TODO: on game exit (pass menumanager with interface to gamemanager ?) put back current menu root
 	}
