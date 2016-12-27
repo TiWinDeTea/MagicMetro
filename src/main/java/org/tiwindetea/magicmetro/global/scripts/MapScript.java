@@ -37,14 +37,14 @@ import java.util.PriorityQueue;
  */
 public class MapScript {
 
-	private final String mapName;
+	public final String mapName;
 
-	private PriorityQueue<ElementChoiceScript> elementChoiceScripts = new PriorityQueue<>((o1, o2) ->
+	public final PriorityQueue<ElementChoiceScript> elementChoiceScripts = new PriorityQueue<>((o1, o2) ->
 	  (int) (o1.apparitionTime.toMillis() - o2.apparitionTime.toMillis()));
-	private PriorityQueue<StationScript> stationScripts = new PriorityQueue<>((o1, o2) ->
+	public final PriorityQueue<StationScript> stationScripts = new PriorityQueue<>((o1, o2) ->
 	  (int) (o1.apparitionTime.toMillis() - o2.apparitionTime.toMillis()));
 
-	private MultiShape2d<Rectangle2d> water;
+	public final MultiShape2d<Rectangle2d> water;
 	//TODO: map description: water...
 
 	/**
@@ -57,18 +57,6 @@ public class MapScript {
 
 	public String getMapName() {
 		return this.mapName;
-	}
-
-	public MultiShape2d<Rectangle2d> getWater() {
-		return this.water;
-	}
-
-	public void addElementChoiceScript(ElementChoiceScript elementChoiceScript) {
-		this.elementChoiceScripts.add(elementChoiceScript);
-	}
-
-	public void addStationScript(StationScript stationScript) {
-		this.stationScripts.add(stationScript);
 	}
 
 }
