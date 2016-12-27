@@ -24,33 +24,90 @@
 
 package org.tiwindetea.magicmetro.view;
 
+import javafx.scene.Group;
+import javafx.scene.Parent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import org.arakhne.afc.math.geometry.d2.d.MultiShape2d;
+import org.arakhne.afc.math.geometry.d2.d.Rectangle2d;
+import org.arakhne.afc.math.geometry.d2.dfx.MultiShape2dfx;
+import org.arakhne.afc.math.geometry.d2.dfx.Rectangle2dfx;
 import org.tiwindetea.magicmetro.model.StationType;
 import org.tiwindetea.magicmetro.model.TrainType;
 
 /**
- * TODO
+ * ViewManager, manage the view, create graphical elements and display them.
+ *
+ * @author Maxime PINARD
+ * @since 0.1
  */
 public class ViewManager {
 
+	private static final Color WATER_COLOR = Color.AQUA;
+
+	private AnchorPane mainAnchorPane = new AnchorPane();
+	private final Pane cPane = new Pane();
+	private final Group waterGroup = new Group();
+
 	private final Skin skin = new Skin();
+	private final MultiShape2dfx<Rectangle2dfx> water = new MultiShape2dfx<>();
 
 	public ViewManager() {
+		this.mainAnchorPane.getChildren().add(this.cPane);
+		AnchorPane.setLeftAnchor(this.cPane, 0d);
+
+		this.cPane.getChildren().add(this.waterGroup);
+	}
+
+	public void setWater(MultiShape2d<Rectangle2d> water) {
+		this.water.clear();
+		this.waterGroup.getChildren().clear();
+		for(Rectangle2d rectangle2d : water.getBackendDataList()) {
+			Rectangle2dfx rectangle2dfx = new Rectangle2dfx();
+			Rectangle rectangle = new Rectangle();
+			rectangle.setFill(WATER_COLOR);
+			rectangle.widthProperty().bind(rectangle2dfx.widthProperty());
+			rectangle.heightProperty().bind(rectangle2dfx.heightProperty());
+			rectangle.translateXProperty().bind(rectangle2dfx.minXProperty());
+			rectangle.translateYProperty().bind(rectangle2dfx.minYProperty());
+			rectangle2dfx.setMinX(rectangle2d.getMinX());
+			rectangle2dfx.setMaxX(rectangle2d.getMaxX());
+			rectangle2dfx.setMinY(rectangle2d.getMinY());
+			rectangle2dfx.setMaxY(rectangle2d.getMaxY());
+			this.water.add(rectangle2dfx);
+			this.waterGroup.getChildren().add(rectangle);
+		}
 	}
 
 	public TrainView createTrainView(TrainType type) {
-		return new ConcreteTrainView(this.skin.newTrainView(type),
-		  Skin.TRAIN_VIEW_WIDTH, Skin.TRAIN_VIEW_HEIGHT, this.skin.getTrainPassengerPositions(), this.skin);
+		ConcreteTrainView concreteTrainView = new ConcreteTrainView(
+		  this.skin.newTrainView(type),
+		  Skin.TRAIN_VIEW_WIDTH,
+		  Skin.TRAIN_VIEW_HEIGHT,
+		  this.skin.getTrainPassengerPositions(),
+		  this.skin);
+		this.cPane.getChildren().add(concreteTrainView);
+		return concreteTrainView;
 	}
 
 	public StationView createStationView(StationType type) {
-		return new ConcreteStationView(this.skin.newStationView(type),
+		ConcreteStationView concreteStationView = new ConcreteStationView(
+		  this.skin.newStationView(type),
 		  Skin.STATION_VIEW_WIDTH,
 		  Skin.STATION_VIEW_HEIGHT,
 		  this.skin);
+		this.cPane.getChildren().add(concreteStationView);
+		return concreteStationView;
 	}
 
 	public void createLineView() {
 		//TODO
+	}
+
+	public Parent getRoot() {
+		return this.mainAnchorPane;
 	}
 
 }
