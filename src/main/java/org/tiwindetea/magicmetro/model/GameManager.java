@@ -30,7 +30,10 @@ import org.tiwindetea.magicmetro.global.eventdispatcher.events.TimePauseEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.TimeSpeedChangeEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.TimeStartEvent;
 import org.tiwindetea.magicmetro.global.scripts.MapScript;
+import org.tiwindetea.magicmetro.global.scripts.StationScript;
 import org.tiwindetea.magicmetro.view.ViewManager;
+
+import java.time.Duration;
 
 /**
  * TODO
@@ -62,7 +65,15 @@ public class GameManager {
 		this.viewManager = viewManager;
 		this.gameMap = new GameMap();
 
-		this.viewManager.setWater(this.mapScript.getWater());
+		this.viewManager.setWater(this.mapScript.water);
+		StationScript stationScript = this.mapScript.stationScripts.peek();
+		while((stationScript != null) && (stationScript.apparitionTime == Duration.ZERO)) {
+			mapScript.stationScripts.poll();
+			Station station = new Station(stationScript.position,
+			  stationScript.type,
+			  viewManager.createStationView(stationScript.type));
+			stationScript = this.mapScript.stationScripts.peek();
+		}
 		//TODO
 	}
 
