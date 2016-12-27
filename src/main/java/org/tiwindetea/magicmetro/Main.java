@@ -29,9 +29,15 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
+import org.arakhne.afc.math.geometry.d2.d.MultiShape2d;
+import org.arakhne.afc.math.geometry.d2.d.Rectangle2d;
 import org.tiwindetea.magicmetro.global.eventdispatcher.EventDispatcher;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.FullScreenToggleEvent;
+import org.tiwindetea.magicmetro.global.scripts.MapScript;
 import org.tiwindetea.magicmetro.view.menus.MenuManager;
+
+import java.util.Collection;
+import java.util.LinkedList;
 
 /**
  * Main class, launch the MainMenu.
@@ -41,13 +47,18 @@ import org.tiwindetea.magicmetro.view.menus.MenuManager;
  */
 public class Main extends Application {
 
+	private final Collection<MapScript> mapScripts = new LinkedList<>();
+	private Stage stage;
+
 	public static void main(String[] args) {
 		launch(args);
 	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		MenuManager menuManager = new MenuManager(primaryStage);
+		this.stage = primaryStage;
+		initMapScripts();
+		MenuManager menuManager = new MenuManager(primaryStage, this.mapScripts);
 		menuManager.DisplayMenus();
 		primaryStage.show();
 
@@ -56,9 +67,21 @@ public class Main extends Application {
 		// shortcut to exit fullscreen
 		primaryStage.setFullScreenExitKeyCombination(new KeyCodeCombination(KeyCode.F, KeyCombination.SHIFT_DOWN));
 
-		EventDispatcher.getInstance().addListener(FullScreenToggleEvent.class, event -> {
-			primaryStage.setFullScreen(event.fullScreen);
-		});
+		EventDispatcher.getInstance().addListener(FullScreenToggleEvent.class, this::onFullScreenToggleEvent);
+	}
+
+	private void onFullScreenToggleEvent(FullScreenToggleEvent event) {
+		this.stage.setFullScreen(event.fullScreen);
+	}
+
+	private void initMapScripts() {
+		//FIXME: tests
+		MultiShape2d<Rectangle2d> multiShape2d = new MultiShape2d<>();
+		multiShape2d.add(new Rectangle2d(50, 50, 400, 100));
+		multiShape2d.add(new Rectangle2d(50, 150, 100, 400));
+		multiShape2d.add(new Rectangle2d(500, 350, 200, 200));
+		MapScript testMapScript = new MapScript("test map", multiShape2d);
+		this.mapScripts.add(testMapScript);
 	}
 
 }
