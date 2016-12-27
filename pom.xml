@@ -63,5 +63,11 @@
             <artifactId>math</artifactId>
             <version>13.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.arakhne.afc.advanced/mathfx -->
+        <dependency>
+            <groupId>org.arakhne.afc.advanced</groupId>
+            <artifactId>mathfx</artifactId>
+            <version>13.0</version>
+        </dependency>
     </dependencies>
 </project>
