@@ -65,6 +65,7 @@ public class GameManager {
 		this.viewManager = viewManager;
 		this.gameMap = new GameMap();
 
+		this.viewManager.setMapSize(mapScript.mapWidth, mapScript.mapHeight);
 		this.viewManager.setWater(this.mapScript.water);
 		StationScript stationScript = this.mapScript.stationScripts.peek();
 		while((stationScript != null) && (stationScript.apparitionTime == Duration.ZERO)) {

@@ -25,10 +25,12 @@
 package org.tiwindetea.magicmetro;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.arakhne.afc.math.geometry.d2.d.MultiShape2d;
 import org.arakhne.afc.math.geometry.d2.d.Point2d;
 import org.arakhne.afc.math.geometry.d2.d.Rectangle2d;
@@ -72,6 +74,14 @@ public class Main extends Application {
 		primaryStage.setFullScreenExitKeyCombination(new KeyCodeCombination(KeyCode.F, KeyCombination.SHIFT_DOWN));
 
 		EventDispatcher.getInstance().addListener(FullScreenToggleEvent.class, this::onFullScreenToggleEvent);
+
+		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			@Override
+			public void handle(WindowEvent event) {
+				//TODO: stop TimeManager thread
+				//TODO: also stop TimeManager thread when using primaryStage.close()
+			}
+		});
 	}
 
 	private void onFullScreenToggleEvent(FullScreenToggleEvent event) {
@@ -89,8 +99,8 @@ public class Main extends Application {
 		multiShape2d.add(new Rectangle2d(1490, 450, 50, 270));
 		multiShape2d.add(new Rectangle2d(1540, 670, 150, 50));
 		multiShape2d.add(new Rectangle2d(1690, 450, 50, 270));
-		multiShape2d.add(new Rectangle2d(1740, 450, 500, 50));
-		MapScript testMapScript = new MapScript("test map", multiShape2d);
+		multiShape2d.add(new Rectangle2d(1740, 450, 180, 50));
+		MapScript testMapScript = new MapScript("test map", 1920, 1080, multiShape2d);
 		testMapScript.stationScripts.add(
 		  new StationScript(Duration.ofSeconds(0),
 			new Point2d(450, 620),

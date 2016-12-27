@@ -68,7 +68,7 @@ public class MapMenu implements Menu {
 
 		//TODO
 		for(MapScript mapScript : mapScripts) {
-			Button mapButton = new Button(mapScript.getMapName());
+			Button mapButton = new Button(mapScript.mapName);
 			this.mapMenuController.mapsVBox.getChildren().add(mapButton);
 			mapButton.setOnAction(event -> menuController.launchGame(mapScript));
 		}
