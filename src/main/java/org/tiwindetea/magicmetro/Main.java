@@ -77,9 +77,15 @@ public class Main extends Application {
 	private void initMapScripts() {
 		//FIXME: tests
 		MultiShape2d<Rectangle2d> multiShape2d = new MultiShape2d<>();
-		multiShape2d.add(new Rectangle2d(50, 50, 400, 100));
-		multiShape2d.add(new Rectangle2d(50, 150, 100, 400));
-		multiShape2d.add(new Rectangle2d(500, 350, 200, 200));
+		multiShape2d.add(new Rectangle2d(0, 1010, 380, 50));
+		multiShape2d.add(new Rectangle2d(330, 780, 50, 230));
+		multiShape2d.add(new Rectangle2d(380, 780, 390, 50));
+		multiShape2d.add(new Rectangle2d(720, 450, 50, 330));
+		multiShape2d.add(new Rectangle2d(770, 450, 720, 50));
+		multiShape2d.add(new Rectangle2d(1490, 450, 50, 270));
+		multiShape2d.add(new Rectangle2d(1540, 670, 150, 50));
+		multiShape2d.add(new Rectangle2d(1690, 450, 50, 270));
+		multiShape2d.add(new Rectangle2d(1740, 450, 500, 50));
 		MapScript testMapScript = new MapScript("test map", multiShape2d);
 		this.mapScripts.add(testMapScript);
 	}
