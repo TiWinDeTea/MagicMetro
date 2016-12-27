@@ -24,6 +24,8 @@
 
 package org.tiwindetea.magicmetro.view.menus;
 
+import org.tiwindetea.magicmetro.global.scripts.MapScript;
+
 /**
  * Interface for used by the menus to control the MenuManager.
  *
@@ -53,5 +55,12 @@ public interface MenuController {
 	 * @return true if fullscreen, false otherwise
 	 */
 	boolean isFullScreen();
+
+	/**
+	 * Launch the game with the specified map script.
+	 *
+	 * @param mapScript the map script
+	 */
+	void launchGame(MapScript mapScript);
 
 }

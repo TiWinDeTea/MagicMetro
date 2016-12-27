@@ -27,7 +27,11 @@ package org.tiwindetea.magicmetro.view.menus;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.tiwindetea.magicmetro.global.scripts.MapScript;
+import org.tiwindetea.magicmetro.model.GameManager;
+import org.tiwindetea.magicmetro.view.ViewManager;
 
+import java.util.Collection;
 import java.util.Stack;
 
 /**
@@ -41,6 +45,8 @@ public class MenuManager implements MenuController {
 	private final Stage stage;
 	private final Pane voidPane = new Pane();
 	private final Scene scene = new Scene(this.voidPane);
+	private final Collection<MapScript> mapScripts;
+
 	private final Stack<Menu> menuQueue = new Stack<>();
 	private Menu currentMenu;
 
@@ -49,9 +55,10 @@ public class MenuManager implements MenuController {
 	 *
 	 * @param stage the stage
 	 */
-	public MenuManager(Stage stage) {
+	public MenuManager(Stage stage, Collection<MapScript> mapScripts) {
 		this.stage = stage;
-		stage.setScene(this.scene);
+		this.mapScripts = mapScripts;
+		this.stage.setScene(this.scene);
 	}
 
 	/**
@@ -83,13 +90,21 @@ public class MenuManager implements MenuController {
 	@Override
 	public void goToMapMenu() {
 		this.menuQueue.push(this.currentMenu);
-		this.currentMenu = new MapMenu(this);
+		this.currentMenu = new MapMenu(this, this.mapScripts);
 		this.scene.setRoot(this.currentMenu.getRoot());
 	}
 
 	@Override
 	public boolean isFullScreen() {
 		return this.stage.isFullScreen();
+	}
+
+	@Override
+	public void launchGame(MapScript mapScript) {
+		ViewManager viewManager = new ViewManager();
+		GameManager gameManager = new GameManager(viewManager, mapScript);
+		this.scene.setRoot(viewManager.getRoot());
+		//TODO: on game exit (pass menumanager with interface to gamemanager ?) put back current menu root
 	}
 
 }
