@@ -24,16 +24,22 @@
 
 package org.tiwindetea.magicmetro.view;
 
-import javafx.scene.Group;
+import javafx.animation.AnimationTimer;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import org.arakhne.afc.math.geometry.d2.d.MultiShape2d;
 import org.arakhne.afc.math.geometry.d2.d.Rectangle2d;
 import org.arakhne.afc.math.geometry.d2.dfx.MultiShape2dfx;
 import org.arakhne.afc.math.geometry.d2.dfx.Rectangle2dfx;
+import org.tiwindetea.magicmetro.global.TimeManager;
 import org.tiwindetea.magicmetro.model.StationType;
 import org.tiwindetea.magicmetro.model.TrainType;
 
@@ -45,40 +51,35 @@ import org.tiwindetea.magicmetro.model.TrainType;
  */
 public class ViewManager {
 
-	private static final Color WATER_COLOR = Color.AQUA;
+	private static final Color BACKGROUND_COLOR = Color.LIGHTGRAY;
+	private static final Color MAP_BACKGROUND_COLOR = Color.WHITE;
 
 	private AnchorPane mainAnchorPane = new AnchorPane();
 	private final Pane cPane = new Pane();
-	private final Group waterGroup = new Group();
+	private final MapView mapView = new MapView();
 
 	private final Skin skin = new Skin();
 	private final MultiShape2dfx<Rectangle2dfx> water = new MultiShape2dfx<>();
 
 	public ViewManager() {
+		this.mainAnchorPane.setBackground(new Background(new BackgroundFill(
+		  BACKGROUND_COLOR,
+		  CornerRadii.EMPTY,
+		  Insets.EMPTY)));
 		this.mainAnchorPane.getChildren().add(this.cPane);
 		AnchorPane.setLeftAnchor(this.cPane, 0d);
 
-		this.cPane.getChildren().add(this.waterGroup);
+		this.mapView.setBackgroundColor(MAP_BACKGROUND_COLOR);
+		this.cPane.getChildren().add(this.mapView);
+	}
+
+	public void setMapSize(double width, double height) {
+		this.mapView.setWidth(width);
+		this.mapView.setHeight(height);
 	}
 
 	public void setWater(MultiShape2d<Rectangle2d> water) {
-		this.water.clear();
-		this.waterGroup.getChildren().clear();
-		for(Rectangle2d rectangle2d : water.getBackendDataList()) {
-			Rectangle2dfx rectangle2dfx = new Rectangle2dfx();
-			Rectangle rectangle = new Rectangle();
-			rectangle.setFill(WATER_COLOR);
-			rectangle.widthProperty().bind(rectangle2dfx.widthProperty());
-			rectangle.heightProperty().bind(rectangle2dfx.heightProperty());
-			rectangle.translateXProperty().bind(rectangle2dfx.minXProperty());
-			rectangle.translateYProperty().bind(rectangle2dfx.minYProperty());
-			rectangle2dfx.setMinX(rectangle2d.getMinX());
-			rectangle2dfx.setMaxX(rectangle2d.getMaxX());
-			rectangle2dfx.setMinY(rectangle2d.getMinY());
-			rectangle2dfx.setMaxY(rectangle2d.getMaxY());
-			this.water.add(rectangle2dfx);
-			this.waterGroup.getChildren().add(rectangle);
-		}
+		this.mapView.setWater(water);
 	}
 
 	public TrainView createTrainView(TrainType type) {
@@ -88,7 +89,7 @@ public class ViewManager {
 		  Skin.TRAIN_VIEW_HEIGHT,
 		  this.skin.getTrainPassengerPositions(),
 		  this.skin);
-		this.cPane.getChildren().add(concreteTrainView);
+		this.mapView.add(concreteTrainView);
 		return concreteTrainView;
 	}
 
@@ -98,7 +99,7 @@ public class ViewManager {
 		  Skin.STATION_VIEW_WIDTH,
 		  Skin.STATION_VIEW_HEIGHT,
 		  this.skin);
-		this.cPane.getChildren().add(concreteStationView);
+		this.mapView.add(concreteStationView);
 		return concreteStationView;
 	}
 
