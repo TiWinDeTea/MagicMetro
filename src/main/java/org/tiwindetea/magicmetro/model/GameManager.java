@@ -24,36 +24,46 @@
 
 package org.tiwindetea.magicmetro.model;
 
+import org.tiwindetea.magicmetro.global.eventdispatcher.EventDispatcher;
+import org.tiwindetea.magicmetro.global.eventdispatcher.EventListener;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.TimePauseEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.TimeSpeedChangeEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.TimeStartEvent;
+import org.tiwindetea.magicmetro.global.scripts.MapScript;
+import org.tiwindetea.magicmetro.view.ViewManager;
+
 /**
  * TODO
  */
 public class GameManager {
 
+	private final ViewManager viewManager;
+	private final GameMap gameMap;
+	private final MapScript mapScript;
+	private final EventListener<TimeStartEvent> onTimeStartEvent = event -> {
+		//TODO
+	};
+	private final EventListener<TimePauseEvent> onTimePauseEvent = event -> {
+		//TODO
+	};
+	private final EventListener<TimeSpeedChangeEvent> onTimeSpeedChangeEvent = event -> {
+		//TODO
+	};
+
 	/**
 	 * Default constructor
 	 */
-	public GameManager() {
-	}
+	public GameManager(ViewManager viewManager, MapScript mapScript) {
+		this.mapScript = mapScript;
+		EventDispatcher.getInstance().addListener(TimeStartEvent.class, this.onTimeStartEvent);
+		EventDispatcher.getInstance().addListener(TimePauseEvent.class, this.onTimePauseEvent);
+		EventDispatcher.getInstance().addListener(TimeSpeedChangeEvent.class, this.onTimeSpeedChangeEvent);
 
-	/**
-	 * TODO
-	 */
-	public void onStartEvent() {
-		// TODO
-	}
+		this.viewManager = viewManager;
+		this.gameMap = new GameMap();
 
-	/**
-	 * TODO
-	 */
-	public void onPauseEvent() {
-		// TODO
-	}
-
-	/**
-	 * TODO
-	 */
-	public void onSpeedChangeEvent() {
-		// TODO
+		this.viewManager.setWater(this.mapScript.getWater());
+		//TODO
 	}
 
 }
