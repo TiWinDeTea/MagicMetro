@@ -24,7 +24,9 @@
 
 package org.tiwindetea.magicmetro.global.scripts;
 
-import java.util.Comparator;
+import org.arakhne.afc.math.geometry.d2.d.MultiShape2d;
+import org.arakhne.afc.math.geometry.d2.d.Rectangle2d;
+
 import java.util.PriorityQueue;
 
 /**
@@ -35,19 +37,38 @@ import java.util.PriorityQueue;
  */
 public class MapScript {
 
-	private PriorityQueue<ElementChoiceScript> elementChoiceScripts = new PriorityQueue<>(new Comparator<ElementChoiceScript>() {
-		@Override
-		public int compare(ElementChoiceScript o1, ElementChoiceScript o2) {
-			return (int) (o1.apparitionTime.toMillis() - o2.apparitionTime.toMillis());
-		}
-	});
+	private final String mapName;
+
+	private PriorityQueue<ElementChoiceScript> elementChoiceScripts = new PriorityQueue<>((o1, o2) ->
+	  (int) (o1.apparitionTime.toMillis() - o2.apparitionTime.toMillis()));
+	private PriorityQueue<StationScript> stationScripts = new PriorityQueue<>((o1, o2) ->
+	  (int) (o1.apparitionTime.toMillis() - o2.apparitionTime.toMillis()));
+
+	private MultiShape2d<Rectangle2d> water;
 	//TODO: map description: water...
 
 	/**
 	 * Default constructor.
 	 */
-	public MapScript() {
+	public MapScript(String mapName, MultiShape2d<Rectangle2d> water) {
+		this.mapName = mapName;
+		this.water = water;
+	}
 
+	public String getMapName() {
+		return this.mapName;
+	}
+
+	public MultiShape2d<Rectangle2d> getWater() {
+		return this.water;
+	}
+
+	public void addElementChoiceScript(ElementChoiceScript elementChoiceScript) {
+		this.elementChoiceScripts.add(elementChoiceScript);
+	}
+
+	public void addStationScript(StationScript stationScript) {
+		this.stationScripts.add(stationScript);
 	}
 
 }
