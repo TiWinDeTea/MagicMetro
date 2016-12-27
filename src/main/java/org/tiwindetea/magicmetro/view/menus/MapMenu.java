@@ -29,8 +29,10 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
+import org.tiwindetea.magicmetro.global.scripts.MapScript;
 
 import java.io.IOException;
+import java.util.Collection;
 
 /**
  * Map menu of the game.
@@ -49,7 +51,7 @@ public class MapMenu implements Menu {
 	 *
 	 * @param menuController the menu controller
 	 */
-	public MapMenu(MenuController menuController) {
+	public MapMenu(MenuController menuController, Collection<MapScript> mapScripts) {
 
 		this.menuController = menuController;
 
@@ -64,11 +66,15 @@ public class MapMenu implements Menu {
 
 		this.mapMenuController = loader.getController();
 
-		//TODO: add buttons for maps
+		//TODO
+		for(MapScript mapScript : mapScripts) {
+			Button mapButton = new Button(mapScript.getMapName());
+			this.mapMenuController.mapsVBox.getChildren().add(mapButton);
+			mapButton.setOnAction(event -> menuController.launchGame(mapScript));
+		}
 
 		Button exitButton = new Button("Exit");
 		this.mapMenuController.mapsVBox.getChildren().add(exitButton);
-
 		exitButton.setOnAction(event -> onExit());
 
 		this.mainStackPane.setOnKeyReleased(event -> {
