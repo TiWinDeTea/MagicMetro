@@ -98,7 +98,7 @@ public class ViewManager {
 		Slider slider = new Slider();
 		slider.setMajorTickUnit(25);
 		slider.setMinorTickCount(5);
-		slider.setBlockIncrement(5);
+		slider.setBlockIncrement(1);
 		slider.setShowTickMarks(true);
 		slider.setMin(0);
 		slider.setMax(100);
