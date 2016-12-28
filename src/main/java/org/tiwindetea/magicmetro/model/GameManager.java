@@ -24,6 +24,7 @@
 
 package org.tiwindetea.magicmetro.model;
 
+import org.tiwindetea.magicmetro.global.TimeManager;
 import org.tiwindetea.magicmetro.global.eventdispatcher.EventDispatcher;
 import org.tiwindetea.magicmetro.global.eventdispatcher.EventListener;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.TimePauseEvent;
@@ -34,11 +35,15 @@ import org.tiwindetea.magicmetro.global.scripts.StationScript;
 import org.tiwindetea.magicmetro.view.ViewManager;
 
 import java.time.Duration;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * TODO
  */
 public class GameManager {
+
+	private static final int LOOP_DELAY_MILLIS = 10; // number of milliseconds (of the TimeManager) between two game tick
 
 	private final ViewManager viewManager;
 	private final GameMap gameMap;
@@ -53,11 +58,53 @@ public class GameManager {
 		//TODO
 	};
 
+	private final long refreshDelay;
+	private boolean gameEnded = false;
+	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+	private final Runnable gameLoop = new Runnable() {
+		@Override
+		public void run() {
+			long nextLoop = 0;
+			while(!GameManager.this.gameEnded) {
+				long currentTime = TimeManager.getInstance().getTimeAsMillis();
+				while(nextLoop < currentTime) {
+					// trains move
+					for(Train train : GameManager.this.gameMap.getTrainsCopy()) {
+						train.live();
+					}
+					// stations apparition
+					StationScript stationScript = GameManager.this.mapScript.stationScripts.peek();
+					if((stationScript != null) && (stationScript.apparitionTime.toMillis() < currentTime)) {
+						GameManager.this.mapScript.stationScripts.poll();
+						Station station = new Station(stationScript.position,
+						  stationScript.type,
+						  GameManager.this.viewManager.createStationView(stationScript.type));
+						GameManager.this.gameMap.addStation(station);
+					}
+					//TODO: warned stations
+
+					nextLoop += LOOP_DELAY_MILLIS;
+					System.out.println("actual time: " + currentTime);
+					//TODO
+				}
+
+				try {
+					Thread.sleep(GameManager.this.refreshDelay);
+				} catch(InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	};
+
 	/**
 	 * Default constructor
 	 */
 	public GameManager(ViewManager viewManager, MapScript mapScript) {
+		this.refreshDelay = TimeManager.getInstance().getRefreshDelay();
+
 		this.mapScript = mapScript;
+
 		EventDispatcher.getInstance().addListener(TimeStartEvent.class, this.onTimeStartEvent);
 		EventDispatcher.getInstance().addListener(TimePauseEvent.class, this.onTimePauseEvent);
 		EventDispatcher.getInstance().addListener(TimeSpeedChangeEvent.class, this.onTimeSpeedChangeEvent);
@@ -73,8 +120,12 @@ public class GameManager {
 			Station station = new Station(stationScript.position,
 			  stationScript.type,
 			  viewManager.createStationView(stationScript.type));
+			this.gameMap.addStation(station);
 			stationScript = this.mapScript.stationScripts.peek();
 		}
+
+		this.executorService.submit(this.gameLoop);
+		this.executorService.shutdown();
 		//TODO
 	}
 

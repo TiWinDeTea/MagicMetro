@@ -113,6 +113,10 @@ public class Main extends Application {
 		  new StationScript(Duration.ofSeconds(0),
 			new Point2d(750, 320),
 			StationType.DIAMOND));
+		testMapScript.stationScripts.add(
+		  new StationScript(Duration.ofSeconds(30),
+			new Point2d(1400, 200),
+			StationType.CIRCLE));
 		this.mapScripts.add(testMapScript);
 	}
 

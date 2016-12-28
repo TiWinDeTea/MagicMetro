@@ -43,6 +43,7 @@ import java.util.List;
 public class GameMap {
 
 	private List<Train> trains = new LinkedList<>();
+	private Train[] trainsCopy = new Train[0]; // to avoid concurrent access
 	private List<Station> stations = new LinkedList<>();
 	private List<Line> lines = new LinkedList<>();
 
@@ -61,7 +62,8 @@ public class GameMap {
      * @param train the train
      * @return true if the trains in the map changed, false otherwise
      */
-    public boolean addTrain(Train train) {
+    public synchronized boolean addTrain(Train train) {
+	    this.trainsCopy = (Train[]) this.trains.toArray();
 	    return this.trains.add(train);
     }
 
@@ -71,9 +73,19 @@ public class GameMap {
      * @param train the train
      * @return true if the trains was removed, false otherwise
      */
-    public boolean removeTrain(Train train) {
+    public synchronized boolean removeTrain(Train train) {
+	    this.trainsCopy = (Train[]) this.trains.toArray();
 	    return this.trains.remove(train);
     }
+
+	/**
+	 * Get a copy of the trains.
+	 *
+	 * @return the trains
+	 */
+	public synchronized Train[] getTrainsCopy() {
+		return this.trainsCopy;
+	}
 
     /**
      * Add a station.

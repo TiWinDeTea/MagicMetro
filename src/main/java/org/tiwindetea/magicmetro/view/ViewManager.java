@@ -25,6 +25,7 @@
 package org.tiwindetea.magicmetro.view;
 
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -131,12 +132,12 @@ public class ViewManager {
 	}
 
 	public void setMapSize(double width, double height) {
-		this.mapView.setWidth(width);
-		this.mapView.setHeight(height);
+		Platform.runLater(() -> this.mapView.setWidth(width));
+		Platform.runLater(() -> this.mapView.setHeight(height));
 	}
 
 	public void setWater(MultiShape2d<Rectangle2d> water) {
-		this.mapView.setWater(water);
+		Platform.runLater(() -> this.mapView.setWater(water));
 	}
 
 	public TrainView createTrainView(TrainType type) {
@@ -146,7 +147,7 @@ public class ViewManager {
 		  Skin.TRAIN_VIEW_HEIGHT,
 		  this.skin.getTrainPassengerPositions(),
 		  this.skin);
-		this.mapView.add(concreteTrainView);
+		Platform.runLater(() -> this.mapView.add(concreteTrainView));
 		return concreteTrainView;
 	}
 
@@ -156,7 +157,7 @@ public class ViewManager {
 		  Skin.STATION_VIEW_WIDTH,
 		  Skin.STATION_VIEW_HEIGHT,
 		  this.skin);
-		this.mapView.add(concreteStationView);
+		Platform.runLater(() -> this.mapView.add(concreteStationView));
 		return concreteStationView;
 	}
 

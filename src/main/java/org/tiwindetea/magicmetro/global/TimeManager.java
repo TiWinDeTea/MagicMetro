@@ -166,4 +166,13 @@ public class TimeManager {
 		}
 	}
 
+	/**
+	 * Gets the refresh delay as milliseconds
+	 *
+	 * @return the refresh delay
+	 */
+	public long getRefreshDelay() {
+		return this.delayMillis;
+	}
+
 }
