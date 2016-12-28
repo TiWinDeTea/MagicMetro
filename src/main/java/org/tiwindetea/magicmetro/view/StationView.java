@@ -47,7 +47,9 @@ public interface StationView {
 
 	void makeBigger();
 
-	void warn(int seconds);
+	void warn();
 
 	void unWard();
+
+	void setWarnValue(double percentage);
 }

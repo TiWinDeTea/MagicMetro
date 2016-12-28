@@ -25,6 +25,7 @@
 package org.tiwindetea.magicmetro.model;
 
 import org.arakhne.afc.math.geometry.d2.d.Point2d;
+import org.tiwindetea.magicmetro.global.TimeManager;
 import org.tiwindetea.magicmetro.model.lines.Connection;
 import org.tiwindetea.magicmetro.view.StationView;
 
@@ -41,10 +42,18 @@ import java.util.List;
 public class Station {
 
 	private static final int STATION_DEFAULT_CAPACITY = 10; // TODO: real value
-	private static final int STATION_FULL_DELAY = 10; // TODO: real value
+	private static final int STATION_FULL_DELAY = 15000; // as millis TODO: real value
 	private static final int STATION_MAX_CONNECTIONS = 10; // TODO: real value
 
+	/**
+	 * The constant NB_STATION_TYPE.
+	 */
 	public static final int NB_STATION_TYPE = 5;
+
+	private final StationManager stationManager;
+	private long warnStart = 0;
+	private long warnEnd = 0;
+	private boolean warn = false;
 
 	private final Point2d position;
 	private final StationType type;
@@ -57,14 +66,19 @@ public class Station {
 	/**
 	 * Instantiates a new Station.
 	 *
-	 * @param position the position
-	 * @param type     the type
-	 * @param view     the view
+	 * @param position       the position
+	 * @param type           the type
+	 * @param view           the view
+	 * @param stationManager the station manager
 	 */
-	public Station(@Nonnull Point2d position, @Nonnull StationType type, @Nonnull StationView view) {
+	public Station(@Nonnull Point2d position,
+	               @Nonnull StationType type,
+	               @Nonnull StationView view,
+	               @Nonnull StationManager stationManager) {
 		this.position = position;
 		this.type = type;
 		this.view = view;
+		this.stationManager = stationManager;
 		this.view.setPosition(this.position);
 	}
 
@@ -76,8 +90,12 @@ public class Station {
 	public void addPassenger(@Nonnull Passenger passenger) {
 		this.passengers.add(passenger);
 		this.view.addPassenger(passenger.getWantedStation());
-		if(this.passengers.size() > this.maxCapacity) {
-			this.view.warn(STATION_FULL_DELAY);
+		if(this.passengers.size() > this.maxCapacity && !this.warn) {
+			this.view.warn();
+			this.warn = true;
+			this.warnStart = TimeManager.getInstance().getTimeAsMillis();
+			this.warnEnd = this.warnStart + STATION_FULL_DELAY;
+			this.stationManager.addWarnedStation(this);
 			//TODO: add station to a list in the game loop to check if the game is lost. (with starting time of the delay)
 		}
 	}
@@ -95,6 +113,8 @@ public class Station {
 			// if station was more than full before
 			if(this.passengers.size() == this.maxCapacity) {
 				this.view.unWard();
+				this.warn = false;
+				this.stationManager.removeWarnedStation(this);
 				//TODO: remove station from game loop check list.
 			}
 		}
@@ -135,13 +155,40 @@ public class Station {
 		return this.connections.remove(connection);
 	}
 
-    /**
-     * getters of the connections inside the station
-     *
-     * @return the list of connections present inside the station
-     */
+	/**
+	 * Get connections list.
+	 *
+	 * @return the connections list
+	 */
 	public List<Connection> getConnections(){
 		return this.connections;
+	}
+
+	/**
+	 * Gets warn start.
+	 *
+	 * @return the warn start
+	 */
+	public long getWarnStart() {
+		return this.warnStart;
+	}
+
+	/**
+	 * Gets warn end.
+	 *
+	 * @return the warn end
+	 */
+	public long getWarnEnd() {
+		return this.warnEnd;
+	}
+
+	/**
+	 * Sets warn value.
+	 *
+	 * @param percentage the percentage
+	 */
+	public void setWarnValue(double percentage) {
+		this.view.setWarnValue(percentage);
 	}
 
 }
