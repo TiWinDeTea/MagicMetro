@@ -26,13 +26,17 @@ package org.tiwindetea.magicmetro.view;
 
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import org.arakhne.afc.math.geometry.d2.d.MultiShape2d;
@@ -40,6 +44,7 @@ import org.arakhne.afc.math.geometry.d2.d.Rectangle2d;
 import org.arakhne.afc.math.geometry.d2.dfx.MultiShape2dfx;
 import org.arakhne.afc.math.geometry.d2.dfx.Rectangle2dfx;
 import org.tiwindetea.magicmetro.global.TimeManager;
+import org.tiwindetea.magicmetro.global.util.Utils;
 import org.tiwindetea.magicmetro.model.StationType;
 import org.tiwindetea.magicmetro.model.TrainType;
 
@@ -71,6 +76,58 @@ public class ViewManager {
 
 		this.mapView.setBackgroundColor(MAP_BACKGROUND_COLOR);
 		this.cPane.getChildren().add(this.mapView);
+
+		Label label = new Label();
+		label.setFont(new Font(25));
+		AnimationTimer animationTimer = new AnimationTimer() {
+			@Override
+			public void handle(long now) {
+				label.setText("Time: " + TimeManager.getInstance().getTimeAsSeconds());
+			}
+		};
+		animationTimer.start();
+
+		Button playButton = new Button("Play");
+		playButton.setOnAction(event -> TimeManager.getInstance().start());
+
+		Button pauseButton = new Button("Pause");
+		pauseButton.setOnAction(event -> TimeManager.getInstance().pause());
+
+		Label timeSpeedLabel = new Label("Speed: 1.0");
+
+		Slider slider = new Slider();
+		slider.setMajorTickUnit(25);
+		slider.setMinorTickCount(5);
+		slider.setBlockIncrement(5);
+		slider.setShowTickMarks(true);
+		slider.setMin(0);
+		slider.setMax(100);
+		slider.setValue(50);
+		slider.valueProperty()
+		  .addListener((observable, oldValue, newValue) -> {
+			  if(newValue.doubleValue() < 50) {
+				  double timeSpeed = Utils.map(newValue.doubleValue(), 0, 50, 0.1, 1);
+				  TimeManager.getInstance().setSpeed(timeSpeed);
+				  timeSpeedLabel.setText("Speed: " + Math.floor(timeSpeed * 100) / 100);
+			  }
+			  else {
+				  double timeSpeed = Utils.map(newValue.doubleValue(), 50, 100, 1, 10);
+				  TimeManager.getInstance().setSpeed(timeSpeed);
+				  timeSpeedLabel.setText("Speed: " + Math.floor(timeSpeed * 100) / 100);
+			  }
+		  });
+
+		VBox timeVBox = new VBox();
+		AnchorPane.setRightAnchor(timeVBox, 0d);
+		timeVBox.getChildren().add(label);
+		timeVBox.getChildren().add(playButton);
+		timeVBox.getChildren().add(pauseButton);
+		timeVBox.getChildren().add(slider);
+		timeVBox.getChildren().add(timeSpeedLabel);
+		timeVBox.setAlignment(Pos.CENTER_RIGHT);
+		timeVBox.setSpacing(5);
+		timeVBox.setPadding(new Insets(10));
+		this.mainAnchorPane.getChildren().add(timeVBox);
 	}
 
 	public void setMapSize(double width, double height) {
