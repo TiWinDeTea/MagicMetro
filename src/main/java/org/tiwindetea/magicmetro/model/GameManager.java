@@ -32,16 +32,18 @@ import org.tiwindetea.magicmetro.global.eventdispatcher.events.TimeSpeedChangeEv
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.TimeStartEvent;
 import org.tiwindetea.magicmetro.global.scripts.MapScript;
 import org.tiwindetea.magicmetro.global.scripts.StationScript;
+import org.tiwindetea.magicmetro.global.util.Utils;
 import org.tiwindetea.magicmetro.view.ViewManager;
 
 import java.time.Duration;
+import java.util.PriorityQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
  * TODO
  */
-public class GameManager {
+public class GameManager implements StationManager {
 
 	private static final int LOOP_DELAY_MILLIS = 10; // number of milliseconds (of the TimeManager) between two game tick
 
@@ -58,6 +60,9 @@ public class GameManager {
 		//TODO
 	};
 
+	private final PriorityQueue<Station> warnedStations = new PriorityQueue<>((o1, o2) ->
+	  (int) (o1.getWarnEnd() - o2.getWarnEnd()));
+
 	private final long refreshDelay;
 	private boolean gameEnded = false;
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -65,6 +70,7 @@ public class GameManager {
 		@Override
 		public void run() {
 			long nextLoop = 0;
+			int test = 0;
 			while(!GameManager.this.gameEnded) {
 				long currentTime = TimeManager.getInstance().getTimeAsMillis();
 				while(nextLoop < currentTime) {
@@ -78,10 +84,33 @@ public class GameManager {
 						GameManager.this.mapScript.stationScripts.poll();
 						Station station = new Station(stationScript.position,
 						  stationScript.type,
-						  GameManager.this.viewManager.createStationView(stationScript.type));
+						  GameManager.this.viewManager.createStationView(stationScript.type),
+						  GameManager.this);
 						GameManager.this.gameMap.addStation(station);
 					}
-					//TODO: warned stations
+					// warned stations check
+					for(Station station : GameManager.this.warnedStations) {
+						station.setWarnValue(Utils.map(
+						  currentTime,
+						  station.getWarnStart(),
+						  station.getWarnEnd(),
+						  0,
+						  1
+						));
+					}
+					Station station = GameManager.this.warnedStations.peek();
+					if((station != null) && station.getWarnEnd() < currentTime) {
+						//TODO: loose the game
+						System.out.println("Game end");
+						GameManager.this.gameEnded = true;
+					}
+					// passenger apparition
+					//FIXME: test
+					++test;
+					if(test == 200) {
+						GameManager.this.gameMap.addPassengerToStation();
+						test = 0;
+					}
 
 					nextLoop += LOOP_DELAY_MILLIS;
 					//TODO
@@ -118,7 +147,8 @@ public class GameManager {
 			mapScript.stationScripts.poll();
 			Station station = new Station(stationScript.position,
 			  stationScript.type,
-			  viewManager.createStationView(stationScript.type));
+			  viewManager.createStationView(stationScript.type),
+			  this);
 			this.gameMap.addStation(station);
 			stationScript = this.mapScript.stationScripts.peek();
 		}
@@ -128,4 +158,13 @@ public class GameManager {
 		//TODO
 	}
 
+	@Override
+	public void addWarnedStation(Station station) {
+		this.warnedStations.add(station);
+	}
+
+	@Override
+	public void removeWarnedStation(Station station) {
+		this.warnedStations.remove(station);
+	}
 }
