@@ -24,7 +24,6 @@
 
 package org.tiwindetea.magicmetro.view;
 
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.control.ProgressIndicator;
@@ -54,8 +53,6 @@ public class ConcreteStationView extends Parent implements StationView {
 	private final PassengerViewFactory passengerViewFactory;
 	private final TilePane tilePane = new TilePane();
 	private final ProgressIndicator progressIndicator = new ProgressIndicator();
-
-	private Timeline timeline;
 
 	public ConcreteStationView(Shape sprite,
 	                           int spriteWidth,
@@ -124,7 +121,6 @@ public class ConcreteStationView extends Parent implements StationView {
 	@Override
 	public void unWard() {
 		this.progressIndicator.setVisible(false);
-		this.timeline.stop();
 	}
 
 	@Override
