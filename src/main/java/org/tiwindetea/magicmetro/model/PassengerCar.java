@@ -40,6 +40,8 @@ import java.util.List;
  */
 public class PassengerCar {
 
+	public final int gameId;
+
 	private static final int CAPACITY = 6;
 
 	private final PassengerCarView view;
@@ -52,6 +54,7 @@ public class PassengerCar {
 	 * @param view the passenger view
 	 */
 	public PassengerCar(PassengerCarView view) {
+		this.gameId = view.getGameId();
 		this.view = view;
 	}
 

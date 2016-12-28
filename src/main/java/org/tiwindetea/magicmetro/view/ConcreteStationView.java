@@ -25,11 +25,14 @@
 package org.tiwindetea.magicmetro.view;
 
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.TilePane;
 import javafx.scene.shape.Shape;
 import org.arakhne.afc.math.geometry.d2.d.Point2d;
+import org.tiwindetea.magicmetro.global.IdGenerator;
 import org.tiwindetea.magicmetro.model.StationType;
 
 import javax.annotation.Nonnull;
@@ -43,6 +46,8 @@ import java.util.List;
  * @since 0.1
  */
 public class ConcreteStationView extends Parent implements StationView {
+
+	public final int gameId = IdGenerator.newId();
 
 	private static final int PASSENGER_COLUMNS = 6;
 	private static final int PASSENGER_OFFSET_X = 10;
@@ -79,6 +84,11 @@ public class ConcreteStationView extends Parent implements StationView {
 		this.progressIndicator.setVisible(false);
 		this.getChildren().add(this.progressIndicator);
 		this.progressIndicator.toBack();
+	}
+
+	@Override
+	public int getGameId() {
+		return this.gameId;
 	}
 
 	@Override

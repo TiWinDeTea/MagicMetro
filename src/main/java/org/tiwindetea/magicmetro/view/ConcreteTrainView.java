@@ -28,6 +28,7 @@ import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.shape.Shape;
 import org.arakhne.afc.math.geometry.d2.d.Point2d;
+import org.tiwindetea.magicmetro.global.IdGenerator;
 import org.tiwindetea.magicmetro.model.StationType;
 
 import javax.annotation.Nonnull;
@@ -44,6 +45,8 @@ import java.util.Optional;
  */
 public class ConcreteTrainView extends Parent implements TrainView {
 
+	public final int gameId = IdGenerator.newId();
+
 	private static final int MAX_PASSENGERS = 6;
 
 	private final Shape sprite;
@@ -53,9 +56,11 @@ public class ConcreteTrainView extends Parent implements TrainView {
 	private final PassengerViewFactory passengerViewFactory;
 
 	/**
-	 * Instantiates a new concrete train view.
+	 * Instantiates a new Concrete train view.
 	 *
 	 * @param sprite               the sprite
+	 * @param spriteWidth          the sprite width
+	 * @param spriteHeight         the sprite height
 	 * @param passengersPositions  the passengers positions
 	 * @param passengerViewFactory the PassengerView factory
 	 */
@@ -76,6 +81,11 @@ public class ConcreteTrainView extends Parent implements TrainView {
 			this.freePassengersPositionsIndex.add(i);
 		}
 		this.passengerViewFactory = passengerViewFactory;
+	}
+
+	@Override
+	public int getGameId() {
+		return this.gameId;
 	}
 
 	@Override

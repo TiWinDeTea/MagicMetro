@@ -42,15 +42,17 @@ import java.util.LinkedList;
  */
 public class Line {
 
-	private Collection<Station> stations;
-	private SimplePair<Connection> lastConnections;
-	private Collection<Section> sections;
+	public final int gameId;
+
+	private Collection<Station> stations = new LinkedList<>();
+	private SimplePair<Connection> lastConnections; //TODO
+	private Collection<Section> sections; //TODO
 
 	/**
 	 * Default constructor.
 	 */
 	public Line() {
-		this.stations = new LinkedList<>();
+		this.gameId = 0; //TODO: take the LineView gameId
 	}
 
 	/**

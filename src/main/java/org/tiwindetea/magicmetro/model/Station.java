@@ -41,14 +41,11 @@ import java.util.List;
  */
 public class Station {
 
+	public final int gameId;
+
 	private static final int STATION_DEFAULT_CAPACITY = 10; // TODO: real value
 	private static final int STATION_FULL_DELAY = 15000; // as millis TODO: real value
 	private static final int STATION_MAX_CONNECTIONS = 10; // TODO: real value
-
-	/**
-	 * The constant NB_STATION_TYPE.
-	 */
-	public static final int NB_STATION_TYPE = 5;
 
 	private final StationManager stationManager;
 	private long warnStart = 0;
@@ -75,6 +72,7 @@ public class Station {
 	               @Nonnull StationType type,
 	               @Nonnull StationView view,
 	               @Nonnull StationManager stationManager) {
+		this.gameId = view.getGameId();
 		this.position = position;
 		this.type = type;
 		this.view = view;

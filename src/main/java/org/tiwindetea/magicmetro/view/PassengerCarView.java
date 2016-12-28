@@ -39,6 +39,8 @@ import javax.annotation.Nonnull;
  */
 public interface PassengerCarView {
 
+	int getGameId();
+
 	void setVisible(boolean visibility);
 
 	void setRotation(double angle);

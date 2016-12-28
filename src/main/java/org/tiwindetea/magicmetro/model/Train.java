@@ -45,6 +45,8 @@ import java.util.Queue;
  */
 public class Train {
 
+	public final int gameId;
+
 	private static final int CAPACITY = 6;
 	private static final double STATION_SLOW_DOWN_DISTANCE = 15; // TODO: choose a real value
 	private static final int PASSENGER_MOVE_DELAY = 7; // TODO: choose a real value
@@ -74,6 +76,7 @@ public class Train {
 	 * @param view         the view
 	 */
 	public Train(double maxSpeed, double acceleration, TrainView view) {
+		this.gameId = view.getGameId();
 		this.maxSpeed = maxSpeed;
 		this.acceleration = acceleration;
 		this.view = view;

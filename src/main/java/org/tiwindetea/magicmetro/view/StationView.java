@@ -39,6 +39,8 @@ import javax.annotation.Nonnull;
  */
 public interface StationView {
 
+	int getGameId();
+
 	void setPosition(@Nonnull Point2d position);
 
 	void addPassenger(@Nonnull StationType wantedStation);

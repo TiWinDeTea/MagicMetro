@@ -167,4 +167,5 @@ public class GameManager implements StationManager {
 	public void removeWarnedStation(Station station) {
 		this.warnedStations.remove(station);
 	}
+
 }
