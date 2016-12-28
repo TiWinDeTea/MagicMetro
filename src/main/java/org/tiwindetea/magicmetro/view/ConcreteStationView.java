@@ -77,9 +77,9 @@ public class ConcreteStationView extends Parent implements StationView {
 		this.tilePane.setTranslateX(spriteWidth + PASSENGER_OFFSET_X);
 		this.tilePane.setTranslateY(PASSENGER_OFFSET_Y);
 
-		this.progressIndicator.setMinSize(2 * spriteWidth, 2 * spriteHeight);
-		this.progressIndicator.setTranslateX(-spriteWidth / 2);
-		this.progressIndicator.setTranslateY(-spriteHeight / 2);
+		this.progressIndicator.setMinSize(2.5 * spriteWidth, 2.5 * spriteHeight);
+		this.progressIndicator.setTranslateX(-0.75 * spriteWidth);
+		this.progressIndicator.setTranslateY(-0.75 * spriteHeight + 7);
 		this.progressIndicator.setStyle(" -fx-progress-color: darkgray;");
 		this.progressIndicator.setProgress(0.7);
 		this.progressIndicator.setVisible(false);
