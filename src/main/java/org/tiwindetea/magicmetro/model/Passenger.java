@@ -26,11 +26,8 @@ package org.tiwindetea.magicmetro.model;
 
 import org.tiwindetea.magicmetro.model.lines.Connection;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
-
-import static org.tiwindetea.magicmetro.model.Station.NB_STATION_TYPE;
 
 /**
  * @author Julien Barbier
@@ -38,57 +35,20 @@ import static org.tiwindetea.magicmetro.model.Station.NB_STATION_TYPE;
  */
 public class Passenger {
 
-	private List<Connection> path;
+	private List<Connection> path = new LinkedList<>();
 	private Station station;
-	private StationType stationWanted;
+	private final StationType stationWanted;
 
 	/**
-	 * Default constructor
+	 * Instantiates a new Passenger.
+	 *
+	 * @param station       the station where the passenger is
+	 * @param stationWanted the wanted station type
 	 */
-	public Passenger() {
-	    path = new ArrayList<>();
-	    station = null;
-        Random random = new Random();
-        switch (random.nextInt(NB_STATION_TYPE)){
-            case 0 : stationWanted = StationType.CIRCLE;
-            break;
-            case 1 : stationWanted =StationType.STAR;
-            break;
-            case 2: stationWanted = StationType.SQUARE;
-            break;
-            case 3: stationWanted = StationType.DIAMOND;
-            break;
-            case 4 :
-                /*fall through*/
-            default: stationWanted = StationType.TRIANGLE;
-            break;
-        }
+	public Passenger(Station station, StationType stationWanted) {
+		this.station = station;
+		this.stationWanted = stationWanted;
 	}
-
-    /**
-     * Constructor with the list of Station in aim to know where the passenger will spawn
-     *
-     * @param stations the list of all the station that are present in the map
-     */
-	public Passenger(List<Station> stations){
-        path = new ArrayList<>();
-        Random random = new Random();
-        switch (random.nextInt(NB_STATION_TYPE)){
-            case 0 : stationWanted = StationType.CIRCLE;
-                break;
-            case 1 : stationWanted =StationType.STAR;
-                break;
-            case 2: stationWanted = StationType.SQUARE;
-                break;
-            case 3: stationWanted = StationType.DIAMOND;
-                break;
-            case 4 :
-                /*fall through*/
-            default: stationWanted = StationType.TRIANGLE;
-                break;
-        }
-        station = stations.get(random.nextInt(stations.size()));
-    }
 
     /**
      * Getters of the station wanted
@@ -96,7 +56,7 @@ public class Passenger {
      * @return the station wanted by the passenger
      */
 	public StationType getWantedStation() {
-		return stationWanted;
+		return this.stationWanted;
 	}
 
     /**
@@ -105,7 +65,7 @@ public class Passenger {
      * @return the station where the passenger is
      */
 	public Station getStation(){
-		return station;
+		return this.station;
 	}
 
     /**
