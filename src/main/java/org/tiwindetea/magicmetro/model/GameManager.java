@@ -84,7 +84,6 @@ public class GameManager {
 					//TODO: warned stations
 
 					nextLoop += LOOP_DELAY_MILLIS;
-					System.out.println("actual time: " + currentTime);
 					//TODO
 				}
 
