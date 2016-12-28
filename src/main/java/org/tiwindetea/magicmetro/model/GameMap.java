@@ -31,6 +31,7 @@ import org.tiwindetea.magicmetro.model.lines.Section;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Map of the game contains trains, stations and lines that are active in the game.<p>
@@ -45,6 +46,7 @@ public class GameMap {
 	private List<Train> trains = new LinkedList<>();
 	private Train[] trainsCopy = new Train[0]; // to avoid concurrent access
 	private List<Station> stations = new LinkedList<>();
+	private List<StationType> stationsTypes = new LinkedList<>();
 	private List<Line> lines = new LinkedList<>();
 
 	private double[][] stationHeuristics;
@@ -55,6 +57,20 @@ public class GameMap {
     public GameMap(){
 
     }
+
+	Passenger addPassengerToStation() {
+		//TODO: create passenger with a wantedStation present on the map and add it to a station
+		//FIXME: test
+		Random random = new Random();
+		Station station = this.stations.get(random.nextInt(this.stations.size()));
+		StationType wantedStationType = this.stationsTypes.get(random.nextInt(this.stationsTypes.size()));
+		while(wantedStationType == station.getType()) {
+			wantedStationType = this.stationsTypes.get(random.nextInt(this.stationsTypes.size()));
+		}
+		Passenger passenger = new Passenger(station, wantedStationType);
+		station.addPassenger(passenger);
+		return passenger;
+	}
 
     /**
      * Add a trains.
@@ -94,17 +110,8 @@ public class GameMap {
      * @return true if the stations in the map changed, false otherwise
      */
     public boolean addStation(Station station){
+	    this.stationsTypes.add(station.getType());
 	    return this.stations.add(station);
-    }
-
-    /**
-     * Remove a station.
-     *
-     * @param station the station
-     * @return true if the station was removed, false otherwise
-     */
-    public boolean removeStation(Station station){
-	    return this.stations.remove(station);
     }
 
     /**
