@@ -29,117 +29,125 @@ import org.tiwindetea.magicmetro.model.lines.Line;
 import org.tiwindetea.magicmetro.model.lines.Section;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by Julien Barbier on 21/12/2016.
+ * Map of the game contains trains, stations and lines that are active in the game.<p>
+ * Find the best path between two stations for the passengers.
  *
+ * @author Maxime PINARD
  * @author Julien Barbier
- * @since  0.1
+ * @since 0.1
  */
 public class GameMap {
 
-    private List<Train> trains;
-    private List<Station> stations;
-    private List<Line> lines;
+	private List<Train> trains = new LinkedList<>();
+	private List<Station> stations = new LinkedList<>();
+	private List<Line> lines = new LinkedList<>();
 
-    private double[][] stationHeuristique;
+	private double[][] stationHeuristics;
 
     /**
-     * Default Constructor
+     * Default Constructor.
      */
     public GameMap(){
-        trains = new ArrayList<>();
-        stations = new ArrayList<>();
-        lines = new ArrayList<>();
+
     }
 
     /**
-     * allow to add a train in the map
-     * @param train the train we want to add
-     * @return an boolean to verify if the train is added in the map
+     * Add a trains.
+     *
+     * @param train the train
+     * @return true if the trains in the map changed, false otherwise
      */
-    public boolean addTrains(Train train){
-        return trains.add(train);
+    public boolean addTrain(Train train) {
+	    return this.trains.add(train);
     }
 
     /**
-     * allow to remove a train of the map
-     * @param train the train we want to remove
-     * @return a boolean to verify if the train is removed of the map
+     * Remove a trains.
+     *
+     * @param train the train
+     * @return true if the trains was removed, false otherwise
      */
-    public boolean removeTrains(Train train){
-        return trains.remove(train);
+    public boolean removeTrain(Train train) {
+	    return this.trains.remove(train);
     }
 
     /**
-     * allow to add a station in the map
-     * @param station the station we want to add
-     * @return a boolean to verify if the station is added in the map
+     * Add a station.
+     *
+     * @param station the station
+     * @return true if the stations in the map changed, false otherwise
      */
     public boolean addStation(Station station){
-        return stations.add(station);
+	    return this.stations.add(station);
     }
 
     /**
-     * allow to remove a station of the map
-     * @param station the station we want to remove
-     * @return a boolean to verify if the station is removed of the map
+     * Remove a station.
+     *
+     * @param station the station
+     * @return true if the station was removed, false otherwise
      */
     public boolean removeStation(Station station){
-        return stations.remove(station);
+	    return this.stations.remove(station);
     }
 
     /**
-     * allow to add lines in the map
-     * @param line the line we want to add
-     * @return a boolean to verify if the line is added
+     * Add a line.
+     *
+     * @param line the line
+     * @return true if the lines in the map changed, false otherwise
      */
     public boolean addLine(Line line){
-        return lines.add(line);
+	    return this.lines.add(line);
     }
 
     /**
-     * allow to remove a line of the map
-     * @param line the line we want to remove
-     * @return a boolean to verify if the line is removed
+     * Remove a line.
+     *
+     * @param line the line
+     * @return true if the line was removed, false otherwise
      */
     public boolean removeLine(Line line){
-        return lines.remove(line);
+	    return this.lines.remove(line);
     }
 
     /**
-     * Verify that a station is a line given
+     * Determine if a line contains a station..
      *
-     * @param line the line in which we want to test the station sended
-     * @param station the station we want to verify the appartenance of it inside the line
-     * @return true if the station is in the line, false else
+     * @param line    the line
+     * @param station the station
+     * @return true if the line contains the station, false otherwise
      */
     public boolean isInLine(Line line, Station station){
-        return line.isStationInside(station);
+	    return line.contains(station);
     }
 
     //all function for path finding (not Optimized)
+	//TODO: documentation
 
     /**
      * find the shortest path between a station and a type of station
      *
-     * @param stationA the station where we begin
+     * @param stationA      the station where we begin
      * @param stationWanted the type of station we want
      * @return the shortest path between the station and the type of station wanted, null if the station doesn't have connection
      */
     public List<Station> findShortestPath(Station stationA, StationType stationWanted){
         List<Station> predecessor = dijkstra(stationA);
         List<Station> stationsSearching = null;
-        stationHeuristique = new double[stations.size()][];
-        Station stationTmp = findTheNearestStationWithType(stationA, stationWanted);
-        if(predecessor != null) {
-            stationsSearching = new ArrayList<>();
-            while (predecessor.size() != 0) {
-                stationsSearching.add(stationTmp);
-                stationTmp = predecessor.get(stations.indexOf(stationTmp));
-                predecessor.remove(stationTmp);
-            }
+	    this.stationHeuristics = new double[this.stations.size()][];
+	    Station stationTmp = findTheNearestStationWithType(stationA, stationWanted);
+	    if(predecessor != null) {
+		    stationsSearching = new ArrayList<>();
+		    while(predecessor.size() != 0) {
+			    stationsSearching.add(stationTmp);
+			    stationTmp = predecessor.get(this.stations.indexOf(stationTmp));
+			    predecessor.remove(stationTmp);
+		    }
         }
         return stationsSearching;
     }
@@ -150,14 +158,15 @@ public class GameMap {
      * @param stationA the station wher we begin
      */
     private void init_Dijkstra(Station stationA){
-        int index = stations.indexOf(stationA);
-        stationHeuristique[index] = new double[stations.size()];
-        for(int i = 0; i < stations.size(); ++i){
-            if(stationA != stations.get(i)){
-                stationHeuristique[index][i] = Double.MAX_VALUE;
-            } else {
-                stationHeuristique[index][i] = 0;
-            }
+	    int index = this.stations.indexOf(stationA);
+	    this.stationHeuristics[index] = new double[this.stations.size()];
+	    for(int i = 0; i < this.stations.size(); ++i) {
+		    if(stationA != this.stations.get(i)) {
+			    this.stationHeuristics[index][i] = Double.MAX_VALUE;
+		    }
+		    else {
+			    this.stationHeuristics[index][i] = 0;
+		    }
         }
     }
 
@@ -176,12 +185,12 @@ public class GameMap {
                 double tmp = section.getLength();
                 Station station1 = section.getStations().getRight();
                 if (tmp != 0 && stationsNotVisited.contains(section.getStations().getRight())) {
-                    int index = stations.indexOf(station);
-                    int index2 = stations.indexOf(station1);
-                    if (mini > stationHeuristique[index][index2]) {
-                        result = section.getStations().getRight();
-                        mini = stationHeuristique[index][index2];
-                    }
+	                int index = this.stations.indexOf(station);
+	                int index2 = this.stations.indexOf(station1);
+	                if(mini > this.stationHeuristics[index][index2]) {
+		                result = section.getStations().getRight();
+		                mini = this.stationHeuristics[index][index2];
+	                }
                 }
             }
         }
@@ -198,14 +207,14 @@ public class GameMap {
      */
     private void updateDistance(Station stationA, Station stationB, Station beginStation, List<Station> predecessor){
         double i = distanceBetweenTwoStationConnected(stationA, stationB);
-        int index = stations.indexOf(stationA);
-        int index1 = stations.indexOf(stationB);
-        int index2 = stations.indexOf(beginStation);
-        if(i >=0) {
-            if (stationHeuristique[index2][index1] > stationHeuristique[index2][index] + i) {
-                stationHeuristique[index2][index1] = stationHeuristique[index2][index] + i;
-                predecessor.add(index1, stationA);
-            }
+	    int index = this.stations.indexOf(stationA);
+	    int index1 = this.stations.indexOf(stationB);
+	    int index2 = this.stations.indexOf(beginStation);
+	    if(i >= 0) {
+		    if(this.stationHeuristics[index2][index1] > this.stationHeuristics[index2][index] + i) {
+			    this.stationHeuristics[index2][index1] = this.stationHeuristics[index2][index] + i;
+			    predecessor.add(index1, stationA);
+		    }
         }
     }
 
@@ -218,10 +227,10 @@ public class GameMap {
     private List<Station> dijkstra(Station stationA){
 
         //initialisation of all the variables needed
-        List<Station> stationsSearching = new ArrayList<>(stations);
-        List<Station> predecessor = new ArrayList<>(stationsSearching.size());
-        Station stationTmp = stationA;
-        Station stationPredecessor = null;
+	    List<Station> stationsSearching = new ArrayList<>(this.stations);
+	    List<Station> predecessor = new ArrayList<>(stationsSearching.size());
+	    Station stationTmp = stationA;
+	    Station stationPredecessor = null;
 
         //initialisation of dijkstra
         init_Dijkstra(stationA);
@@ -266,17 +275,17 @@ public class GameMap {
      */
     private List<Station> findAllStationWithType(StationType stationType){
         List<Station> stationList = new ArrayList<>();
-        for(Station station : stations){
-            if(station.getType() == stationType){
-                stationList.add(station);
-            }
+	    for(Station station : this.stations) {
+		    if(station.getType() == stationType) {
+			    stationList.add(station);
+		    }
         }
         return stationList;
     }
 
     /**
      * find the nearest station with the types wanted
-     * must be create after the initialisation of stationHeuristique
+     * must be create after the initialisation of stationHeuristics
      *
      * @param stationA the station where we are (just for verification)
      * @param stationType the type of station we want
@@ -284,16 +293,16 @@ public class GameMap {
      */
     private Station findTheNearestStationWithType(Station stationA, StationType stationType){
         double distanceTmp = Double.MAX_VALUE;
-        int index = stations.indexOf(stationA);
-        Station stationTmp = stationA;
-        List<Station> stationsWithGoodType = findAllStationWithType(stationType);
-        if(stationA.getType() != stationType) {
-            for (Station elem : stationsWithGoodType) {
-                int index1 = stations.indexOf(elem);
-                if (stationHeuristique[index][index1] < distanceTmp){
-                    stationTmp = elem;
-                    distanceTmp = stationHeuristique[index][index1];
-                }
+	    int index = this.stations.indexOf(stationA);
+	    Station stationTmp = stationA;
+	    List<Station> stationsWithGoodType = findAllStationWithType(stationType);
+	    if(stationA.getType() != stationType) {
+		    for(Station elem : stationsWithGoodType) {
+			    int index1 = this.stations.indexOf(elem);
+			    if(this.stationHeuristics[index][index1] < distanceTmp) {
+				    stationTmp = elem;
+				    distanceTmp = this.stationHeuristics[index][index1];
+			    }
             }
         }
         return stationTmp;

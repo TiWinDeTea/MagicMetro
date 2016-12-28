@@ -79,7 +79,7 @@ public class Line {
 	 * @param station the station
 	 * @return true if the line contains the station, false otherwise
 	 */
-	public boolean isStationInside(Station station){
+	public boolean contains(Station station) {
 		return this.stations.contains(station);
 	}
 
