@@ -117,6 +117,14 @@ public class Main extends Application {
 		  new StationScript(Duration.ofSeconds(30),
 			new Point2d(1400, 200),
 			StationType.CIRCLE));
+		testMapScript.stationScripts.add(
+		  new StationScript(Duration.ofSeconds(60),
+			new Point2d(1300, 800),
+			StationType.TRIANGLE));
+		testMapScript.stationScripts.add(
+		  new StationScript(Duration.ofSeconds(90),
+			new Point2d(300, 400),
+			StationType.STAR));
 		this.mapScripts.add(testMapScript);
 	}
 
