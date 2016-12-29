@@ -43,9 +43,12 @@ import java.util.Stack;
  */
 public class MenuManager implements MenuController {
 
+	private static final double SCENE_INITIAL_WIDTH = 1280;
+	private static final double SCENE_INITIAL_HEIGHT = 720;
+
 	private final Stage stage;
 	private final Pane voidPane = new Pane();
-	private final Scene scene = new Scene(this.voidPane);
+	private final Scene scene = new Scene(this.voidPane, SCENE_INITIAL_WIDTH, SCENE_INITIAL_HEIGHT);
 	private final Collection<MapScript> mapScripts;
 
 	private final Stack<Menu> menuQueue = new Stack<>();

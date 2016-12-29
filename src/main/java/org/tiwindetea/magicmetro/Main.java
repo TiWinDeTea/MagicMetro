@@ -64,18 +64,18 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		this.stage = primaryStage;
 		initMapScripts();
-		MenuManager menuManager = new MenuManager(primaryStage, this.mapScripts);
+		MenuManager menuManager = new MenuManager(this.stage, this.mapScripts);
 		menuManager.DisplayMenus();
-		primaryStage.show();
+		this.stage.show();
 
 		//TODO: shortcut to go fullscreen?
 
 		// shortcut to exit fullscreen
-		primaryStage.setFullScreenExitKeyCombination(new KeyCodeCombination(KeyCode.F, KeyCombination.SHIFT_DOWN));
+		this.stage.setFullScreenExitKeyCombination(new KeyCodeCombination(KeyCode.F, KeyCombination.SHIFT_DOWN));
 
 		EventDispatcher.getInstance().addListener(FullScreenToggleEvent.class, this::onFullScreenToggleEvent);
 
-		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+		this.stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent event) {
 				//TODO: stop TimeManager thread
