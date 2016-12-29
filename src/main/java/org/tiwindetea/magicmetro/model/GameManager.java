@@ -158,7 +158,7 @@ public class GameManager implements StationManager {
 		//TODO: initial lines
 		this.inventory = new Inventory(this.viewManager.getInventoryView());
 		for(int i = 0; i < mapScript.initialLines; ++i) {
-			Line line = new Line();
+			Line line = new Line(this.viewManager.createLineView());
 			this.inventory.addLine(line);
 		}
 

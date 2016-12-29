@@ -26,6 +26,7 @@ package org.tiwindetea.magicmetro.model.lines;
 
 import org.tiwindetea.magicmetro.global.util.SimplePair;
 import org.tiwindetea.magicmetro.model.Station;
+import org.tiwindetea.magicmetro.view.LineView;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -44,15 +45,19 @@ public class Line {
 
 	public final int gameId;
 
+	private final LineView view;
+
 	private Collection<Station> stations = new LinkedList<>();
 	private SimplePair<Connection> lastConnections; //TODO
 	private Collection<Section> sections; //TODO
 
 	/**
 	 * Default constructor.
+	 * @param view
 	 */
-	public Line() {
-		this.gameId = 0; //TODO: take the LineView gameId
+	public Line(LineView view) {
+		this.view = view;
+		this.gameId = view.getGameId();
 	}
 
 	/**
