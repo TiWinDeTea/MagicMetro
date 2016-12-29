@@ -35,6 +35,7 @@ import org.arakhne.afc.math.geometry.d2.dfx.Segment2dfx;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 
 /**
  * The view of a line section.
@@ -43,6 +44,13 @@ import javax.annotation.Nullable;
  * @since 0.1
  */
 public class SectionView extends Parent {
+
+	private static final Color DEFAULT_COLOR = Color.BLACK;
+	private static final double STROKE_WIDTH = 20d;
+	private static final ArrayList<Double> LINE_DOTS = new ArrayList<Double>() {{
+		add(15d);
+		add(30d);
+	}};
 
 	private ConcreteStationView fromStation = null;
 	private ConcreteStationView toStation = null;
@@ -75,11 +83,11 @@ public class SectionView extends Parent {
 		this.bc.set(this.b, this.c);
 		if(this.ab.intersects(this.water) || this.bc.intersects(this.water)) {
 			this.intersectWater = true;
-			this.polyline.setStroke(Color.RED); //FIXME
+			this.polyline.getStrokeDashArray().addAll(LINE_DOTS);
 		}
 		else {
 			this.intersectWater = false;
-			this.polyline.setStroke(Color.BLUE); //FIXME
+			this.polyline.getStrokeDashArray().clear();
 		}
 	}
 
@@ -120,8 +128,8 @@ public class SectionView extends Parent {
 		this.ab = new Segment2dfx(this.a, this.b);
 		this.bc = new Segment2dfx(this.b, this.c);
 
-		this.polyline.setStroke(Color.BLUE); //FIXME
-		this.polyline.setStrokeWidth(20); //TODO: define ?
+		this.polyline.setStroke(DEFAULT_COLOR);
+		this.polyline.setStrokeWidth(STROKE_WIDTH);
 		this.getChildren().add(this.polyline);
 
 		this.updatePoints();
@@ -209,6 +217,15 @@ public class SectionView extends Parent {
 	 */
 	public boolean intersectWater() {
 		return this.intersectWater;
+	}
+
+	/**
+	 * Sets color.
+	 *
+	 * @param color the color
+	 */
+	public void setColor(Color color) {
+		this.polyline.setStroke(color);
 	}
 
 	/**
