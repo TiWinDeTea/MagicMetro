@@ -66,7 +66,6 @@ public class MapMenu implements Menu {
 
 		this.mapMenuController = loader.getController();
 
-		//TODO
 		for(MapScript mapScript : mapScripts) {
 			Button mapButton = new Button(mapScript.mapName);
 			this.mapMenuController.mapsVBox.getChildren().add(mapButton);

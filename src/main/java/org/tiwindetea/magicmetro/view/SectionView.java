@@ -179,14 +179,23 @@ public class SectionView extends Parent {
 	}
 
 	/**
+	 * Gets the section start point.
+	 *
+	 * @return the section start point
+	 */
+	public Point2dfx getFrom() {
+		return this.a.clone();
+	}
+
+	/**
 	 * Sets the section end point.
 	 *
 	 * @param x the x coordinate of section end point
 	 * @param y the y coordinate of section end point
 	 */
 	public void setTo(double x, double y) {
-		this.a.xProperty().setValue(x);
-		this.a.yProperty().setValue(y);
+		this.c.xProperty().setValue(x);
+		this.c.yProperty().setValue(y);
 		this.updatePoints();
 		this.updateWaterIntersection();
 	}
@@ -198,6 +207,15 @@ public class SectionView extends Parent {
 	 */
 	public void setTo(Point2d to) {
 		this.setTo(to.getX(), to.getY());
+	}
+
+	/**
+	 * Gets the section end point.
+	 *
+	 * @return the the section end point
+	 */
+	public Point2dfx getTo() {
+		return this.c.clone();
 	}
 
 	/**
