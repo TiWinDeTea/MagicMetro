@@ -37,6 +37,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -63,6 +64,7 @@ public class ViewManager {
 	private AnchorPane mainAnchorPane = new AnchorPane();
 	private final Pane cPane = new Pane();
 	private final MapView mapView = new MapView();
+	private final ConcreteInventoryView concreteInventoryView = new ConcreteInventoryView();
 
 	private final Skin skin = new Skin();
 	private final MultiShape2dfx<Rectangle2dfx> water = new MultiShape2dfx<>();
@@ -78,6 +80,7 @@ public class ViewManager {
 		this.mapView.setBackgroundColor(MAP_BACKGROUND_COLOR);
 		this.cPane.getChildren().add(this.mapView);
 
+		// ----- time -----
 		Label label = new Label();
 		label.setFont(new Font(25));
 		AnimationTimer animationTimer = new AnimationTimer() {
@@ -129,6 +132,14 @@ public class ViewManager {
 		timeVBox.setSpacing(5);
 		timeVBox.setPadding(new Insets(10));
 		this.mainAnchorPane.getChildren().add(timeVBox);
+
+		// ----- inventory -----
+		StackPane inventoryStackPane = new StackPane();
+		inventoryStackPane.getChildren().add(this.concreteInventoryView);
+		AnchorPane.setRightAnchor(inventoryStackPane, 0d);
+		AnchorPane.setLeftAnchor(inventoryStackPane, 0d);
+		AnchorPane.setBottomAnchor(inventoryStackPane, 0d);
+		this.mainAnchorPane.getChildren().add(inventoryStackPane);
 	}
 
 	public void setMapSize(double width, double height) {
@@ -147,7 +158,7 @@ public class ViewManager {
 		  Skin.TRAIN_VIEW_HEIGHT,
 		  this.skin.getTrainPassengerPositions(),
 		  this.skin);
-		Platform.runLater(() -> this.mapView.add(concreteTrainView));
+		Platform.runLater(() -> this.mapView.addTrain(concreteTrainView));
 		return concreteTrainView;
 	}
 
@@ -157,16 +168,22 @@ public class ViewManager {
 		  Skin.STATION_VIEW_WIDTH,
 		  Skin.STATION_VIEW_HEIGHT,
 		  this.skin);
-		Platform.runLater(() -> this.mapView.add(concreteStationView));
+		Platform.runLater(() -> this.mapView.addStation(concreteStationView));
 		return concreteStationView;
 	}
 
-	public void createLineView() {
-		//TODO
+	public LineView createLineView() {
+		ConcreteLineView concreteLineView = new ConcreteLineView(Color.GREEN);//TODO: line color from inventory
+		Platform.runLater(() -> this.mapView.addLine(concreteLineView));
+		return concreteLineView;
 	}
 
 	public Parent getRoot() {
 		return this.mainAnchorPane;
+	}
+
+	public InventoryView getInventoryView() {
+		return this.concreteInventoryView;
 	}
 
 }

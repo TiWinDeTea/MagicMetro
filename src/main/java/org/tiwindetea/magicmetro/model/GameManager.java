@@ -33,6 +33,7 @@ import org.tiwindetea.magicmetro.global.eventdispatcher.events.TimeStartEvent;
 import org.tiwindetea.magicmetro.global.scripts.MapScript;
 import org.tiwindetea.magicmetro.global.scripts.StationScript;
 import org.tiwindetea.magicmetro.global.util.Utils;
+import org.tiwindetea.magicmetro.model.lines.Line;
 import org.tiwindetea.magicmetro.view.ViewManager;
 
 import java.time.Duration;
@@ -49,6 +50,7 @@ public class GameManager implements StationManager {
 
 	private final ViewManager viewManager;
 	private final GameMap gameMap;
+	private final Inventory inventory;
 	private final MapScript mapScript;
 	private final EventListener<TimeStartEvent> onTimeStartEvent = event -> {
 		//TODO
@@ -151,6 +153,13 @@ public class GameManager implements StationManager {
 			  this);
 			this.gameMap.addStation(station);
 			stationScript = this.mapScript.stationScripts.peek();
+		}
+
+		//TODO: initial lines
+		this.inventory = new Inventory(this.viewManager.getInventoryView());
+		for(int i = 0; i < mapScript.initialLines; ++i) {
+			Line line = new Line();
+			this.inventory.addLine(line);
 		}
 
 		this.executorService.submit(this.gameLoop);
