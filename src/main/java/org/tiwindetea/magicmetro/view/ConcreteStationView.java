@@ -53,11 +53,13 @@ public class ConcreteStationView extends Parent implements StationView {
 	private static final int PASSENGER_OFFSET_X = 10;
 	private static final int PASSENGER_OFFSET_Y = 0;
 
-	private final Shape sprite;
+	public final Shape sprite;
 	private final List<PassengerView> passengers = new LinkedList<>();
 	private final PassengerViewFactory passengerViewFactory;
 	private final TilePane tilePane = new TilePane();
 	private final ProgressIndicator progressIndicator = new ProgressIndicator();
+
+	private StationMouseListener stationMouseListener = null;
 
 	public ConcreteStationView(Shape sprite,
 	                           int spriteWidth,
@@ -78,13 +80,21 @@ public class ConcreteStationView extends Parent implements StationView {
 
 		this.progressIndicator.setMinSize(2.5 * spriteWidth, 2.5 * spriteHeight);
 		this.progressIndicator.setTranslateX(-0.75 * spriteWidth);
-		this.progressIndicator.setTranslateY(-0.75 * spriteHeight + 7);
 		this.progressIndicator.setTranslateY(-0.75 * spriteHeight + 5);
 		this.progressIndicator.setStyle(" -fx-progress-color: darkgray;");
 		this.progressIndicator.setProgress(0.7);
 		this.progressIndicator.setVisible(false);
 		this.getChildren().add(this.progressIndicator);
 		this.progressIndicator.toBack();
+
+		sprite.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if(ConcreteStationView.this.stationMouseListener != null) {
+					ConcreteStationView.this.stationMouseListener.mousePressedOnStation(ConcreteStationView.this);
+				}
+			}
+		});
 	}
 
 	@Override
@@ -124,7 +134,6 @@ public class ConcreteStationView extends Parent implements StationView {
 
 	@Override
 	public void warn() {
-		//TODO: speed depend on TimeManager
 		this.progressIndicator.setProgress(0);
 		this.progressIndicator.setVisible(true);
 	}
@@ -137,6 +146,10 @@ public class ConcreteStationView extends Parent implements StationView {
 	@Override
 	public void setWarnValue(double percentage) {
 		this.progressIndicator.setProgress(percentage);
+	}
+
+	public void setStationMouseListener(StationMouseListener stationMouseListener) {
+		this.stationMouseListener = stationMouseListener;
 	}
 
 }
