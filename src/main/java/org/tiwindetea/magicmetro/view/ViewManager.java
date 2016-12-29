@@ -64,10 +64,12 @@ public class ViewManager {
 	private AnchorPane mainAnchorPane = new AnchorPane();
 	private final Pane cPane = new Pane();
 	private final MapView mapView = new MapView();
-	private final ConcreteInventoryView concreteInventoryView = new ConcreteInventoryView();
+	private final ConcreteInventoryView concreteInventoryView;
 
 	private final Skin skin = new Skin();
 	private final MultiShape2dfx<Rectangle2dfx> water = new MultiShape2dfx<>();
+
+	private int currentLineNumber = 0;
 
 	public ViewManager() {
 		this.mainAnchorPane.setBackground(new Background(new BackgroundFill(
@@ -76,9 +78,6 @@ public class ViewManager {
 		  Insets.EMPTY)));
 		this.mainAnchorPane.getChildren().add(this.cPane);
 		AnchorPane.setLeftAnchor(this.cPane, 0d);
-
-		this.mapView.setBackgroundColor(MAP_BACKGROUND_COLOR);
-		this.cPane.getChildren().add(this.mapView);
 
 		// ----- time -----
 		Label label = new Label();
@@ -133,13 +132,19 @@ public class ViewManager {
 		timeVBox.setPadding(new Insets(10));
 		this.mainAnchorPane.getChildren().add(timeVBox);
 
-		// ----- inventory -----
+		// ----- inventory and map -----
+		this.mapView.setBackgroundColor(MAP_BACKGROUND_COLOR);
+		this.cPane.getChildren().add(this.mapView);
+
+		this.concreteInventoryView = new ConcreteInventoryView(this.mapView); //FIXME: cyclic reference, care at deletion
 		StackPane inventoryStackPane = new StackPane();
 		inventoryStackPane.getChildren().add(this.concreteInventoryView);
 		AnchorPane.setRightAnchor(inventoryStackPane, 0d);
 		AnchorPane.setLeftAnchor(inventoryStackPane, 0d);
 		AnchorPane.setBottomAnchor(inventoryStackPane, 0d);
 		this.mainAnchorPane.getChildren().add(inventoryStackPane);
+
+		this.mapView.setInventoryView(this.concreteInventoryView); //FIXME: cyclic reference, care at deletion
 	}
 
 	public void setMapSize(double width, double height) {
@@ -173,8 +178,8 @@ public class ViewManager {
 	}
 
 	public LineView createLineView() {
-		ConcreteLineView concreteLineView = new ConcreteLineView(Color.GREEN);//TODO: line color from inventory
-		Platform.runLater(() -> this.mapView.addLine(concreteLineView));
+		ConcreteLineView concreteLineView = new ConcreteLineView(this.skin.getLineColor(this.currentLineNumber++));
+		this.mapView.addLine(concreteLineView);
 		return concreteLineView;
 	}
 
