@@ -125,6 +125,9 @@ public class Main extends Application {
 		  new StationScript(Duration.ofSeconds(90),
 			new Point2d(300, 400),
 			StationType.STAR));
+		testMapScript.initialLines = 3;
+		testMapScript.initialTrains = 3;
+		testMapScript.initialTunnels = 3;
 		this.mapScripts.add(testMapScript);
 	}
 

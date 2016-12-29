@@ -49,6 +49,12 @@ public class MapScript {
 	public final MultiShape2d<Rectangle2d> water;
 	//TODO: map description: water...
 
+	public int initialLines = 0;
+	public int initialTrains = 0;
+	public int initialPassengerCars = 0;
+	public int initialStationUpgrades = 0;
+	public int initialTunnels = 0;
+
 	/**
 	 * Default constructor.
 	 */
