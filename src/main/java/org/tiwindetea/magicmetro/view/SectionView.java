@@ -24,10 +24,10 @@
 
 package org.tiwindetea.magicmetro.view;
 
+import javafx.event.EventHandler;
 import javafx.scene.Parent;
-import javafx.scene.paint.Color;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Polyline;
-import org.arakhne.afc.math.geometry.d2.d.Point2d;
 import org.arakhne.afc.math.geometry.d2.dfx.MultiShape2dfx;
 import org.arakhne.afc.math.geometry.d2.dfx.Point2dfx;
 import org.arakhne.afc.math.geometry.d2.dfx.Rectangle2dfx;
@@ -45,12 +45,13 @@ import java.util.ArrayList;
  */
 public class SectionView extends Parent {
 
-	private static final Color DEFAULT_COLOR = Color.BLACK;
 	private static final double STROKE_WIDTH = 20d;
 	private static final ArrayList<Double> LINE_DOTS = new ArrayList<Double>() {{
 		add(15d);
 		add(30d);
 	}};
+
+	private final ConcreteLineView line;
 
 	private ConcreteStationView fromStation = null;
 	private ConcreteStationView toStation = null;
@@ -62,6 +63,8 @@ public class SectionView extends Parent {
 	private Point2dfx c;
 	private Segment2dfx ab;
 	private Segment2dfx bc;
+
+	private SectionMouseListener sectionMouseListener = null;
 
 	private void updatePoints() {
 		if(Math.abs(this.c.getX() - this.a.getX()) > Math.abs(this.c.getY() - this.a.getY())) {
@@ -94,12 +97,14 @@ public class SectionView extends Parent {
 	/**
 	 * Instantiates a new SectionView.
 	 *
+	 * @param line  the line
 	 * @param fromX the x coordinate of section start point
 	 * @param fromY the y coordinate of section start point
 	 * @param toX   the x coordinate of section end point
 	 * @param toY   the y coordinate of section end point
 	 */
-	public SectionView(double fromX, double fromY, double toX, double toY) {
+	public SectionView(ConcreteLineView line, double fromX, double fromY, double toX, double toY) {
+		this.line = line;
 		this.polyline = new Polyline();
 		this.polyline.getPoints().add(fromX);
 		this.polyline.getPoints().add(fromY);
@@ -128,22 +133,32 @@ public class SectionView extends Parent {
 		this.ab = new Segment2dfx(this.a, this.b);
 		this.bc = new Segment2dfx(this.b, this.c);
 
-		this.polyline.setStroke(DEFAULT_COLOR);
+		this.polyline.setStroke(this.line.color);
 		this.polyline.setStrokeWidth(STROKE_WIDTH);
 		this.getChildren().add(this.polyline);
 
 		this.updatePoints();
 		this.updateWaterIntersection();
+
+		this.polyline.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if(SectionView.this.sectionMouseListener != null) {
+					SectionView.this.sectionMouseListener.mousePressedOnSection(SectionView.this, event.getX(), event.getY());
+				}
+			}
+		});
 	}
 
 	/**
 	 * Instantiates a new SectionView.
 	 *
+	 * @param line the line
 	 * @param from the section start point
 	 * @param to   the section end point
 	 */
-	public SectionView(Point2d from, Point2d to) {
-		this(from.getX(), from.getY(), to.getX(), to.getY());
+	public SectionView(ConcreteLineView line, Point2dfx from, Point2dfx to) {
+		this(line, from.getX(), from.getY(), to.getX(), to.getY());
 	}
 
 	/**
@@ -152,8 +167,8 @@ public class SectionView extends Parent {
 	 * @param initX the x coordinate of section start and end point
 	 * @param initY the y coordinate of section start and end point
 	 */
-	public SectionView(double initX, double initY) {
-		this(initX, initY, initX, initY);
+	public SectionView(ConcreteLineView line, double initX, double initY) {
+		this(line, initX, initY, initX, initY);
 	}
 
 	/**
@@ -174,7 +189,7 @@ public class SectionView extends Parent {
 	 *
 	 * @param from the section start point
 	 */
-	public void setFrom(Point2d from) {
+	public void setFrom(Point2dfx from) {
 		this.setFrom(from.getX(), from.getY());
 	}
 
@@ -205,7 +220,7 @@ public class SectionView extends Parent {
 	 *
 	 * @param to the the section end point
 	 */
-	public void setTo(Point2d to) {
+	public void setTo(Point2dfx to) {
 		this.setTo(to.getX(), to.getY());
 	}
 
@@ -235,15 +250,6 @@ public class SectionView extends Parent {
 	 */
 	public boolean intersectWater() {
 		return this.intersectWater;
-	}
-
-	/**
-	 * Sets color.
-	 *
-	 * @param color the color
-	 */
-	public void setColor(Color color) {
-		this.polyline.setStroke(color);
 	}
 
 	/**
@@ -282,6 +288,24 @@ public class SectionView extends Parent {
 	@Nullable
 	public ConcreteStationView getToStation() {
 		return this.toStation;
+	}
+
+	/**
+	 * Gets line.
+	 *
+	 * @return the line
+	 */
+	public ConcreteLineView getLine() {
+		return this.line;
+	}
+
+	/**
+	 * Sets section mouse listener.
+	 *
+	 * @param sectionMouseListener the section mouse listener
+	 */
+	public void setSectionMouseListener(SectionMouseListener sectionMouseListener) {
+		this.sectionMouseListener = sectionMouseListener;
 	}
 
 }

@@ -49,7 +49,6 @@ public class ConcreteLineView extends Parent implements LineView {
 	}
 
 	public void addSection(SectionView section) {
-		section.setColor(this.color);
 		this.sections.add(section);
 		this.getChildren().add(section);
 	}
@@ -58,4 +57,5 @@ public class ConcreteLineView extends Parent implements LineView {
 	public int getGameId() {
 		return this.gameId;
 	}
+
 }

@@ -40,6 +40,7 @@ import org.arakhne.afc.math.geometry.d2.d.MultiShape2d;
 import org.arakhne.afc.math.geometry.d2.d.Point2d;
 import org.arakhne.afc.math.geometry.d2.d.Rectangle2d;
 import org.arakhne.afc.math.geometry.d2.dfx.MultiShape2dfx;
+import org.arakhne.afc.math.geometry.d2.dfx.Point2dfx;
 import org.arakhne.afc.math.geometry.d2.dfx.Rectangle2dfx;
 
 import javax.annotation.Nonnull;
@@ -56,7 +57,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Maxime PINARD
  * @since 0.1
  */
-public class MapView extends DraggableZoomableParent implements StationMouseListener {
+public class MapView extends DraggableZoomableParent implements StationMouseListener, SectionMouseListener {
 
 	private ConcreteInventoryView inventoryView;
 
@@ -107,17 +108,17 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 
 	private class LineModificationState implements ModificationState {
 
-		ConcreteLineView concreteLineView;
-		SectionView sectionView;
+		private ConcreteLineView concreteLineView;
+		private SectionView sectionView;
 
 		public LineModificationState(ConcreteStationView fromStation) {
 
 			this.concreteLineView = MapView.this.inventoryView.getUnusedLine();
-			this.sectionView = new SectionView(fromStation.getTranslateX(), fromStation.getTranslateY());
+			this.sectionView = new SectionView(this.concreteLineView, fromStation.getTranslateX(), fromStation.getTranslateY());
 			if(this.concreteLineView != null) {
+				this.sectionView.setSectionMouseListener(MapView.this);
 				this.sectionView.setFromStation(fromStation);
 				this.sectionView.setWater(MapView.this.water);
-				this.sectionView.setColor(this.concreteLineView.color);
 				MapView.this.lineGroup.getChildren().add(this.sectionView);
 			}
 			else {
@@ -155,6 +156,69 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 				this.sectionView.setTo(toStation.getTranslateX(), toStation.getTranslateY());
 				this.concreteLineView.addSection(this.sectionView);
 				MapView.this.inventoryView.setUsed(this.concreteLineView.gameId);
+			}
+
+			//TODO: event to model...
+		}
+	}
+
+	private class LineDoubleModificationState implements ModificationState {
+
+		ConcreteLineView concreteLineView;
+		SectionView oldSectionView;
+		SectionView fromSectionView;
+		SectionView toSectionView;
+
+		public LineDoubleModificationState(SectionView modifiedSection, double x, double y) {
+			this.oldSectionView = modifiedSection;
+			this.concreteLineView = modifiedSection.getLine();
+			this.fromSectionView = new SectionView(this.concreteLineView, this.oldSectionView.getFrom(), new Point2dfx(x, y));
+			this.fromSectionView.setSectionMouseListener(MapView.this);
+			this.fromSectionView.setFromStation(this.oldSectionView.getFromStation());
+			this.fromSectionView.setWater(MapView.this.water);
+			this.toSectionView = new SectionView(this.concreteLineView, this.oldSectionView.getTo(), new Point2dfx(x, y));
+			this.toSectionView.setSectionMouseListener(MapView.this);
+			this.toSectionView.setFromStation(this.oldSectionView.getToStation());
+			this.toSectionView.setWater(MapView.this.water);
+
+			MapView.this.lineGroup.getChildren().add(this.fromSectionView);
+			MapView.this.lineGroup.getChildren().add(this.toSectionView);
+		}
+
+		@Override
+		public void init(double x, double y) {
+
+		}
+
+		@Override
+		public void update(double x, double y) {
+			this.fromSectionView.setTo(x, y);
+			this.toSectionView.setTo(x, y);
+		}
+
+		@Override
+		public void apply(double x, double y) {
+			MapView.this.lineGroup.getChildren().remove(this.toSectionView);
+			MapView.this.lineGroup.getChildren().remove(this.fromSectionView);
+			ConcreteStationView toStation = null;
+			for(ConcreteStationView station : MapView.this.stations) {
+				if(station != this.fromSectionView.getFromStation() && station != this.toSectionView.getFromStation()) {
+					Circle2d circle2d = new Circle2d(new Point2d(station.getTranslateX(), station.getTranslateY()),
+					  STATION_BOUNDS_RADIUS);
+					if(circle2d.contains(this.fromSectionView.getTo())) {
+						toStation = station;
+						break;
+					}
+				}
+			}
+
+			if(toStation != null) {
+				this.fromSectionView.setTo(toStation.getTranslateX(), toStation.getTranslateY());
+				this.toSectionView.setTo(toStation.getTranslateX(), toStation.getTranslateY());
+				this.fromSectionView.setToStation(toStation);
+				this.toSectionView.setToStation(toStation);
+				this.concreteLineView.addSection(this.fromSectionView);
+				this.concreteLineView.addSection(this.toSectionView);
 			}
 
 			//TODO: event to model...
@@ -206,6 +270,13 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 		}
 		this.modificationStateLock.unlock();
 		//no init
+	}
+
+	@Override
+	public void mousePressedOnSection(SectionView section, double mouseX, double mouseY) {
+		this.modificationStateLock.lock();
+		this.modificationState = new LineDoubleModificationState(section, mouseX, mouseY);
+		this.modificationStateLock.unlock();
 	}
 
 	@Nullable
