@@ -25,9 +25,12 @@
 package org.tiwindetea.magicmetro.view;
 
 import javafx.event.EventHandler;
+import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Polyline;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.transform.Rotate;
 import org.arakhne.afc.math.geometry.d2.dfx.MultiShape2dfx;
 import org.arakhne.afc.math.geometry.d2.dfx.Point2dfx;
 import org.arakhne.afc.math.geometry.d2.dfx.Rectangle2dfx;
@@ -46,6 +49,8 @@ import java.util.ArrayList;
 public class SectionView extends Parent {
 
 	private static final double STROKE_WIDTH = 20d;
+	private static final double HOOK_LENGTH = 30d;
+	private static final double HOOK_WIDTH = 50d;
 	private static final ArrayList<Double> LINE_DOTS = new ArrayList<Double>() {{
 		add(15d);
 		add(30d);
@@ -63,6 +68,9 @@ public class SectionView extends Parent {
 	private Point2dfx c;
 	private Segment2dfx ab;
 	private Segment2dfx bc;
+
+	private final Group fromHook = new Group();
+	private final Group toHook = new Group();
 
 	private SectionMouseListener sectionMouseListener = null;
 
@@ -91,6 +99,27 @@ public class SectionView extends Parent {
 		else {
 			this.intersectWater = false;
 			this.polyline.getStrokeDashArray().clear();
+		}
+	}
+
+	private void updateHooks() {
+		if(this.fromHook.isVisible()) {
+			double angle = Math.toDegrees(Math.atan2(
+			  this.a.getY() - this.b.getY(),
+			  this.a.getX() - this.b.getX()));
+			this.fromHook.getTransforms().clear();
+			this.fromHook.getTransforms().add(new Rotate(angle, 0, HOOK_WIDTH / 2));
+			this.fromHook.setTranslateX(this.a.getX());
+			this.fromHook.setTranslateY(this.a.getY());
+		}
+		if(this.toHook.isVisible()) {
+			double angle = Math.toDegrees(Math.atan2(
+			  this.c.getY() - this.b.getY(),
+			  this.c.getX() - this.b.getX()));
+			this.toHook.getTransforms().clear();
+			this.toHook.getTransforms().add(new Rotate(angle, 0, HOOK_WIDTH / 2));
+			this.toHook.setTranslateX(this.c.getX());
+			this.toHook.setTranslateY(this.c.getY());
 		}
 	}
 
@@ -148,6 +177,46 @@ public class SectionView extends Parent {
 				}
 			}
 		});
+
+		Group[] hooks = {this.fromHook, this.toHook};
+
+		for(Group hook : hooks) {
+			Rectangle rectangle1 = new Rectangle(HOOK_LENGTH, STROKE_WIDTH);
+			rectangle1.setFill(this.line.color);
+			rectangle1.setTranslateY((HOOK_WIDTH - STROKE_WIDTH) / 2);
+
+			Rectangle rectangle2 = new Rectangle(STROKE_WIDTH, HOOK_WIDTH);
+			rectangle2.setFill(this.line.color);
+			rectangle2.setTranslateX(HOOK_LENGTH);
+
+
+			hook.setLayoutY(-rectangle2.getHeight() / 2);
+			hook.getChildren().add(rectangle1);
+			hook.getChildren().add(rectangle2);
+			hook.setVisible(false);
+			this.getChildren().add(hook);
+		}
+		this.updateHooks();
+	}
+
+	/**
+	 * Sets the hook at the section start point visibility.
+	 *
+	 * @param visible the visibility
+	 */
+	public void setFromHookVisible(boolean visible) {
+		this.fromHook.setVisible(visible);
+		updateHooks();
+	}
+
+	/**
+	 * Sets the hook at the section end point visibility.
+	 *
+	 * @param visible the visibility
+	 */
+	public void setToHookVisible(boolean visible) {
+		this.toHook.setVisible(visible);
+		updateHooks();
 	}
 
 	/**
@@ -182,6 +251,7 @@ public class SectionView extends Parent {
 		this.a.yProperty().setValue(y);
 		this.updatePoints();
 		this.updateWaterIntersection();
+		this.updateHooks();
 	}
 
 	/**
@@ -213,6 +283,7 @@ public class SectionView extends Parent {
 		this.c.yProperty().setValue(y);
 		this.updatePoints();
 		this.updateWaterIntersection();
+		this.updateHooks();
 	}
 
 	/**
