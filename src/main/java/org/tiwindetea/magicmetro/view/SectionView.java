@@ -60,6 +60,9 @@ public class SectionView extends Parent {
 
 	private ConcreteStationView fromStation = null;
 	private ConcreteStationView toStation = null;
+	private SectionView prevSection = null;
+	private SectionView nextSection = null;
+
 	private MultiShape2dfx<Rectangle2dfx> water = new MultiShape2dfx<>(); // for collisions
 	private boolean intersectWater = false;
 	private Polyline polyline;
@@ -73,6 +76,22 @@ public class SectionView extends Parent {
 	private final Group toHook = new Group();
 
 	private SectionMouseListener sectionMouseListener = null;
+
+	private final EventHandler<MouseEvent> onFromHookMousePressed = new EventHandler<MouseEvent>() {
+		@Override
+		public void handle(MouseEvent event) {
+			SectionView.this.sectionMouseListener.mousePressedOnSectionHook(SectionView.this,
+			  SectionView.this.fromStation);
+		}
+	};
+
+	private final EventHandler<MouseEvent> onToHookMousePressed = new EventHandler<MouseEvent>() {
+		@Override
+		public void handle(MouseEvent event) {
+			SectionView.this.sectionMouseListener.mousePressedOnSectionHook(SectionView.this,
+			  SectionView.this.toStation);
+		}
+	};
 
 	private void updatePoints() {
 		if(Math.abs(this.c.getX() - this.a.getX()) > Math.abs(this.c.getY() - this.a.getY())) {
@@ -169,6 +188,9 @@ public class SectionView extends Parent {
 		this.updatePoints();
 		this.updateWaterIntersection();
 
+		System.out.println("c.getX() = " + this.c.getX());
+		System.out.println("this.c.getY() = " + this.c.getY());
+
 		this.polyline.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -178,24 +200,38 @@ public class SectionView extends Parent {
 			}
 		});
 
-		Group[] hooks = {this.fromHook, this.toHook};
+		Rectangle fromRectangle1 = new Rectangle(HOOK_LENGTH, STROKE_WIDTH);
+		fromRectangle1.setFill(this.line.color);
+		fromRectangle1.setTranslateY((HOOK_WIDTH - STROKE_WIDTH) / 2);
+		fromRectangle1.setOnMousePressed(this.onFromHookMousePressed);
 
-		for(Group hook : hooks) {
-			Rectangle rectangle1 = new Rectangle(HOOK_LENGTH, STROKE_WIDTH);
-			rectangle1.setFill(this.line.color);
-			rectangle1.setTranslateY((HOOK_WIDTH - STROKE_WIDTH) / 2);
+		Rectangle fromRectangle2 = new Rectangle(STROKE_WIDTH, HOOK_WIDTH);
+		fromRectangle2.setFill(this.line.color);
+		fromRectangle2.setTranslateX(HOOK_LENGTH);
+		fromRectangle2.setOnMousePressed(this.onFromHookMousePressed);
 
-			Rectangle rectangle2 = new Rectangle(STROKE_WIDTH, HOOK_WIDTH);
-			rectangle2.setFill(this.line.color);
-			rectangle2.setTranslateX(HOOK_LENGTH);
+		this.fromHook.setLayoutY(-fromRectangle2.getHeight() / 2);
+		this.fromHook.getChildren().add(fromRectangle1);
+		this.fromHook.getChildren().add(fromRectangle2);
+		this.fromHook.setVisible(false);
+		this.getChildren().add(this.fromHook);
 
+		Rectangle toRectangle1 = new Rectangle(HOOK_LENGTH, STROKE_WIDTH);
+		toRectangle1.setFill(this.line.color);
+		toRectangle1.setTranslateY((HOOK_WIDTH - STROKE_WIDTH) / 2);
+		toRectangle1.setOnMousePressed(this.onToHookMousePressed);
 
-			hook.setLayoutY(-rectangle2.getHeight() / 2);
-			hook.getChildren().add(rectangle1);
-			hook.getChildren().add(rectangle2);
-			hook.setVisible(false);
-			this.getChildren().add(hook);
-		}
+		Rectangle toRectangle2 = new Rectangle(STROKE_WIDTH, HOOK_WIDTH);
+		toRectangle2.setFill(this.line.color);
+		toRectangle2.setTranslateX(HOOK_LENGTH);
+		toRectangle2.setOnMousePressed(this.onToHookMousePressed);
+
+		this.toHook.setLayoutY(-toRectangle2.getHeight() / 2);
+		this.toHook.getChildren().add(toRectangle1);
+		this.toHook.getChildren().add(toRectangle2);
+		this.toHook.setVisible(false);
+		this.getChildren().add(this.toHook);
+
 		this.updateHooks();
 	}
 
@@ -233,6 +269,7 @@ public class SectionView extends Parent {
 	/**
 	 * Instantiates a new SectionView.
 	 *
+	 * @param line  the line
 	 * @param initX the x coordinate of section start and end point
 	 * @param initY the y coordinate of section start and end point
 	 */
@@ -359,6 +396,44 @@ public class SectionView extends Parent {
 	@Nullable
 	public ConcreteStationView getToStation() {
 		return this.toStation;
+	}
+
+	/**
+	 * Sets previous section.
+	 *
+	 * @param prevSection the previous section
+	 */
+	public void setPrevSection(@Nullable SectionView prevSection) {
+		this.prevSection = prevSection;
+	}
+
+	/**
+	 * Gets previous section.
+	 *
+	 * @return the previous section
+	 */
+	@Nullable
+	public SectionView getPrevSection() {
+		return this.prevSection;
+	}
+
+	/**
+	 * Sets next section.
+	 *
+	 * @param nextSection the next section
+	 */
+	public void setNextSection(@Nullable SectionView nextSection) {
+		this.nextSection = nextSection;
+	}
+
+	/**
+	 * Gets next section.
+	 *
+	 * @return the next section
+	 */
+	@Nullable
+	public SectionView getNextSection() {
+		return this.nextSection;
 	}
 
 	/**

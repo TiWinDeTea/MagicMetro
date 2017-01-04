@@ -103,7 +103,7 @@ public class Main extends Application {
 		MapScript testMapScript = new MapScript("test map", 1920, 1080, multiShape2d);
 		testMapScript.stationScripts.add(
 		  new StationScript(Duration.ofSeconds(0),
-			new Point2d(450, 620),
+		    new Point2d(400, 620),
 			StationType.TRIANGLE));
 		testMapScript.stationScripts.add(
 		  new StationScript(Duration.ofSeconds(0),
@@ -125,7 +125,7 @@ public class Main extends Application {
 		  new StationScript(Duration.ofSeconds(90),
 			new Point2d(300, 400),
 			StationType.STAR));
-		testMapScript.initialLines = 3;
+		testMapScript.initialLines = 5;
 		testMapScript.initialTrains = 3;
 		testMapScript.initialTunnels = 3;
 		this.mapScripts.add(testMapScript);

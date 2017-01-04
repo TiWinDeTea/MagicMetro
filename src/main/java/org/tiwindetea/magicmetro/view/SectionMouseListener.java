@@ -34,4 +34,6 @@ public interface SectionMouseListener {
 
 	void mousePressedOnSection(SectionView section, double mouseX, double mouseY);
 
+	void mousePressedOnSectionHook(SectionView section, ConcreteStationView fromStation);
+
 }
