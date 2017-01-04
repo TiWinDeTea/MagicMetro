@@ -188,9 +188,6 @@ public class SectionView extends Parent {
 		this.updatePoints();
 		this.updateWaterIntersection();
 
-		System.out.println("c.getX() = " + this.c.getX());
-		System.out.println("this.c.getY() = " + this.c.getY());
-
 		this.polyline.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
