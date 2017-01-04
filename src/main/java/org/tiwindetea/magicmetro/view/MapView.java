@@ -111,6 +111,10 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 		private ConcreteLineView concreteLineView;
 		private SectionView sectionView;
 
+		private ConcreteStationView toStation = null;
+
+		private final MultiShape2d<Circle2d> stationsBounds;
+
 		public LineModificationState(ConcreteStationView fromStation) {
 
 			this.concreteLineView = MapView.this.inventoryView.getUnusedLine();
@@ -124,6 +128,15 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 			else {
 				MapView.this.modificationState = MapView.this.voidModificationState;
 			}
+
+			this.stationsBounds = new MultiShape2d<>();
+			for(ConcreteStationView station : MapView.this.stations) {
+				if(station != this.sectionView.getFromStation()) {
+					Circle2d circle2d = new Circle2d(new Point2d(station.getTranslateX(), station.getTranslateY()),
+					  STATION_BOUNDS_RADIUS);
+					this.stationsBounds.add(circle2d);
+				}
+			}
 		}
 
 		@Override
@@ -134,26 +147,32 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 		@Override
 		public synchronized void update(double x, double y) {
 			this.sectionView.setTo(x, y);
+
+			if(this.stationsBounds.contains(x, y)) {
+				this.apply(x, y);
+				if(this.toStation != null) {
+					MapView.this.modificationState = new LineExtensionState(this.sectionView, this.toStation);
+				}
+			}
 		}
 
 		@Override
 		public synchronized void apply(double x, double y) {
 			MapView.this.lineGroup.getChildren().remove(this.sectionView);
-			ConcreteStationView toStation = null;
 			for(ConcreteStationView station : MapView.this.stations) {
 				if(station != this.sectionView.getFromStation()) {
 					Circle2d circle2d = new Circle2d(new Point2d(station.getTranslateX(), station.getTranslateY()),
 					  STATION_BOUNDS_RADIUS);
 					if(circle2d.contains(this.sectionView.getTo())) {
-						toStation = station;
+						this.toStation = station;
 						break;
 					}
 				}
 			}
 
-			if(toStation != null) {
-				this.sectionView.setToStation(toStation);
-				this.sectionView.setTo(toStation.getTranslateX(), toStation.getTranslateY());
+			if(this.toStation != null) {
+				this.sectionView.setToStation(this.toStation);
+				this.sectionView.setTo(this.toStation.getTranslateX(), this.toStation.getTranslateY());
 				this.sectionView.setFromHookVisible(true);
 				this.sectionView.setToHookVisible(true);
 				this.concreteLineView.addSection(this.sectionView);
