@@ -307,6 +307,15 @@ public class SectionView extends Parent {
 	}
 
 	/**
+	 * Gets the section middle point.
+	 *
+	 * @return the section middle point
+	 */
+	public Point2dfx getMiddle() {
+		return this.c.clone();
+	}
+
+	/**
 	 * Sets the section end point.
 	 *
 	 * @param x the x coordinate of section end point
