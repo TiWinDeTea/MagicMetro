@@ -53,6 +53,11 @@ public class ConcreteLineView extends Parent implements LineView {
 		this.getChildren().add(section);
 	}
 
+	public void removeSection(SectionView section) {
+		this.sections.remove(section);
+		this.getChildren().remove(section);
+	}
+
 	@Override
 	public int getGameId() {
 		return this.gameId;
