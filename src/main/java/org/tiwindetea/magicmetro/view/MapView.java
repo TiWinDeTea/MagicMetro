@@ -281,6 +281,10 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 				this.concreteLineView.addSection(this.fromSectionView);
 				this.concreteLineView.addSection(this.toSectionView);
 
+				this.oldSectionView.setSectionMouseListener(null);
+				this.oldSectionView.setFromHookVisible(false);
+				this.oldSectionView.setToHookVisible(false);
+
 				//TODO: event to model...
 			}
 		}

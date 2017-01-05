@@ -456,7 +456,7 @@ public class SectionView extends Parent {
 	 *
 	 * @param sectionMouseListener the section mouse listener
 	 */
-	public void setSectionMouseListener(SectionMouseListener sectionMouseListener) {
+	public void setSectionMouseListener(@Nullable SectionMouseListener sectionMouseListener) {
 		this.sectionMouseListener = sectionMouseListener;
 	}
 
