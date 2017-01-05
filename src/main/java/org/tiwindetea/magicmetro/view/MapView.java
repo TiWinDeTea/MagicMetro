@@ -215,13 +215,17 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 		public LineDoubleModificationState(SectionView modifiedSection, double x, double y) {
 			this.oldSectionView = modifiedSection;
 			this.concreteLineView = modifiedSection.getLine();
-			this.fromSectionView = new SectionView(this.concreteLineView, this.oldSectionView.getFrom(), new Point2dfx(x, y));
+			this.fromSectionView = new SectionView(this.concreteLineView,
+			  this.oldSectionView.getFrom(),
+			  new Point2dfx(x, y));
 			this.fromSectionView.setSectionMouseListener(MapView.this);
 			this.fromSectionView.setFromStation(this.oldSectionView.getFromStation());
 			this.fromSectionView.setWater(MapView.this.water);
-			this.toSectionView = new SectionView(this.concreteLineView, this.oldSectionView.getTo(), new Point2dfx(x, y));
+			this.toSectionView = new SectionView(this.concreteLineView,
+			  new Point2dfx(x, y),
+			  this.oldSectionView.getTo());
 			this.toSectionView.setSectionMouseListener(MapView.this);
-			this.toSectionView.setFromStation(this.oldSectionView.getToStation());
+			this.toSectionView.setToStation(this.oldSectionView.getToStation());
 			this.toSectionView.setWater(MapView.this.water);
 
 			MapView.this.lineGroup.getChildren().add(this.fromSectionView);
@@ -236,7 +240,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 		@Override
 		public void update(double x, double y) {
 			this.fromSectionView.setTo(x, y);
-			this.toSectionView.setTo(x, y);
+			this.toSectionView.setFrom(x, y);
 		}
 
 		@Override
@@ -245,7 +249,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 			MapView.this.lineGroup.getChildren().remove(this.fromSectionView);
 			ConcreteStationView toStation = null;
 			for(ConcreteStationView station : MapView.this.stations) {
-				if(station != this.fromSectionView.getFromStation() && station != this.toSectionView.getFromStation()) {
+				if(station != this.fromSectionView.getFromStation() && station != this.toSectionView.getToStation()) {
 					Circle2d circle2d = new Circle2d(new Point2d(station.getTranslateX(), station.getTranslateY()),
 					  STATION_BOUNDS_RADIUS);
 					if(circle2d.contains(this.fromSectionView.getTo())) {
@@ -257,9 +261,9 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 
 			if(toStation != null) {
 				this.fromSectionView.setTo(toStation.getTranslateX(), toStation.getTranslateY());
-				this.toSectionView.setTo(toStation.getTranslateX(), toStation.getTranslateY());
+				this.toSectionView.setFrom(toStation.getTranslateX(), toStation.getTranslateY());
 				this.fromSectionView.setToStation(toStation);
-				this.toSectionView.setToStation(toStation);
+				this.toSectionView.setFromStation(toStation);
 
 				this.fromSectionView.setPrevSection(this.oldSectionView.getPrevSection());
 				this.fromSectionView.setNextSection(this.toSectionView);
@@ -271,7 +275,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 				}
 
 				if(this.toSectionView.getNextSection() == null) {
-					this.toSectionView.setFromHookVisible(true);
+					this.toSectionView.setToHookVisible(true);
 				}
 
 				this.concreteLineView.addSection(this.fromSectionView);
