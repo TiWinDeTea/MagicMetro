@@ -212,6 +212,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 		private SectionView fromSectionView;
 		private SectionView toSectionView;
 
+		private final MultiShape2d<Circle2d> stationsBounds;
 		public LineDoubleModificationState(SectionView modifiedSection, double x, double y) {
 			this.oldSectionView = modifiedSection;
 			this.concreteLineView = modifiedSection.getLine();
@@ -230,6 +231,15 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 
 			MapView.this.lineGroup.getChildren().add(this.fromSectionView);
 			MapView.this.lineGroup.getChildren().add(this.toSectionView);
+
+			this.stationsBounds = new MultiShape2d<>();
+			for(ConcreteStationView station : MapView.this.stations) {
+				if(station != this.oldSectionView.getFromStation() && station != this.oldSectionView.getToStation()) {
+					Circle2d circle2d = new Circle2d(new Point2d(station.getTranslateX(), station.getTranslateY()),
+					  STATION_BOUNDS_RADIUS);
+					this.stationsBounds.add(circle2d);
+				}
+			}
 		}
 
 		@Override
@@ -241,6 +251,11 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 		public void update(double x, double y) {
 			this.fromSectionView.setTo(x, y);
 			this.toSectionView.setFrom(x, y);
+
+			if(this.stationsBounds.contains(x, y)) {
+				apply(x, y);
+				MapView.this.modificationState = new VoidModificationState();
+			}
 		}
 
 		@Override
