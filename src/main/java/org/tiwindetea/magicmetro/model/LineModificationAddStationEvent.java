@@ -39,17 +39,17 @@ import org.tiwindetea.magicmetro.global.eventdispatcher.Event;
 public class LineModificationAddStationEvent implements Event{
 
     public final int idLine;
-    public final int idStationA;
-    public final int idStationB;
-    public final int idStationC;
+    public final int idStationRight;
+    public final int idStationLeft;
+    public final int idStationMiddle;
     public final Point2d aToC;
     public final Point2d bToC;
 
     public LineModificationAddStationEvent(int idLine, int idStationA, int idStationB, int idStationC, Point2d aToC, Point2d bToC){
         this.idLine = idLine;
-        this.idStationA = idStationA;
-        this.idStationB = idStationB;
-        this.idStationC = idStationC;
+        this.idStationRight = idStationA;
+        this.idStationLeft = idStationB;
+        this.idStationMiddle = idStationC;
         this.aToC = aToC;
         this.bToC = bToC;
     }
