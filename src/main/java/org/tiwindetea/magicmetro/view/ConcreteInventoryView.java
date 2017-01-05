@@ -165,22 +165,22 @@ public class ConcreteInventoryView extends Parent implements InventoryView {
 	}
 
 	@Override
-	public void setStationUpgrades(int value) {
+	public synchronized void setStationUpgrades(int value) {
 		this.stationUpgradeCounter.setNumber(value);
 	}
 
 	@Override
-	public void setTrains(int value) {
+	public synchronized void setTrains(int value) {
 		this.trainCounter.setNumber(value);
 	}
 
 	@Override
-	public void setPassengerCars(int value) {
+	public synchronized void setPassengerCars(int value) {
 		this.passengerCarCounter.setNumber(value);
 	}
 
 	@Override
-	public void setAvailableLine(int lineId) {
+	public synchronized void setAvailableLine(int lineId) {
 		ConcreteLineView line = this.mapView.getLineFromId(lineId);
 		LineDisplayer lineDisplayer = new LineDisplayer();
 		lineDisplayer.setAvailable(line.color);
@@ -189,7 +189,7 @@ public class ConcreteInventoryView extends Parent implements InventoryView {
 	}
 
 	@Override
-	public void setUsed(int lineId) {
+	public synchronized void setUsed(int lineId) {
 		for(Pair<ConcreteLineView, LineDisplayer> pair : this.lineDisplayers) {
 			if(pair.getLeft().gameId == lineId) {
 				pair.getRight().setUsed();
@@ -199,7 +199,7 @@ public class ConcreteInventoryView extends Parent implements InventoryView {
 	}
 
 	@Override
-	public void setUnused(int lineId) {
+	public synchronized void setUnused(int lineId) {
 		for(Pair<ConcreteLineView, LineDisplayer> pair : this.lineDisplayers) {
 			if(pair.getLeft().gameId == lineId) {
 				pair.getRight().setUnused();
@@ -213,7 +213,7 @@ public class ConcreteInventoryView extends Parent implements InventoryView {
 	 *
 	 * @return the unused line or null if all lines are used
 	 */
-	public ConcreteLineView getUnusedLine() {
+	public synchronized ConcreteLineView getUnusedLine() {
 		for(Pair<ConcreteLineView, LineDisplayer> pair : this.lineDisplayers) {
 			if(!pair.getRight().isUsed()) {
 				return pair.getLeft();
