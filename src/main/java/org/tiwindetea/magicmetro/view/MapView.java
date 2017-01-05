@@ -110,14 +110,22 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 
 		private ConcreteLineView concreteLineView;
 		private SectionView sectionView;
+		private ConcreteStationView oldToStation = null;
 
 		private ConcreteStationView toStation = null;
 
+		private final MultiShape2d<Circle2d> oldToStationBounds = new MultiShape2d<>();
+		private boolean wasInOldToStationBounds = true;
+
 		private final MultiShape2d<Circle2d> stationsBounds;
 
-		public LineModificationState(ConcreteStationView fromStation) {
+		public LineModificationState(@Nonnull ConcreteLineView unusedLine,
+		                             @Nonnull ConcreteStationView fromStation,
+		                             @Nullable ConcreteStationView oldToStation) {
 
-			this.concreteLineView = MapView.this.inventoryView.getUnusedLine();
+			this.oldToStation = oldToStation;
+
+			this.concreteLineView = unusedLine;
 			this.sectionView = new SectionView(this.concreteLineView, fromStation.getTranslateX(), fromStation.getTranslateY());
 			if(this.concreteLineView != null) {
 				this.sectionView.setSectionMouseListener(MapView.this);
@@ -131,11 +139,15 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 
 			this.stationsBounds = new MultiShape2d<>();
 			for(ConcreteStationView station : MapView.this.stations) {
-				if(station != this.sectionView.getFromStation()) {
+				if(station != this.sectionView.getFromStation() && station != this.oldToStation) {
 					Circle2d circle2d = new Circle2d(new Point2d(station.getTranslateX(), station.getTranslateY()),
 					  STATION_BOUNDS_RADIUS);
 					this.stationsBounds.add(circle2d);
 				}
+			}
+			if(this.oldToStation != null) {
+				this.oldToStationBounds.add(new Circle2d(new Point2d(this.oldToStation.getTranslateX(),
+				  this.oldToStation.getTranslateY()), STATION_BOUNDS_RADIUS));
 			}
 		}
 
@@ -151,8 +163,18 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 			if(this.stationsBounds.contains(x, y)) {
 				this.apply(x, y);
 				if(this.toStation != null) {
-					MapView.this.modificationState = new LineExtensionState(this.sectionView, this.toStation);
+					MapView.this.modificationState = new LineExtensionState(this.sectionView, this.toStation, null);
 				}
+			}
+			if(!this.wasInOldToStationBounds) {
+				if(this.oldToStationBounds.contains(x, y)) {
+					this.stationsBounds.addAll(this.oldToStationBounds);
+					this.apply(x, y);
+					MapView.this.modificationState = new LineExtensionState(this.sectionView, this.toStation, null);
+				}
+			}
+			if(this.oldToStation != null) {
+				this.wasInOldToStationBounds = this.oldToStationBounds.contains(x, y);
 			}
 		}
 
@@ -177,9 +199,9 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 				this.sectionView.setToHookVisible(true);
 				this.concreteLineView.addSection(this.sectionView);
 				MapView.this.inventoryView.setUsed(this.concreteLineView.gameId);
-			}
 
-			//TODO: event to model...
+				//TODO: event to model...
+			}
 		}
 	}
 
@@ -254,26 +276,33 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 
 				this.concreteLineView.addSection(this.fromSectionView);
 				this.concreteLineView.addSection(this.toSectionView);
-			}
 
-			//TODO: event to model...
+				//TODO: event to model...
+			}
 		}
 	}
 
 	private class LineExtensionState implements ModificationState {
 
 		private final boolean from;
-		private SectionView srcSectionView;
+		private final SectionView srcSectionView;
 		private SectionView sectionView;
-		private ConcreteStationView fromStation;
+		private final ConcreteStationView fromStation;
+		private ConcreteStationView oldToStation = null;
 
 		private ConcreteStationView toStation = null;
 
 		private final MultiShape2d<Circle2d> stationsBounds;
+		private final Circle2d fromStationBounds;
+		private boolean wasInToStationBounds = true;
 
-		public LineExtensionState(SectionView srcSectionView, ConcreteStationView fromStation) {
+		public LineExtensionState(@Nonnull SectionView srcSectionView,
+		                          @Nonnull ConcreteStationView fromStation,
+		                          @Nullable ConcreteStationView oldToStation) {
 			this.srcSectionView = srcSectionView;
 			this.fromStation = fromStation;
+			this.oldToStation = oldToStation;
+
 			this.sectionView = new SectionView(this.srcSectionView.getLine(),
 			  this.fromStation.getTranslateX(),
 			  this.fromStation.getTranslateY());
@@ -291,9 +320,11 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 				this.from = false;
 			}
 
+			this.fromStationBounds = new Circle2d(new Point2d(fromStation.getTranslateX(), fromStation.getTranslateY()),
+			  STATION_BOUNDS_RADIUS);
 			this.stationsBounds = new MultiShape2d<>();
 			for(ConcreteStationView station : MapView.this.stations) {
-				if(station != this.sectionView.getFromStation()) {
+				if(station != this.sectionView.getFromStation() && station != oldToStation) {
 					Circle2d circle2d = new Circle2d(new Point2d(station.getTranslateX(), station.getTranslateY()),
 					  STATION_BOUNDS_RADIUS);
 					this.stationsBounds.add(circle2d);
@@ -310,12 +341,37 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 		public void update(double x, double y) {
 			this.sectionView.setTo(x, y);
 
-			if(this.stationsBounds.contains(x, y)) {
-				this.apply(x, y);
-				if(this.toStation != null) {
-					MapView.this.modificationState = new LineExtensionState(this.sectionView, this.toStation);
+			if(!this.wasInToStationBounds) {
+				if(this.stationsBounds.contains(x, y)) {
+					this.apply(x, y);
+					if(this.toStation != null) {
+						MapView.this.modificationState = new LineExtensionState(this.sectionView, this.toStation, null);
+					}
+				}
+				else {
+					if(this.fromStationBounds.contains(x, y)) {
+						MapView.this.lineGroup.getChildren().remove(this.sectionView);
+						if(this.srcSectionView.getPrevSection() != null) {
+							this.sectionView.getLine().removeSection(this.srcSectionView);
+							MapView.this.inventoryView.setUnused(this.sectionView.getLine().gameId);
+							MapView.this.modificationState = new LineExtensionState(this.srcSectionView.getPrevSection(),
+							  this.srcSectionView.getFromStation(),
+							  this.fromStation);
+
+							//TODO: event to model...
+						}
+						else { // only one section left
+							this.sectionView.getLine().removeSection(this.srcSectionView);
+							MapView.this.modificationState = new LineModificationState(this.sectionView.getLine(),
+							  this.srcSectionView.getFromStation(),
+							  this.fromStation);
+
+							//TODO: event to model...
+						}
+					}
 				}
 			}
+			this.wasInToStationBounds = this.fromStationBounds.contains(x, y);
 		}
 
 		@Override
@@ -346,6 +402,8 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 				}
 
 				this.srcSectionView.getLine().addSection(this.sectionView);
+
+				//TODO: event to model...
 			}
 			else {
 				if(this.from) {
@@ -356,7 +414,6 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 				}
 			}
 
-			//TODO: event to model...
 		}
 	}
 
@@ -400,8 +457,9 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 	@Override
 	public void mousePressedOnStation(@Nonnull ConcreteStationView station) {
 		this.modificationStateLock.lock();
-		if(MapView.this.inventoryView.getUnusedLine() != null) {
-			this.modificationState = new LineModificationState(station);
+		ConcreteLineView concreteLineView = MapView.this.inventoryView.getUnusedLine();
+		if(concreteLineView != null) {
+			this.modificationState = new LineModificationState(concreteLineView, station, null);
 		}
 		this.modificationStateLock.unlock();
 		//no init
@@ -417,7 +475,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 	@Override
 	public void mousePressedOnSectionHook(SectionView section, ConcreteStationView fromStation) {
 		this.modificationStateLock.lock();
-		this.modificationState = new LineExtensionState(section, fromStation);
+		this.modificationState = new LineExtensionState(section, fromStation, null);
 		this.modificationStateLock.unlock();
 	}
 
