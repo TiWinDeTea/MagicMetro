@@ -353,7 +353,6 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 						MapView.this.lineGroup.getChildren().remove(this.sectionView);
 						if(this.srcSectionView.getPrevSection() != null) {
 							this.sectionView.getLine().removeSection(this.srcSectionView);
-							MapView.this.inventoryView.setUnused(this.sectionView.getLine().gameId);
 							MapView.this.modificationState = new LineExtensionState(this.srcSectionView.getPrevSection(),
 							  this.srcSectionView.getFromStation(),
 							  this.fromStation);
@@ -362,6 +361,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 						}
 						else { // only one section left
 							this.sectionView.getLine().removeSection(this.srcSectionView);
+							MapView.this.inventoryView.setUnused(this.sectionView.getLine().gameId);
 							MapView.this.modificationState = new LineModificationState(this.sectionView.getLine(),
 							  this.srcSectionView.getFromStation(),
 							  this.fromStation);
