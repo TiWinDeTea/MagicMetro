@@ -151,7 +151,7 @@ public class SectionView extends Parent {
 	 * @param toX   the x coordinate of section end point
 	 * @param toY   the y coordinate of section end point
 	 */
-	public SectionView(ConcreteLineView line, double fromX, double fromY, double toX, double toY) {
+	public SectionView(@Nonnull ConcreteLineView line, double fromX, double fromY, double toX, double toY) {
 		this.line = line;
 		this.polyline = new Polyline();
 		this.polyline.getPoints().add(fromX);
@@ -259,7 +259,7 @@ public class SectionView extends Parent {
 	 * @param from the section start point
 	 * @param to   the section end point
 	 */
-	public SectionView(ConcreteLineView line, Point2dfx from, Point2dfx to) {
+	public SectionView(@Nonnull ConcreteLineView line, Point2dfx from, Point2dfx to) {
 		this(line, from.getX(), from.getY(), to.getX(), to.getY());
 	}
 
@@ -270,7 +270,7 @@ public class SectionView extends Parent {
 	 * @param initX the x coordinate of section start and end point
 	 * @param initY the y coordinate of section start and end point
 	 */
-	public SectionView(ConcreteLineView line, double initX, double initY) {
+	public SectionView(@Nonnull ConcreteLineView line, double initX, double initY) {
 		this(line, initX, initY, initX, initY);
 	}
 
