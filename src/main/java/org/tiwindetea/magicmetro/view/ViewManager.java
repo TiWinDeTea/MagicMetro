@@ -63,10 +63,9 @@ public class ViewManager {
 
 	private AnchorPane mainAnchorPane = new AnchorPane();
 	private final Pane cPane = new Pane();
-	private final MapView mapView = new MapView();
 	private final ConcreteInventoryView concreteInventoryView;
-
 	private final Skin skin = new Skin();
+	private final MapView mapView = new MapView(this.skin);
 	private final MultiShape2dfx<Rectangle2dfx> water = new MultiShape2dfx<>();
 
 	private int currentLineNumber = 0;
@@ -114,7 +113,7 @@ public class ViewManager {
 				  timeSpeedLabel.setText("Speed: " + Math.floor(timeSpeed * 100) / 100);
 			  }
 			  else {
-				  double timeSpeed = Utils.map(newValue.doubleValue(), 50, 100, 1, 10);
+				  double timeSpeed = Utils.map(newValue.doubleValue(), 50, 100, 1, 5);
 				  TimeManager.getInstance().setSpeed(timeSpeed);
 				  timeSpeedLabel.setText("Speed: " + Math.floor(timeSpeed * 100) / 100);
 			  }

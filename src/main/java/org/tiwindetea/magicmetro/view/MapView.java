@@ -28,6 +28,7 @@ import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
+import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -35,6 +36,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import org.arakhne.afc.math.geometry.d2.d.Circle2d;
 import org.arakhne.afc.math.geometry.d2.d.MultiShape2d;
 import org.arakhne.afc.math.geometry.d2.d.Point2d;
@@ -42,6 +44,7 @@ import org.arakhne.afc.math.geometry.d2.d.Rectangle2d;
 import org.arakhne.afc.math.geometry.d2.dfx.MultiShape2dfx;
 import org.arakhne.afc.math.geometry.d2.dfx.Point2dfx;
 import org.arakhne.afc.math.geometry.d2.dfx.Rectangle2dfx;
+import org.tiwindetea.magicmetro.model.TrainType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -57,7 +60,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Maxime PINARD
  * @since 0.1
  */
-public class MapView extends DraggableZoomableParent implements StationMouseListener, SectionMouseListener {
+public class MapView extends DraggableZoomableParent implements StationMouseListener, SectionMouseListener, InventoryMouseListener {
 
 	private ConcreteInventoryView inventoryView;
 
@@ -77,6 +80,10 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 	private final List<ConcreteStationView> stations = new LinkedList<>();
 	private final List<ConcreteTrainView> trains = new LinkedList<>();
 	private final List<ConcreteLineView> lines = new LinkedList<>();
+
+	private SectionView dragOverSection; // The section with the mouse is dragging over or null
+	private ConcreteStationView dragOverStation; // The station with the mouse is dragging over or null
+	private Lock dragOverLock = new ReentrantLock();
 
 	private interface ModificationState {
 
@@ -213,6 +220,9 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 		private SectionView toSectionView;
 
 		private final MultiShape2d<Circle2d> stationsBounds;
+		//private final Circle2d oldFromStationBounds;
+		//private final Circle2d oldToStationBounds;
+
 		public LineDoubleModificationState(SectionView modifiedSection, double x, double y) {
 			this.oldSectionView = modifiedSection;
 			this.concreteLineView = modifiedSection.getLine();
@@ -240,6 +250,15 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 					this.stationsBounds.add(circle2d);
 				}
 			}
+
+			/*this.oldFromStationBounds = new Circle2d(new Point2d(
+			  this.oldSectionView.getFromStation().getTranslateX(),
+			  this.oldSectionView.getFromStation().getTranslateY()),
+			  STATION_BOUNDS_RADIUS);
+			this.oldToStationBounds = new Circle2d(new Point2d(
+			  this.oldSectionView.getToStation().getTranslateX(),
+			  this.oldSectionView.getToStation().getTranslateY()),
+			  STATION_BOUNDS_RADIUS);*/
 		}
 
 		@Override
@@ -454,12 +473,122 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 		}
 	}
 
+	private class StationUpgradeMoveState implements ModificationState {
+
+		private final Shape StationUpgradeShape;
+
+		public StationUpgradeMoveState(Shape StationUpgradeShape) {
+			this.StationUpgradeShape = StationUpgradeShape;
+			// Circles already have a good layout
+			//this.StationUpgradeShape.setLayoutX(-Skin.STATION_UPGRADE_VIEW_WIDTH / 2);
+			//this.StationUpgradeShape.setLayoutY(-Skin.STATION_UPGRADE_VIEW_HEIGHT / 2);
+
+			this.StationUpgradeShape.setMouseTransparent(true);
+			MapView.this.trainGroup.getChildren().add(this.StationUpgradeShape);
+		}
+
+		@Override
+		public void init(double x, double y) {
+			update(x, y);
+		}
+
+		@Override
+		public void update(double x, double y) {
+			this.StationUpgradeShape.setTranslateX(x);
+			this.StationUpgradeShape.setTranslateY(y);
+		}
+
+		@Override
+		public void apply(double x, double y) {
+			MapView.this.trainGroup.getChildren().remove(this.StationUpgradeShape);
+			MapView.this.dragOverLock.lock();
+			if(MapView.this.dragOverStation != null) {
+				//TODO: event to model... (upgrade station, model check if a station upgrade is available)
+			}
+			MapView.this.dragOverLock.unlock();
+		}
+	}
+
+	private class PassengerCarMoveState implements ModificationState {
+
+		private final Shape passengerCarShape;
+
+		public PassengerCarMoveState(Shape passengerCarShape) {
+			this.passengerCarShape = passengerCarShape;
+			this.passengerCarShape.setLayoutX(-Skin.PASSENGERCAR_VIEW_WIDTH / 2);
+			this.passengerCarShape.setLayoutY(-Skin.PASSENGERCAR_VIEW_HEIGHT / 2);
+
+			this.passengerCarShape.setMouseTransparent(true);
+			MapView.this.trainGroup.getChildren().add(this.passengerCarShape);
+		}
+
+		@Override
+		public void init(double x, double y) {
+			update(x, y);
+		}
+
+		@Override
+		public void update(double x, double y) {
+			this.passengerCarShape.setTranslateX(x);
+			this.passengerCarShape.setTranslateY(y);
+		}
+
+		@Override
+		public void apply(double x, double y) {
+			MapView.this.trainGroup.getChildren().remove(this.passengerCarShape);
+			MapView.this.dragOverLock.lock();
+			if(MapView.this.dragOverSection != null) {
+				//TODO: event to model... (add passenger car to a train in the line, model check if a passenger car is available)
+			}
+			MapView.this.dragOverLock.unlock();
+		}
+	}
+
+	private class TrainMoveState implements ModificationState {
+
+		private final Shape trainShape;
+
+		public TrainMoveState(Shape trainShape) {
+			this.trainShape = trainShape;
+			this.trainShape.setLayoutX(-Skin.TRAIN_VIEW_WIDTH / 2);
+			this.trainShape.setLayoutY(-Skin.TRAIN_VIEW_HEIGHT / 2);
+
+			this.trainShape.setMouseTransparent(true);
+			MapView.this.trainGroup.getChildren().add(this.trainShape);
+		}
+
+		@Override
+		public void init(double x, double y) {
+			update(x, y);
+		}
+
+		@Override
+		public void update(double x, double y) {
+			this.trainShape.setTranslateX(x);
+			this.trainShape.setTranslateY(y);
+		}
+
+		@Override
+		public void apply(double x, double y) {
+			MapView.this.trainGroup.getChildren().remove(this.trainShape);
+			MapView.this.dragOverLock.lock();
+			if(MapView.this.dragOverSection != null) {
+				//TODO: event to model... (add train to section, model check if a train is available)
+			}
+			MapView.this.dragOverLock.unlock();
+		}
+	}
+
 	private final VoidModificationState voidModificationState = new VoidModificationState();
 	private ModificationState modificationState = this.voidModificationState;
 	private Lock modificationStateLock = new ReentrantLock();
 
-	public MapView() {
+	private final Skin skin;
+
+	public MapView(Skin skin) {
 		super();
+		this.skin = skin;
+
 		this.setWidth(DEFAULT_WIDTH);
 		this.setHeight(DEFAULT_HEIGHT);
 		this.getChildren().add(this.mainPane);
@@ -468,17 +597,51 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 		this.mainPane.getChildren().add(this.stationsGroup);
 		this.mainPane.getChildren().add(this.trainGroup);
 
-		addEventFilter(MouseEvent.MOUSE_DRAGGED, new EventHandler<MouseEvent>() {
+		addEventFilter(MouseEvent.DRAG_DETECTED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				MapView.this.startFullDrag();
+			}
+		});
+
+		/*this.addEventFilter(MouseEvent.ANY, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				System.out.println("MapView : " + event.getEventType());
+				if(event.getEventType().toString().equals("MOUSE-DRAG_OVER")) {
+					int a = 3;
+				}
+			}
+		});*/
+		this.addEventFilter(MouseDragEvent.MOUSE_DRAG_OVER, new EventHandler<MouseDragEvent>() {
+			@Override
+			public void handle(MouseDragEvent event) {
+				MapView.this.modificationStateLock.lock();
+				MapView.this.modificationState.update(event.getX(), event.getY());
+				MapView.this.modificationStateLock.unlock();
+			}
+		});
+
+		/*addEventFilter(MouseEvent.MOUSE_DRAGGED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				MapView.this.modificationStateLock.lock();
 				MapView.this.modificationState.update(event.getX(), event.getY());
 				MapView.this.modificationStateLock.unlock();
 			}
-		});
-		addEventFilter(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
+		});*/
+		/*addEventFilter(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
+				MapView.this.modificationStateLock.lock();
+				MapView.this.modificationState.apply(event.getX(), event.getY());
+				MapView.this.modificationState = MapView.this.voidModificationState;
+				MapView.this.modificationStateLock.unlock();
+			}
+		});*/
+		addEventFilter(MouseDragEvent.MOUSE_DRAG_RELEASED, new EventHandler<MouseDragEvent>() {
+			@Override
+			public void handle(MouseDragEvent event) {
 				MapView.this.modificationStateLock.lock();
 				MapView.this.modificationState.apply(event.getX(), event.getY());
 				MapView.this.modificationState = MapView.this.voidModificationState;
@@ -503,16 +666,65 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 	}
 
 	@Override
-	public void mousePressedOnSection(SectionView section, double mouseX, double mouseY) {
+	public void mouseDragEnteredOnStation(@Nonnull ConcreteStationView station) {
+		this.dragOverLock.lock();
+		this.dragOverStation = station;
+		this.dragOverLock.unlock();
+	}
+
+	@Override
+	public void mouseDragExitedOnStation(@Nonnull ConcreteStationView station) {
+		this.dragOverLock.lock();
+		this.dragOverStation = null;
+		this.dragOverLock.unlock();
+	}
+
+	@Override
+	public void mousePressedOnSection(@Nonnull SectionView section, double mouseX, double mouseY) {
 		this.modificationStateLock.lock();
 		this.modificationState = new LineDoubleModificationState(section, mouseX, mouseY);
 		this.modificationStateLock.unlock();
 	}
 
 	@Override
-	public void mousePressedOnSectionHook(SectionView section, ConcreteStationView fromStation) {
+	public void mousePressedOnSectionHook(@Nonnull SectionView section, ConcreteStationView fromStation) {
 		this.modificationStateLock.lock();
 		this.modificationState = new LineExtensionState(section, fromStation, null);
+		this.modificationStateLock.unlock();
+	}
+
+	@Override
+	public void mouseDragEnteredOnSection(@Nonnull SectionView section) {
+		this.dragOverLock.lock();
+		this.dragOverSection = section;
+		this.dragOverLock.unlock();
+	}
+
+	@Override
+	public void mouseDragExitedOnSection(@Nonnull SectionView section) {
+		this.dragOverLock.lock();
+		this.dragOverSection = null;
+		this.dragOverLock.unlock();
+	}
+
+	@Override
+	public void mousePressedOnStationUpgradeCounter() {
+		this.modificationStateLock.lock();
+		this.modificationState = new StationUpgradeMoveState(this.skin.newStationUpgradeView());
+		this.modificationStateLock.unlock();
+	}
+
+	@Override
+	public void mousePressedOnPassengerCarCounter() {
+		this.modificationStateLock.lock();
+		this.modificationState = new PassengerCarMoveState(this.skin.newPassengerCarView(TrainType.NORMAL)); //FIXME: temporary TrainType.NORMAL for tests
+		this.modificationStateLock.unlock();
+	}
+
+	@Override
+	public void mousePressedOnTrainCounter() {
+		this.modificationStateLock.lock();
+		this.modificationState = new TrainMoveState(this.skin.newTrainView(TrainType.NORMAL)); //FIXME: temporary TrainType.NORMAL for tests
 		this.modificationStateLock.unlock();
 	}
 
