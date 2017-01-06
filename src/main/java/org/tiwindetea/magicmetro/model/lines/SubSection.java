@@ -45,7 +45,7 @@ public class SubSection {
 	private SimplePair<Connection> connections;
 	private double length;
 	private boolean lengthUpToDate = false;
-	private WeakReference<Section> sectionRef = new WeakReference<>(null);
+	private Section sectionRef;
 
 	/**
 	 * Instantiates a new SubSection.
@@ -70,6 +70,7 @@ public class SubSection {
 
 		this.isTunnel = isTunnel;
 		this.connections = new SimplePair<>(leftConnection, rightConnection);
+		computeLength();
 	}
 
 	/**
@@ -108,7 +109,7 @@ public class SubSection {
 	@Nullable
 	public Section getSectionRef() {
 
-		return this.sectionRef.get();
+		return this.sectionRef;
 	}
 
 	/**
@@ -118,7 +119,7 @@ public class SubSection {
 	 */
 	public void setSectionRef(Section sectionRef) {
 
-		this.sectionRef = new WeakReference<>(sectionRef);
+		this.sectionRef = sectionRef;
 	}
 
 	/**
@@ -142,4 +143,14 @@ public class SubSection {
 		return this.connections.getOther(connection);
 	}
 
+	@Override
+	public String toString() {
+		return "SubSection{" +
+				"isTunnel=" + isTunnel +
+				", connections=" + connections +
+				", length=" + length +
+				", lengthUpToDate=" + lengthUpToDate +
+				", sectionRef=" + sectionRef +
+				'}';
+	}
 }

@@ -140,7 +140,8 @@ public class GameManager implements StationManager {
 		EventDispatcher.getInstance().addListener(TimeSpeedChangeEvent.class, this.onTimeSpeedChangeEvent);
 
 		this.viewManager = viewManager;
-		this.gameMap = new GameMap();
+		this.inventory = new Inventory(this.viewManager.getInventoryView());
+		this.gameMap = new GameMap(inventory);
 
 		this.viewManager.setMapSize(mapScript.mapWidth, mapScript.mapHeight);
 		this.viewManager.setWater(this.mapScript.water);
@@ -156,11 +157,13 @@ public class GameManager implements StationManager {
 		}
 
 		//TODO: initial lines
-		this.inventory = new Inventory(this.viewManager.getInventoryView());
 		for(int i = 0; i < mapScript.initialLines; ++i) {
 			Line line = new Line(this.viewManager.createLineView());
 			this.inventory.addLine(line);
+			this.gameMap.addLine(line);
 		}
+
+		this.inventory.addTrain(new Train(0.01, 0.01, viewManager.createTrainView(TrainType.NORMAL)));
 
 		this.executorService.submit(this.gameLoop);
 		this.executorService.shutdown();

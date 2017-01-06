@@ -24,6 +24,7 @@
 
 package org.tiwindetea.magicmetro.model.lines;
 
+
 import org.arakhne.afc.math.geometry.d2.d.Point2d;
 import org.tiwindetea.magicmetro.global.util.Pair;
 import org.tiwindetea.magicmetro.global.util.SimplePair;
@@ -31,7 +32,6 @@ import org.tiwindetea.magicmetro.model.Station;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.ref.WeakReference;
 
 /**
  * A connection between two subsections.
@@ -45,7 +45,7 @@ public class Connection {
 
 	private Point2d position;
 	private SimplePair<SubSection> subSections;
-	private WeakReference<Station> stationRef = new WeakReference<>(null);
+	private Station stationRef;
 
 	/**
 	 * Instantiates a new Connection.
@@ -57,6 +57,28 @@ public class Connection {
 
 		this.position = (position == null) ? new Point2d() : new Point2d(position);
 		this.subSections = new SimplePair<>(subSections);
+	}
+
+	/**
+	 * Instantiates a new Connections with the position
+	 *
+	 * @param position the position of the connection
+	 */
+	public Connection(@Nonnull Point2d position){
+		this.position = position;
+		subSections = new SimplePair<>(null, null);
+	}
+
+	/**
+	 * Instantiates a new Connection that are on a station
+	 *
+	 * @param position the position of this connection
+	 * @param stationRef the station of the connection
+	 */
+	public Connection(Point2d position, Station stationRef) {
+		this.position = position;
+		setStationRef(stationRef);
+		this.subSections = new SimplePair<>(null, null);
 	}
 
 	/**
@@ -101,7 +123,6 @@ public class Connection {
 	 *
 	 * @return the subsections
 	 */
-	@Nonnull
 	public Pair<SubSection, SubSection> getSubSections() {
 		return this.subSections;
 	}
@@ -111,7 +132,6 @@ public class Connection {
 	 *
 	 * @return the left subsection
 	 */
-	@Nonnull
 	public SubSection getLeftSubSection() {
 		return this.subSections.getLeft();
 	}
@@ -121,7 +141,6 @@ public class Connection {
 	 *
 	 * @return the right subsection
 	 */
-	@Nonnull
 	public SubSection getRightSubSection() {
 		return this.subSections.getRight();
 	}
@@ -133,7 +152,7 @@ public class Connection {
 	 */
 	public boolean isInStation() {
 
-		return (this.stationRef.get() != null);
+		return (this.stationRef != null);
 	}
 
 	/**
@@ -144,7 +163,7 @@ public class Connection {
 	@Nullable
 	public Station getStationRef() {
 
-		return this.stationRef.get();
+		return this.stationRef;
 	}
 
 	/**
@@ -153,8 +172,37 @@ public class Connection {
 	 * @param stationRef the station reference
 	 */
 	public void setStationRef(@Nullable Station stationRef) {
+		stationRef.addConnection(this);
+		this.stationRef = stationRef;
+	}
 
-		this.stationRef = new WeakReference<>(stationRef);
+	/**
+	 * Sets the left and right subsection to the connection.
+	 *
+	 * @param subSectionLeft the left subsection
+	 * @param subSectionRight the right subsection
+	 */
+	public void setSubSections(SubSection subSectionLeft, SubSection subSectionRight){
+		this.subSections.setLeft(subSectionLeft);
+		this.subSections.setRight(subSectionRight);
+	}
+
+	/**
+	 * Sets the right subsection
+	 *
+	 * @param subSectionRight the right subSection
+	 */
+	public void setSubSectionRight(SubSection subSectionRight){
+		this.subSections.setRight(subSectionRight);
+	}
+
+	/**
+	 * Sets the left subSection
+	 *
+	 * @param subSectionLeft the left subSection
+	 */
+	public void setSubSectionLeft(SubSection subSectionLeft){
+		this.subSections.setLeft(subSectionLeft);
 	}
 
 }

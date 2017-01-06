@@ -28,6 +28,7 @@ import org.arakhne.afc.math.geometry.d2.d.Point2d;
 import org.arakhne.afc.math.geometry.d2.d.Vector2d;
 import org.tiwindetea.magicmetro.global.util.Utils;
 import org.tiwindetea.magicmetro.model.lines.Connection;
+import org.tiwindetea.magicmetro.model.lines.Line;
 import org.tiwindetea.magicmetro.model.lines.SubSection;
 import org.tiwindetea.magicmetro.view.TrainView;
 
@@ -56,6 +57,7 @@ public class Train {
 	private double speed;
 	private Point2d position;
 	private double rotation;
+	private Line lineRef;
 
 	private List<PassengerCar> passengerCars = new ArrayList<>();
 	private final TrainView view;
@@ -80,6 +82,7 @@ public class Train {
 		this.maxSpeed = maxSpeed;
 		this.acceleration = acceleration;
 		this.view = view;
+		this.view.setVisible(false);
 	}
 
 	/**
@@ -147,7 +150,37 @@ public class Train {
 		return false;
 	}
 
-	private void setPosition(Point2d position) {
+	public void makeItLivable(Line lineRef, Connection connectionA, Connection connectionB){
+		setLastConnection(connectionA);
+		setNextConnection(connectionB);
+		setPosition(connectionA.getPosition());
+		setLineRef(lineRef);
+		if(position != null) {
+			makeItVisible();
+			currentState = movingState;
+			currentState.init();
+			//System.out.println(toString());
+		}
+	}
+
+	public void setLineRef(Line lineRef) {
+		this.lineRef = lineRef;
+	}
+
+	public void setLastConnection(Connection lastConnection) {
+		this.lastConnection = lastConnection;
+	}
+
+	public void setNextConnection(Connection nextConnection) {
+		this.nextConnection = nextConnection;
+	}
+
+	public void makeItVisible(){
+		this.view.setPosition(position);
+		this.view.setVisible(true);
+	}
+
+	public void setPosition(Point2d position) {
 		this.position = position;
 		this.view.setPosition(this.position);
 	}
@@ -160,6 +193,27 @@ public class Train {
 	private void setRotation(double rotation) {
 		this.rotation = rotation;
 		this.view.setRotation(this.rotation);
+	}
+
+	@Override
+	public String toString() {
+		return "Train{" +
+				"gameId=" + gameId +
+				", maxSpeed=" + maxSpeed +
+				", acceleration=" + acceleration +
+				", speed=" + speed +
+				", position=" + position +
+				", rotation=" + rotation +
+				", lineRef=" + lineRef +
+				", passengerCars=" + passengerCars +
+				", view=" + view +
+				", passengers=" + passengers +
+				", movingState=" + movingState +
+				", atStationState=" + atStationState +
+				", currentState=" + currentState +
+				", lastConnection=" + lastConnection +
+				", nextConnection=" + nextConnection +
+				'}';
 	}
 
 	/**

@@ -31,6 +31,7 @@ import org.tiwindetea.magicmetro.model.Station;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * A section of a line composed of several connections and subsections.
@@ -44,44 +45,63 @@ import java.util.Collection;
  */
 public class Section {
 
-	private SimplePair<Connection> lastConnections;
-	private Collection<Connection> connections;
-	private Collection<SubSection> subSections;
+	private Connection rightConnection;
+	private Connection leftConnection;
+	private Connection middleConnection;
+	private SimplePair<SubSection> subSections;
 	private boolean hasTunnel;
 	private boolean tunnelUpToDate = false;
-	private int length;
+	private double length;
 	private boolean lengthUpToDate = false;
+	private Line lineRef;
 
 	/**
-	 * Instantiates a new Section.
+	 * Constructor of a Section with 3 Connections
+	 * Set the section ref to the subSection
 	 *
-	 * @param connections     the connections
-	 * @param lastConnections the last connections
+	 * @param rightConnection the right connection
+	 * @param leftConnection the left connection
+	 * @param middleConnection the middle connection
 	 */
-	public Section(@Nonnull Collection<Connection> connections, @Nonnull Pair<Connection, Connection> lastConnections) {
+	public Section(Connection rightConnection, Connection leftConnection, Connection middleConnection, Line line) {
+		this.rightConnection = rightConnection;
+		this.leftConnection = leftConnection;
+		this.middleConnection = middleConnection;
+		this.lineRef = line;
 
-		this.connections = new ArrayList<>(connections);
-		this.lastConnections = new SimplePair<>(lastConnections);
+		rightConnection.setSubSectionLeft(new SubSection(false, middleConnection, rightConnection));
+		leftConnection.setSubSectionRight(new SubSection(false, leftConnection, middleConnection));
+
+		subSections = new SimplePair<>(rightConnection.getLeftSubSection(), leftConnection.getRightSubSection());
+
+		//Setting the reference for the subSections
+		if(subSections.getLeft() != null){
+			subSections.getLeft().setSectionRef(this);
+		}
+
+		if(subSections.getRight() != null){
+			subSections.getRight().setSectionRef(this);
+		}
+
+		computeLength();
+		computeTunnel();
 	}
 
+	/**
+	 * Compute a update about the tunnel
+	 */
 	private void computeTunnel() {
 
-		this.hasTunnel = false;
-		for(SubSection subSection : this.subSections) {
-			if(subSection.isTunnel()) {
-				this.hasTunnel = true;
-				break;
-			}
-		}
+		this.hasTunnel = subSections.getLeft().isTunnel() || subSections.getRight().isTunnel();
 		this.tunnelUpToDate = true;
 	}
 
+	/**
+	 * Compute the length with changement
+	 */
 	private void computeLength() {
 
-		this.length = 0;
-		for(SubSection subSection : this.subSections) {
-			this.length += subSection.getLength();
-		}
+		this.length = subSections.getLeft().getLength() + subSections.getLeft().getLength();
 		this.lengthUpToDate = true;
 	}
 
@@ -112,15 +132,50 @@ public class Section {
 	}
 
 	/**
-	 * Gets stations linked by this section.
-	 *
-	 * @return the stations
+	 * Gets the line ref
+	 * @return the line reference
 	 */
-	@Nonnull
-	public Pair<Station, Station> getStations() {
-
-		return new Pair<>(this.lastConnections.getLeft().getStationRef(),
-		  this.lastConnections.getRight().getStationRef());
+	public Line getLineRef() {
+		return lineRef;
 	}
 
+	/**
+	 * Gets the left Connection
+	 * @return the left connection
+	 */
+	public Connection getLeftConnection(){
+		return leftConnection;
+	}
+
+	/**
+	 * Gets the right Connection
+	 * @return the right Connection
+	 */
+	public Connection getRightConnection(){
+		return rightConnection;
+	}
+
+	/**
+	 * Sets the Line Ref
+	 *
+	 * @param lineRef the line reference
+	 */
+	protected void setLineRef(Line lineRef) {
+		this.lineRef = lineRef;
+	}
+
+	@Override
+	public String toString() {
+		return "Section{" +
+				"rightConnection=" + rightConnection +
+				", leftConnection=" + leftConnection +
+				", middleConnection=" + middleConnection +
+				", subSections=" + subSections +
+				", hasTunnel=" + hasTunnel +
+				", tunnelUpToDate=" + tunnelUpToDate +
+				", length=" + length +
+				", lengthUpToDate=" + lengthUpToDate +
+				", lineRef=" + lineRef +
+				'}';
+	}
 }

@@ -27,6 +27,7 @@ package org.tiwindetea.magicmetro.model;
 import org.arakhne.afc.math.geometry.d2.d.Point2d;
 import org.tiwindetea.magicmetro.global.TimeManager;
 import org.tiwindetea.magicmetro.model.lines.Connection;
+import org.tiwindetea.magicmetro.model.lines.Line;
 import org.tiwindetea.magicmetro.view.StationView;
 
 import javax.annotation.Nonnull;
@@ -129,6 +130,10 @@ public class Station {
 		return this.type;
 	}
 
+	public Point2d getPosition() {
+		return position;
+	}
+
 	/**
 	 * Add a connection.
 	 *
@@ -163,6 +168,16 @@ public class Station {
 	}
 
 	/**
+	 * Verify if a station contains a connection
+	 *
+	 * @param connection the connection to test
+	 * @return true if the station contains this connection, else otherwise
+	 */
+	public boolean containsConnection(Connection connection){
+		return connections.contains(connection);
+	}
+
+	/**
 	 * Gets warn start.
 	 *
 	 * @return the warn start
@@ -189,4 +204,20 @@ public class Station {
 		this.view.setWarnValue(percentage);
 	}
 
+	@Override
+	public String toString() {
+		return "Station{" +
+				"gameId=" + gameId +
+				", stationManager=" + stationManager +
+				", warnStart=" + warnStart +
+				", warnEnd=" + warnEnd +
+				", warn=" + warn +
+				", position=" + position +
+				", type=" + type +
+				", view=" + view +
+				", maxCapacity=" + maxCapacity +
+				", passengers=" + passengers +
+				", connections=" + connections +
+				'}';
+	}
 }
