@@ -159,7 +159,7 @@ public class GameMap {
      */
     public synchronized boolean addTrain(Train train) {
 	    boolean result = this.trains.add(train);
-        this.trainsCopy = this.trains.toArray(new Train[trains.size()]);
+	    this.trainsCopy = this.trains.toArray(new Train[this.trains.size()]);
 	    return result;
     }
 
@@ -171,7 +171,7 @@ public class GameMap {
      */
     public synchronized boolean removeTrain(Train train) {
 	    boolean result = this.trains.remove(train);
-        this.trainsCopy = this.trains.toArray(new Train[trains.size()]);
+	    this.trainsCopy = this.trains.toArray(new Train[this.trains.size()]);
 	    return result;
     }
 
@@ -234,15 +234,12 @@ public class GameMap {
      */
     @Nullable
     private Station getStationWithId(int id){
-        int i = 0;
-        while (i < stations.size() && stations.get(i).gameId != id){
-            ++i;
-        }
-        if(i < stations.size()){
-            return stations.get(i);
-        } else {
-            return null;
-        }
+	    for(Station station : this.stations) {
+		    if(station.gameId == id) {
+			    return station;
+		    }
+	    }
+	    return null;
     }
 
     /**
@@ -252,15 +249,12 @@ public class GameMap {
      * @return the line with the id, null if the line with this id isn't in the map
      */
     private Line getLineWithId(int id){
-        int i = 0;
-        while (i < lines.size() && lines.get(i).gameId == id){
-            ++i;
-        }
-        if(i < lines.size()){
-            return lines.get(i);
-        } else {
-            return null;
-        }
+	    for(Line line : this.lines) {
+		    if(line.gameId == id) {
+			    return line;
+		    }
+	    }
+	    return null;
     }
 
     private Connection getConnectionInStationWithLine(Station station, Line line){
