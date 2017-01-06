@@ -317,6 +317,8 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 
 		private final MultiShape2d<Circle2d> stationsBounds;
 		private final Circle2d fromStationBounds;
+		private boolean wasInFromStationBounds = true;
+		private final MultiShape2d<Circle2d> oldToStationBounds;
 		private boolean wasInToStationBounds = true;
 
 		public LineExtensionState(@Nonnull SectionView srcSectionView,
@@ -347,11 +349,22 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 			  STATION_BOUNDS_RADIUS);
 			this.stationsBounds = new MultiShape2d<>();
 			for(ConcreteStationView station : MapView.this.stations) {
-				if(station != this.sectionView.getFromStation() && station != oldToStation) {
+				if(station != this.sectionView.getFromStation()) {
 					Circle2d circle2d = new Circle2d(new Point2d(station.getTranslateX(), station.getTranslateY()),
 					  STATION_BOUNDS_RADIUS);
 					this.stationsBounds.add(circle2d);
 				}
+			}
+
+			this.oldToStationBounds = new MultiShape2d<>();
+			if(this.oldToStation != null) {
+				this.oldToStationBounds.add(new Circle2d(new Point2d(this.oldToStation.getTranslateX(),
+				  this.oldToStation.getTranslateY()),
+				  STATION_BOUNDS_RADIUS));
+				this.wasInToStationBounds = true;
+			}
+			else {
+				this.wasInToStationBounds = false;
 			}
 		}
 
@@ -364,7 +377,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 		public void update(double x, double y) {
 			this.sectionView.setTo(x, y);
 
-			if(!this.wasInToStationBounds) {
+			if(!this.wasInFromStationBounds && !this.wasInToStationBounds) {
 				if(this.stationsBounds.contains(x, y)) {
 					this.apply(x, y);
 					if(this.toStation != null) {
@@ -394,7 +407,8 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 					}
 				}
 			}
-			this.wasInToStationBounds = this.fromStationBounds.contains(x, y);
+			this.wasInFromStationBounds = this.fromStationBounds.contains(x, y);
+			this.wasInToStationBounds = this.oldToStationBounds.contains(x, y);
 		}
 
 		@Override
