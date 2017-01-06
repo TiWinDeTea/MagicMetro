@@ -28,6 +28,7 @@ import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.TilePane;
 import javafx.scene.shape.Shape;
@@ -92,6 +93,22 @@ public class ConcreteStationView extends Parent implements StationView {
 			public void handle(MouseEvent event) {
 				if(ConcreteStationView.this.stationMouseListener != null) {
 					ConcreteStationView.this.stationMouseListener.mousePressedOnStation(ConcreteStationView.this);
+				}
+			}
+		});
+		sprite.addEventFilter(MouseDragEvent.MOUSE_DRAG_ENTERED, new EventHandler<MouseDragEvent>() {
+			@Override
+			public void handle(MouseDragEvent event) {
+				if(ConcreteStationView.this.stationMouseListener != null) {
+					ConcreteStationView.this.stationMouseListener.mouseDragEnteredOnStation(ConcreteStationView.this);
+				}
+			}
+		});
+		sprite.addEventFilter(MouseDragEvent.MOUSE_DRAG_EXITED, new EventHandler<MouseDragEvent>() {
+			@Override
+			public void handle(MouseDragEvent event) {
+				if(ConcreteStationView.this.stationMouseListener != null) {
+					ConcreteStationView.this.stationMouseListener.mouseDragExitedOnStation(ConcreteStationView.this);
 				}
 			}
 		});

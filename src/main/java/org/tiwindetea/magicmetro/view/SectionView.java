@@ -27,6 +27,7 @@ package org.tiwindetea.magicmetro.view;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Parent;
+import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
@@ -230,6 +231,23 @@ public class SectionView extends Parent {
 		this.getChildren().add(this.toHook);
 
 		this.updateHooks();
+
+		addEventFilter(MouseDragEvent.MOUSE_DRAG_ENTERED, new EventHandler<MouseDragEvent>() {
+			@Override
+			public void handle(MouseDragEvent event) {
+				if(SectionView.this.sectionMouseListener != null) {
+					SectionView.this.sectionMouseListener.mouseDragEnteredOnSection(SectionView.this);
+				}
+			}
+		});
+		addEventFilter(MouseDragEvent.MOUSE_DRAG_EXITED, new EventHandler<MouseDragEvent>() {
+			@Override
+			public void handle(MouseDragEvent event) {
+				if(SectionView.this.sectionMouseListener != null) {
+					SectionView.this.sectionMouseListener.mouseDragExitedOnSection(SectionView.this);
+				}
+			}
+		});
 	}
 
 	/**

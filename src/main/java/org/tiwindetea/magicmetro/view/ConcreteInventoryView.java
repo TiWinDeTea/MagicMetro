@@ -25,9 +25,11 @@
 package org.tiwindetea.magicmetro.view;
 
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -47,6 +49,7 @@ import java.util.List;
 public class ConcreteInventoryView extends Parent implements InventoryView {
 
 	private final MapView mapView;
+	private final InventoryMouseListener inventoryMouseListener;
 
 	private HBox mainHBox = new HBox();
 	private HBox linesHBox = new HBox();
@@ -75,6 +78,7 @@ public class ConcreteInventoryView extends Parent implements InventoryView {
 		public CircleCounter(String text) {
 			this.text = text;
 			this.label = new Label(text + ": " + this.number);
+			this.label.setTextFill(Color.WHITE);
 
 			this.getChildren().add(this.mainStackPane);
 			this.mainStackPane.getChildren().add(this.circle);
@@ -150,10 +154,71 @@ public class ConcreteInventoryView extends Parent implements InventoryView {
 	 */
 	public ConcreteInventoryView(@Nonnull MapView mapView) {
 		this.mapView = mapView;
+		this.inventoryMouseListener = mapView;
 
+		this.stationUpgradeCounter.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				ConcreteInventoryView.this.inventoryMouseListener.mousePressedOnStationUpgradeCounter();
+			}
+		});
+		this.stationUpgradeCounter.addEventFilter(MouseEvent.DRAG_DETECTED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				ConcreteInventoryView.this.setMouseTransparent(true);
+				ConcreteInventoryView.this.startFullDrag();
+			}
+		});
+		this.stationUpgradeCounter.addEventFilter(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				ConcreteInventoryView.this.setMouseTransparent(false);
+			}
+		});
 		this.mainHBox.getChildren().add(this.stationUpgradeCounter);
+
+		this.passengerCarCounter.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				ConcreteInventoryView.this.inventoryMouseListener.mousePressedOnPassengerCarCounter();
+			}
+		});
+		this.passengerCarCounter.addEventFilter(MouseEvent.DRAG_DETECTED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				ConcreteInventoryView.this.setMouseTransparent(true);
+				ConcreteInventoryView.this.startFullDrag();
+			}
+		});
+		this.passengerCarCounter.addEventFilter(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				ConcreteInventoryView.this.setMouseTransparent(false);
+			}
+		});
 		this.mainHBox.getChildren().add(this.passengerCarCounter);
+
+		this.trainCounter.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				ConcreteInventoryView.this.inventoryMouseListener.mousePressedOnTrainCounter();
+			}
+		});
+		this.trainCounter.addEventFilter(MouseEvent.DRAG_DETECTED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				ConcreteInventoryView.this.setMouseTransparent(true);
+				ConcreteInventoryView.this.startFullDrag();
+			}
+		});
+		this.trainCounter.addEventFilter(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				ConcreteInventoryView.this.setMouseTransparent(false);
+			}
+		});
 		this.mainHBox.getChildren().add(this.trainCounter);
+
 		this.mainHBox.getChildren().add(this.tunnelCounter);
 
 		this.linesHBox.setAlignment(Pos.CENTER);
