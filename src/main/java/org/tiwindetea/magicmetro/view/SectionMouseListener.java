@@ -24,6 +24,8 @@
 
 package org.tiwindetea.magicmetro.view;
 
+import javax.annotation.Nonnull;
+
 /**
  * TODO
  *
@@ -32,8 +34,12 @@ package org.tiwindetea.magicmetro.view;
  */
 public interface SectionMouseListener {
 
-	void mousePressedOnSection(SectionView section, double mouseX, double mouseY);
+	void mousePressedOnSection(@Nonnull SectionView section, double mouseX, double mouseY);
 
-	void mousePressedOnSectionHook(SectionView section, ConcreteStationView fromStation);
+	void mousePressedOnSectionHook(@Nonnull SectionView section, ConcreteStationView fromStation);
+
+	void mouseDragEnteredOnSection(@Nonnull SectionView section);
+
+	void mouseDragExitedOnSection(@Nonnull SectionView section);
 
 }

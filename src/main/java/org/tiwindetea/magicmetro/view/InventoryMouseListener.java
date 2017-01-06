@@ -24,20 +24,18 @@
 
 package org.tiwindetea.magicmetro.view;
 
-import javax.annotation.Nonnull;
-
 /**
  * TODO
  *
  * @author Maxime PINARD
  * @since 0.1
  */
-public interface StationMouseListener {
+public interface InventoryMouseListener {
 
-	void mousePressedOnStation(@Nonnull ConcreteStationView station);
+	void mousePressedOnStationUpgradeCounter();
 
-	void mouseDragEnteredOnStation(@Nonnull ConcreteStationView station);
+	void mousePressedOnPassengerCarCounter();
 
-	void mouseDragExitedOnStation(@Nonnull ConcreteStationView station);
+	void mousePressedOnTrainCounter();
 
 }
