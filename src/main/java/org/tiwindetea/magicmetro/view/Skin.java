@@ -46,10 +46,14 @@ public class Skin implements PassengerViewFactory {
 
 	//FIXME: temporary test implementation
 
-	public static final int TRAIN_VIEW_WIDTH = 75;
-	public static final int TRAIN_VIEW_HEIGHT = 40;
 	public static final int STATION_VIEW_WIDTH = 40;
 	public static final int STATION_VIEW_HEIGHT = 40;
+	public static final int TRAIN_VIEW_WIDTH = 75;
+	public static final int TRAIN_VIEW_HEIGHT = 40;
+	public static final int PASSENGERCAR_VIEW_WIDTH = 60;
+	public static final int PASSENGERCAR_VIEW_HEIGHT = 40;
+	public static final int STATION_UPGRADE_VIEW_WIDTH = 40;
+	public static final int STATION_UPGRADE_VIEW_HEIGHT = 40;
 
 	private static final Color PASSENGERS_COLOR = Color.GRAY;
 	private static final Color STATIONS_COLOR1 = Color.DARKGRAY;
@@ -235,6 +239,12 @@ public class Skin implements PassengerViewFactory {
 	@Nonnull
 	public List<Point2d> getTrainPassengerPositions() {
 		return TRAIN_PASSENGERS_POSITIONS;
+	}
+
+	public Shape newStationUpgradeView() {
+		Circle circle = new Circle(20);
+		circle.setFill(ERROR_COLOR);
+		return circle;
 	}
 
 }
