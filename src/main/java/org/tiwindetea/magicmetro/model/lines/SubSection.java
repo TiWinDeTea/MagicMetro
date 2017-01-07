@@ -29,7 +29,6 @@ import org.tiwindetea.magicmetro.global.util.SimplePair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.ref.WeakReference;
 
 /**
  * A subsection between two connections.
@@ -45,7 +44,7 @@ public class SubSection {
 	private SimplePair<Connection> connections;
 	private double length;
 	private boolean lengthUpToDate = false;
-	private Section sectionRef;
+	private Section section;
 
 	/**
 	 * Instantiates a new SubSection.
@@ -102,24 +101,24 @@ public class SubSection {
 	}
 
 	/**
-	 * Gets section reference.
+	 * Gets section.
 	 *
-	 * @return the section reference
+	 * @return the section
 	 */
 	@Nullable
-	public Section getSectionRef() {
+	public Section getSection() {
 
-		return this.sectionRef;
+		return this.section;
 	}
 
 	/**
-	 * Sets section reference.
+	 * Sets section.
 	 *
-	 * @param sectionRef the section reference
+	 * @param section the section
 	 */
-	public void setSectionRef(Section sectionRef) {
+	public void setSection(@Nullable Section section) {
 
-		this.sectionRef = sectionRef;
+		this.section = section;
 	}
 
 	/**
@@ -128,7 +127,7 @@ public class SubSection {
 	 * @param connection The connection
 	 * @return true if the subsection contains the connection, false otherwise
 	 */
-	public boolean contains(Connection connection) {
+	public boolean contains(@Nullable Connection connection) {
 		return this.connections.contains(connection);
 	}
 
@@ -143,14 +142,4 @@ public class SubSection {
 		return this.connections.getOther(connection);
 	}
 
-	@Override
-	public String toString() {
-		return "SubSection{" +
-				"isTunnel=" + isTunnel +
-				", connections=" + connections +
-				", length=" + length +
-				", lengthUpToDate=" + lengthUpToDate +
-				", sectionRef=" + sectionRef +
-				'}';
-	}
 }
