@@ -22,26 +22,23 @@
  * SOFTWARE.
  */
 
-package org.tiwindetea.magicmetro.model;
+package org.tiwindetea.magicmetro.global.eventdispatcher.events.timeevents;
 
-import org.arakhne.afc.math.geometry.d2.d.Point2d;
 import org.tiwindetea.magicmetro.global.eventdispatcher.Event;
 
 /**
- * Event for creation of a Line
- * @author Julien Barbier
+ * Event send when the time is stopped.
+ *
+ * @author Maxime PINARD
  * @since 0.1
  */
-public class CreateLineEvent implements Event{
-    public final int idStationRight;
-    public final int idStationLeft;
-    public final Point2d middlePoint;
-    public final int idLine;
+public class TimeStopEvent implements Event {
 
-    public CreateLineEvent(int idStationRight, int idStationLeft, Point2d middlePoint, int idLine) {
-        this.idStationRight = idStationRight;
-        this.idStationLeft = idStationLeft;
-        this.middlePoint = middlePoint;
-        this.idLine = idLine;
-    }
+	/**
+	 * Instantiates a new TimeStopEvent.
+	 */
+	public TimeStopEvent() {
+
+	}
+
 }

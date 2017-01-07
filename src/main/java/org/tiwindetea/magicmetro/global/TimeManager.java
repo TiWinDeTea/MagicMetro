@@ -25,11 +25,11 @@
 package org.tiwindetea.magicmetro.global;
 
 import org.tiwindetea.magicmetro.global.eventdispatcher.EventDispatcher;
-import org.tiwindetea.magicmetro.global.eventdispatcher.events.TimePauseEvent;
-import org.tiwindetea.magicmetro.global.eventdispatcher.events.TimeResetEvent;
-import org.tiwindetea.magicmetro.global.eventdispatcher.events.TimeSpeedChangeEvent;
-import org.tiwindetea.magicmetro.global.eventdispatcher.events.TimeStartEvent;
-import org.tiwindetea.magicmetro.global.eventdispatcher.events.TimeStopEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.timeevents.TimePauseEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.timeevents.TimeResetEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.timeevents.TimeSpeedChangeEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.timeevents.TimeStartEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.timeevents.TimeStopEvent;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

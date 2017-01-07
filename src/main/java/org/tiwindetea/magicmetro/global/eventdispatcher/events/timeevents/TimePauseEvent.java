@@ -22,30 +22,23 @@
  * SOFTWARE.
  */
 
-package org.tiwindetea.magicmetro.global.eventdispatcher.events;
+package org.tiwindetea.magicmetro.global.eventdispatcher.events.timeevents;
 
 import org.tiwindetea.magicmetro.global.eventdispatcher.Event;
 
 /**
- * Event send when the time speed has changed.
+ * Event send when the time is paused.
  *
  * @author Maxime PINARD
  * @since 0.1
  */
-public class TimeSpeedChangeEvent implements Event {
-
-	public final long oldSpeed;
-	public final long newSpeed;
+public class TimePauseEvent implements Event {
 
 	/**
-	 * Instantiates a new TimeSpeedChangeEvent.
-	 *
-	 * @param oldSpeed the old time speed
-	 * @param newSpeed the new time speed
+	 * Instantiates a new TimePauseEvent.
 	 */
-	public TimeSpeedChangeEvent(long oldSpeed, long newSpeed) {
-		this.oldSpeed = oldSpeed;
-		this.newSpeed = newSpeed;
+	public TimePauseEvent() {
+
 	}
 
 }

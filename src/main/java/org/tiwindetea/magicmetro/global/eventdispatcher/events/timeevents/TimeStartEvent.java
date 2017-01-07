@@ -22,35 +22,23 @@
  * SOFTWARE.
  */
 
-package org.tiwindetea.magicmetro.model;
+package org.tiwindetea.magicmetro.global.eventdispatcher.events.timeevents;
 
-import org.arakhne.afc.math.geometry.d2.d.Point2d;
 import org.tiwindetea.magicmetro.global.eventdispatcher.Event;
 
 /**
- * Created by Julien Barbier on 02/01/2017.
- */
-
-/**
- * Event for modification of Line
- * @author Julien Barbier
+ * Event send when the time was paused and restart.
+ *
+ * @author Maxime PINARD
  * @since 0.1
  */
-public class LineModificationAddStationEvent implements Event{
+public class TimeStartEvent implements Event {
 
-    public final int idLine;
-    public final int idStationRight;
-    public final int idStationLeft;
-    public final int idStationMiddle;
-    public final Point2d aToC;
-    public final Point2d bToC;
+	/**
+	 * Instantiates a new TimeStartEvent.
+	 */
+	public TimeStartEvent() {
 
-    public LineModificationAddStationEvent(int idLine, int idStationA, int idStationB, int idStationC, Point2d aToC, Point2d bToC){
-        this.idLine = idLine;
-        this.idStationRight = idStationA;
-        this.idStationLeft = idStationB;
-        this.idStationMiddle = idStationC;
-        this.aToC = aToC;
-        this.bToC = bToC;
-    }
+	}
+
 }
