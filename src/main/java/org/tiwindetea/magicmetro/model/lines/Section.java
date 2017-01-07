@@ -24,18 +24,13 @@
 
 package org.tiwindetea.magicmetro.model.lines;
 
-import org.tiwindetea.magicmetro.global.util.Pair;
-import org.tiwindetea.magicmetro.global.util.SimplePair;
-import org.tiwindetea.magicmetro.model.Station;
-
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import javax.annotation.Nullable;
+import java.util.Objects;
 
 /**
  * A section of a line composed of several connections and subsections.
- * The two last connections are part of different stations linked by the section.
+ * The right and left connections are part of different stations linked by the section.
  *
  * @author Maxime PINARD
  * @see SubSection
@@ -45,64 +40,51 @@ import java.util.List;
  */
 public class Section {
 
-	private Connection rightConnection;
+	/**
+	 * The Game id.
+	 */
+	public final int gameId;
+
+	private Line line;
+
 	private Connection leftConnection;
+	private Connection rightConnection;
 	private Connection middleConnection;
-	private SimplePair<SubSection> subSections;
-	private boolean hasTunnel;
-	private boolean tunnelUpToDate = false;
-	private double length;
-	private boolean lengthUpToDate = false;
-	private Line lineRef;
+	private SubSection leftSubSection;
+	private SubSection rightSubSection;
 
 	/**
-	 * Constructor of a Section with 3 Connections
-	 * Set the section ref to the subSection
+	 * Instantiates a new Section.
 	 *
-	 * @param rightConnection the right connection
-	 * @param leftConnection the left connection
+	 * @param gameId           the game id
+	 * @param line             the line
+	 * @param leftConnection   the left connection
+	 * @param rightConnection  the right connection
 	 * @param middleConnection the middle connection
+	 * @param leftSubSection   the left sub section
+	 * @param rightSubSection  the right sub section
 	 */
-	public Section(Connection rightConnection, Connection leftConnection, Connection middleConnection, Line line) {
-		this.rightConnection = rightConnection;
+	public Section(int gameId,
+	               @Nonnull Line line,
+	               @Nonnull Connection leftConnection,
+	               @Nonnull Connection rightConnection,
+	               @Nonnull Connection middleConnection,
+	               @Nonnull SubSection leftSubSection,
+	               @Nonnull SubSection rightSubSection) {
+
+		Objects.requireNonNull(leftConnection.getStation(), "Left connection must be in a station");
+		Objects.requireNonNull(rightConnection.getStation(), "Left connection must be in a station");
+
+		this.gameId = gameId;
+		this.line = line;
 		this.leftConnection = leftConnection;
+		this.rightConnection = rightConnection;
 		this.middleConnection = middleConnection;
-		this.lineRef = line;
+		this.leftSubSection = leftSubSection;
+		this.rightSubSection = rightSubSection;
 
-		rightConnection.setSubSectionLeft(new SubSection(false, middleConnection, rightConnection));
-		leftConnection.setSubSectionRight(new SubSection(false, leftConnection, middleConnection));
-
-		subSections = new SimplePair<>(rightConnection.getLeftSubSection(), leftConnection.getRightSubSection());
-
-		//Setting the reference for the subSections
-		if(subSections.getLeft() != null){
-			subSections.getLeft().setSectionRef(this);
-		}
-
-		if(subSections.getRight() != null){
-			subSections.getRight().setSectionRef(this);
-		}
-
-		computeLength();
-		computeTunnel();
-	}
-
-	/**
-	 * Compute a update about the tunnel
-	 */
-	private void computeTunnel() {
-
-		this.hasTunnel = subSections.getLeft().isTunnel() || subSections.getRight().isTunnel();
-		this.tunnelUpToDate = true;
-	}
-
-	/**
-	 * Compute the length with changement
-	 */
-	private void computeLength() {
-
-		this.length = subSections.getLeft().getLength() + subSections.getLeft().getLength();
-		this.lengthUpToDate = true;
+		this.rightSubSection.setSection(this);
+		this.leftSubSection.setSection(this);
 	}
 
 	/**
@@ -111,11 +93,7 @@ public class Section {
 	 * @return true if has tunnel, false otherwise
 	 */
 	public boolean hasTunnel() {
-
-		if(!this.tunnelUpToDate) {
-			computeTunnel();
-		}
-		return this.hasTunnel;
+		return this.leftSubSection.isTunnel() || this.rightSubSection.isTunnel();
 	}
 
 	/**
@@ -124,58 +102,121 @@ public class Section {
 	 * @return the length
 	 */
 	public double getLength() {
-
-		if(!this.lengthUpToDate) {
-			computeLength();
-		}
-		return this.length;
+		return this.leftSubSection.getLength() + this.rightSubSection.getLength();
 	}
 
 	/**
-	 * Gets the line ref
-	 * @return the line reference
+	 * Gets line.
+	 *
+	 * @return the line
 	 */
-	public Line getLineRef() {
-		return lineRef;
+	@Nullable
+	public Line getLine() {
+		return this.line;
 	}
 
 	/**
-	 * Gets the left Connection
+	 * Sets line.
+	 *
+	 * @param line the line
+	 */
+	public void setLine(@Nullable Line line) {
+		this.line = line;
+	}
+
+	/**
+	 * Gets left connection.
+	 *
 	 * @return the left connection
 	 */
-	public Connection getLeftConnection(){
-		return leftConnection;
+	@Nonnull
+	public Connection getLeftConnection() {
+		return this.leftConnection;
 	}
 
 	/**
-	 * Gets the right Connection
-	 * @return the right Connection
-	 */
-	public Connection getRightConnection(){
-		return rightConnection;
-	}
-
-	/**
-	 * Sets the Line Ref
+	 * Sets left connection.
 	 *
-	 * @param lineRef the line reference
+	 * @param leftConnection the left connection
 	 */
-	protected void setLineRef(Line lineRef) {
-		this.lineRef = lineRef;
+	public void setLeftConnection(@Nonnull Connection leftConnection) {
+		this.leftConnection = leftConnection;
 	}
 
-	@Override
-	public String toString() {
-		return "Section{" +
-				"rightConnection=" + rightConnection +
-				", leftConnection=" + leftConnection +
-				", middleConnection=" + middleConnection +
-				", subSections=" + subSections +
-				", hasTunnel=" + hasTunnel +
-				", tunnelUpToDate=" + tunnelUpToDate +
-				", length=" + length +
-				", lengthUpToDate=" + lengthUpToDate +
-				", lineRef=" + lineRef +
-				'}';
+	/**
+	 * Gets right connection.
+	 *
+	 * @return the right connection
+	 */
+	@Nonnull
+	public Connection getRightConnection() {
+		return this.rightConnection;
 	}
+
+	/**
+	 * Sets right connection.
+	 *
+	 * @param rightConnection the right connection
+	 */
+	public void setRightConnection(@Nonnull Connection rightConnection) {
+		this.rightConnection = rightConnection;
+	}
+
+	/**
+	 * Gets middle connection.
+	 *
+	 * @return the middle connection
+	 */
+	@Nonnull
+	public Connection getMiddleConnection() {
+		return this.middleConnection;
+	}
+
+	/**
+	 * Sets middle connection.
+	 *
+	 * @param middleConnection the middle connection
+	 */
+	public void setMiddleConnection(@Nonnull Connection middleConnection) {
+		this.middleConnection = middleConnection;
+	}
+
+	/**
+	 * Gets left sub section.
+	 *
+	 * @return the left sub section
+	 */
+	@Nonnull
+	public SubSection getLeftSubSection() {
+		return this.leftSubSection;
+	}
+
+	/**
+	 * Sets left sub section.
+	 *
+	 * @param leftSubSection the left sub section
+	 */
+	public void setLeftSubSection(@Nonnull SubSection leftSubSection) {
+		this.leftSubSection = leftSubSection;
+	}
+
+	/**
+	 * Gets right sub section.
+	 *
+	 * @return the right sub section
+	 */
+	@Nonnull
+	public SubSection getRightSubSection() {
+		return this.rightSubSection;
+	}
+
+	/**
+	 * Sets right sub section.
+	 *
+	 * @param rightSubSection the right sub section
+	 */
+	public void setRightSubSection(@Nonnull SubSection rightSubSection) {
+		this.rightSubSection = rightSubSection;
+	}
+
 }
