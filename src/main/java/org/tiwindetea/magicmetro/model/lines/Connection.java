@@ -45,7 +45,7 @@ public class Connection {
 
 	private Point2d position;
 	private SimplePair<SubSection> subSections;
-	private Station stationRef;
+	private Station station;
 
 	/**
 	 * Instantiates a new Connection.
@@ -53,31 +53,31 @@ public class Connection {
 	 * @param position    the position
 	 * @param subSections the subsections
 	 */
-	public Connection(@Nullable Point2d position, @Nonnull Pair<SubSection, SubSection> subSections) {
+	public Connection(@Nonnull Point2d position, @Nonnull Pair<SubSection, SubSection> subSections) {
 
-		this.position = (position == null) ? new Point2d() : new Point2d(position);
+		this.position = new Point2d(position);
 		this.subSections = new SimplePair<>(subSections);
 	}
 
 	/**
-	 * Instantiates a new Connections with the position
+	 * Instantiates a new Connection.
 	 *
 	 * @param position the position of the connection
 	 */
 	public Connection(@Nonnull Point2d position){
-		this.position = position;
-		subSections = new SimplePair<>(null, null);
+		this.position = new Point2d(position);
+		this.subSections = new SimplePair<>(null, null);
 	}
 
 	/**
-	 * Instantiates a new Connection that are on a station
+	 * Instantiates a new Connection.<p>
+	 * Take the position of the station.
 	 *
-	 * @param position the position of this connection
-	 * @param stationRef the station of the connection
+	 * @param station the station of the connection
 	 */
-	public Connection(Point2d position, Station stationRef) {
-		this.position = position;
-		setStationRef(stationRef);
+	public Connection(@Nonnull Station station) {
+		this.station = station;
+		this.position = this.station.getPosition();
 		this.subSections = new SimplePair<>(null, null);
 	}
 
@@ -88,11 +88,11 @@ public class Connection {
 	 * @param leftSubSection  the left subsection
 	 * @param rightSubSection the right subsection
 	 */
-	public Connection(@Nullable Point2d position,
-	                  @Nonnull SubSection leftSubSection,
-	                  @Nonnull SubSection rightSubSection) {
+	public Connection(@Nonnull Point2d position,
+	                  @Nullable SubSection leftSubSection,
+	                  @Nullable SubSection rightSubSection) {
 
-		this.position = (position == null) ? new Point2d() : new Point2d(position);
+		this.position = new Point2d(position);
 		this.subSections = new SimplePair<>(leftSubSection, rightSubSection);
 	}
 
@@ -102,9 +102,9 @@ public class Connection {
 	 * @param position   the position
 	 * @param subSection the subsection (right and left)
 	 */
-	public Connection(@Nullable Point2d position, @Nonnull SubSection subSection) {
+	public Connection(@Nonnull Point2d position, @Nonnull SubSection subSection) {
 
-		this.position = (position == null) ? new Point2d() : new Point2d(position);
+		this.position = new Point2d(position);
 		this.subSections = new SimplePair<>(subSection, subSection);
 	}
 
@@ -123,6 +123,7 @@ public class Connection {
 	 *
 	 * @return the subsections
 	 */
+	@Nonnull
 	public Pair<SubSection, SubSection> getSubSections() {
 		return this.subSections;
 	}
@@ -132,6 +133,7 @@ public class Connection {
 	 *
 	 * @return the left subsection
 	 */
+	@Nullable
 	public SubSection getLeftSubSection() {
 		return this.subSections.getLeft();
 	}
@@ -141,6 +143,7 @@ public class Connection {
 	 *
 	 * @return the right subsection
 	 */
+	@Nullable
 	public SubSection getRightSubSection() {
 		return this.subSections.getRight();
 	}
@@ -151,57 +154,55 @@ public class Connection {
 	 * @return true if in station, false otherwise
 	 */
 	public boolean isInStation() {
-
-		return (this.stationRef != null);
+		return (this.station != null);
 	}
 
 	/**
-	 * Gets station reference if in station.
+	 * Gets station.
 	 *
-	 * @return the station reference if in station, null otherwise
+	 * @return the station if in station, null otherwise
 	 */
 	@Nullable
-	public Station getStationRef() {
+	public Station getStation() {
 
-		return this.stationRef;
+		return this.station;
 	}
 
 	/**
-	 * Sets station reference, the connection will consider it is in the station.
+	 * Sets station.
 	 *
-	 * @param stationRef the station reference
+	 * @param station the station
 	 */
-	public void setStationRef(@Nullable Station stationRef) {
-		stationRef.addConnection(this);
-		this.stationRef = stationRef;
+	public void setStation(@Nullable Station station) {
+		this.station = station;
 	}
 
 	/**
-	 * Sets the left and right subsection to the connection.
+	 * Sets the left and right subsection of the connection.
 	 *
 	 * @param subSectionLeft the left subsection
 	 * @param subSectionRight the right subsection
 	 */
-	public void setSubSections(SubSection subSectionLeft, SubSection subSectionRight){
+	public void setSubSections(@Nullable SubSection subSectionLeft, @Nullable SubSection subSectionRight) {
 		this.subSections.setLeft(subSectionLeft);
 		this.subSections.setRight(subSectionRight);
 	}
 
 	/**
-	 * Sets the right subsection
+	 * Sets the right sub section.
 	 *
-	 * @param subSectionRight the right subSection
+	 * @param subSectionRight the right sub section
 	 */
-	public void setSubSectionRight(SubSection subSectionRight){
+	public void setSubSectionRight(@Nullable SubSection subSectionRight) {
 		this.subSections.setRight(subSectionRight);
 	}
 
 	/**
-	 * Sets the left subSection
+	 * Sets the left sub section.
 	 *
-	 * @param subSectionLeft the left subSection
+	 * @param subSectionLeft the left sub section
 	 */
-	public void setSubSectionLeft(SubSection subSectionLeft){
+	public void setSubSectionLeft(@Nullable SubSection subSectionLeft) {
 		this.subSections.setLeft(subSectionLeft);
 	}
 
