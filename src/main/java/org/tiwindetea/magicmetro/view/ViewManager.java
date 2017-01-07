@@ -161,7 +161,8 @@ public class ViewManager {
 		  Skin.TRAIN_VIEW_WIDTH,
 		  Skin.TRAIN_VIEW_HEIGHT,
 		  this.skin.getTrainPassengerPositions(),
-		  this.skin);
+		  this.skin,
+		  this.mapView);
 		Platform.runLater(() -> this.mapView.addTrain(concreteTrainView));
 		return concreteTrainView;
 	}

@@ -49,11 +49,15 @@ public class ConcreteTrainView extends Parent implements TrainView {
 
 	private static final int MAX_PASSENGERS = 6;
 
+	private final MapView mapView;
+
 	private final Shape sprite;
 	private final List<Point2d> passengersPositions;
 	private final List<Integer> freePassengersPositionsIndex;
 	private final List<PassengerView> passengers = new ArrayList<>(MAX_PASSENGERS);
 	private final PassengerViewFactory passengerViewFactory;
+
+	private ConcreteLineView line = null;
 
 	/**
 	 * Instantiates a new Concrete train view.
@@ -63,13 +67,16 @@ public class ConcreteTrainView extends Parent implements TrainView {
 	 * @param spriteHeight         the sprite height
 	 * @param passengersPositions  the passengers positions
 	 * @param passengerViewFactory the PassengerView factory
+	 * @param mapView              the map view
 	 */
 	public ConcreteTrainView(Shape sprite,
 	                         int spriteWidth,
 	                         int spriteHeight,
 	                         List<Point2d> passengersPositions,
-	                         PassengerViewFactory passengerViewFactory) {
+	                         PassengerViewFactory passengerViewFactory,
+	                         MapView mapView) {
 		this.sprite = sprite;
+		this.mapView = mapView;
 		this.getChildren().add(this.sprite);
 		this.sprite.setTranslateX(0);
 		this.sprite.setTranslateY(0);
@@ -127,4 +134,11 @@ public class ConcreteTrainView extends Parent implements TrainView {
 		}
 	}
 
+	@Override
+	public void setLine(int lineId) {
+		this.line = this.mapView.getLineFromId(lineId);
+		if(this.line != null) {
+			this.sprite.setFill(this.line.color);
+		}
+	}
 }
