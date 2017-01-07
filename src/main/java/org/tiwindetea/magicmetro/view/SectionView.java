@@ -32,10 +32,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
+import org.arakhne.afc.math.geometry.d2.d.Point2d;
 import org.arakhne.afc.math.geometry.d2.dfx.MultiShape2dfx;
 import org.arakhne.afc.math.geometry.d2.dfx.Point2dfx;
 import org.arakhne.afc.math.geometry.d2.dfx.Rectangle2dfx;
 import org.arakhne.afc.math.geometry.d2.dfx.Segment2dfx;
+import org.tiwindetea.magicmetro.global.IdGenerator;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -48,6 +50,8 @@ import java.util.ArrayList;
  * @since 0.1
  */
 public class SectionView extends Parent {
+
+	public final int gameId = IdGenerator.newId();
 
 	private static final double STROKE_WIDTH = 20d;
 	private static final double HOOK_LENGTH = 30d;
@@ -277,7 +281,7 @@ public class SectionView extends Parent {
 	 * @param from the section start point
 	 * @param to   the section end point
 	 */
-	public SectionView(@Nonnull ConcreteLineView line, Point2dfx from, Point2dfx to) {
+	public SectionView(@Nonnull ConcreteLineView line, @Nonnull Point2dfx from, @Nonnull Point2dfx to) {
 		this(line, from.getX(), from.getY(), to.getX(), to.getY());
 	}
 
@@ -311,7 +315,7 @@ public class SectionView extends Parent {
 	 *
 	 * @param from the section start point
 	 */
-	public void setFrom(Point2dfx from) {
+	public void setFrom(@Nonnull Point2dfx from) {
 		this.setFrom(from.getX(), from.getY());
 	}
 
@@ -320,6 +324,7 @@ public class SectionView extends Parent {
 	 *
 	 * @return the section start point
 	 */
+	@Nonnull
 	public Point2dfx getFrom() {
 		return this.a.clone();
 	}
@@ -329,8 +334,19 @@ public class SectionView extends Parent {
 	 *
 	 * @return the section middle point
 	 */
+	@Nonnull
 	public Point2dfx getMiddle() {
 		return this.c.clone();
+	}
+
+	/**
+	 * Gets the section middle point as Point2d.
+	 *
+	 * @return the section middle point
+	 */
+	@Nonnull
+	public Point2d getMiddleForModel() {
+		return new Point2d(this.c.getX(), this.c.getY());
 	}
 
 	/**
@@ -352,7 +368,7 @@ public class SectionView extends Parent {
 	 *
 	 * @param to the the section end point
 	 */
-	public void setTo(Point2dfx to) {
+	public void setTo(@Nonnull Point2dfx to) {
 		this.setTo(to.getX(), to.getY());
 	}
 
@@ -361,6 +377,7 @@ public class SectionView extends Parent {
 	 *
 	 * @return the the section end point
 	 */
+	@Nonnull
 	public Point2dfx getTo() {
 		return this.c.clone();
 	}
@@ -465,6 +482,7 @@ public class SectionView extends Parent {
 	 *
 	 * @return the line
 	 */
+	@Nonnull
 	public ConcreteLineView getLine() {
 		return this.line;
 	}
