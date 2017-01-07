@@ -24,6 +24,9 @@
 
 package org.tiwindetea.magicmetro.model.lines;
 
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineCreationEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineExtensionEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineInnerExtensionEvent;
 import org.tiwindetea.magicmetro.global.util.SimplePair;
 import org.tiwindetea.magicmetro.model.Station;
 import org.tiwindetea.magicmetro.view.LineView;
@@ -50,8 +53,8 @@ public class Line {
 	private final LineView view;
 
 	private List<Station> stations = new LinkedList<>();
+	private List<Section> sections = new LinkedList<>();
 	private SimplePair<Connection> lastConnections;
-	private List<Section> sections;
 	private List<Connection> stationConnection = new LinkedList<>();
 
 	/**
@@ -61,8 +64,119 @@ public class Line {
 	public Line(LineView view) {
 		this.view = view;
 		this.gameId = view.getGameId();
-		lastConnections = new SimplePair<>(null, null);
-		sections = new LinkedList<>();
+		this.lastConnections = new SimplePair<>(null, null);
+	}
+
+	public void manage(LineCreationEvent event, Collection<Station> stations) {
+		System.out.println("Line: manage LineCreationEvent"); //FIXME: test output
+
+		if(!this.sections.isEmpty()) {
+			throw new IllegalStateException("Line creation event on a non empty line");
+		}
+
+		Station fromStation = null;
+		Station toStation = null;
+		for(Station station : stations) {
+			if(station.gameId == event.fromStationId) {
+				fromStation = station;
+			}
+			if(station.gameId == event.toStationId) {
+				toStation = station;
+			}
+		}
+
+		Connection fromConnection = new Connection(fromStation);
+		Connection middleConnection = new Connection(event.middleConnectionPosition);
+		Connection toConnection = new Connection(toStation);
+
+		fromStation.addConnection(fromConnection);
+		toStation.addConnection(toConnection);
+
+		SubSection leftSubSection = new SubSection(false, fromConnection, middleConnection); //TODO: tunnel management
+		SubSection rightSubSection = new SubSection(false, middleConnection, toConnection); //TODO: tunnel management
+
+		fromConnection.setSubSections(leftSubSection, leftSubSection);
+		middleConnection.setSubSections(leftSubSection, rightSubSection);
+		toConnection.setSubSections(rightSubSection, rightSubSection);
+
+		this.lastConnections.setLeft(fromConnection);
+		this.lastConnections.setRight(toConnection);
+		this.stationConnection.add(fromConnection);
+		this.stationConnection.add(toConnection);
+
+		Section section = new Section(
+		  event.newSectionId,
+		  this,
+		  fromConnection,
+		  toConnection,
+		  middleConnection,
+		  leftSubSection,
+		  rightSubSection
+		);
+
+		this.stations.add(fromStation);
+		this.stations.add(toStation);
+		this.sections.add(section);
+	}
+
+	public void manage(LineExtensionEvent event, Collection<Station> stations) {
+		System.out.println("Line: manage LineExtensionEvent"); //FIXME: test output
+
+		boolean left = true;
+
+		//Station fromStation = null;
+		Connection fromConnection = null;
+		if(this.lastConnections.getLeft().getStation().gameId == event.fromStationId) {
+			//fromStation = this.lastConnections.getLeft().getStation();
+			fromConnection = this.lastConnections.getLeft();
+		}
+		if(this.lastConnections.getRight().getStation().gameId == event.fromStationId) {
+			//fromStation = this.lastConnections.getRight().getStation();
+			fromConnection = this.lastConnections.getRight();
+			left = false;
+		}
+		Station toStation = null;
+		for(Station station : stations) {
+			if(station.gameId == event.toStationId) {
+				toStation = station;
+				break;
+			}
+		}
+
+		Connection middleConnection = new Connection(event.middleConnectionPosition);
+		Connection toConnection = new Connection(toStation);
+
+		toStation.addConnection(toConnection);
+
+		SubSection leftSubSection = new SubSection(false, fromConnection, middleConnection); //TODO: tunnel management
+		SubSection rightSubSection = new SubSection(false, middleConnection, toConnection); //TODO: tunnel management
+
+		if(left) {
+			fromConnection.setSubSectionLeft(leftSubSection);
+		}
+		else {
+			fromConnection.setSubSectionRight(leftSubSection);
+		}
+		middleConnection.setSubSections(leftSubSection, rightSubSection);
+		toConnection.setSubSections(rightSubSection, rightSubSection);
+
+		Section section = new Section(
+		  event.newSectionId,
+		  this,
+		  fromConnection,
+		  toConnection,
+		  middleConnection,
+		  leftSubSection,
+		  rightSubSection
+		);
+
+		this.stations.add(toStation);
+		this.sections.add(section);
+	}
+
+	public void manage(LineInnerExtensionEvent event, Collection<Station> stations) {
+		System.out.println("Line: manage LineInnerExtensionEvent"); //FIXME: test output
+		//TODO
 	}
 
 	/**
@@ -71,81 +185,7 @@ public class Line {
 	 * @return true if empty, false otherwise
 	 */
 	public boolean isEmpty(){
-		return sections.isEmpty();
-	}
-
-	/**
-	 * add a section to the line
-	 * add the two last connections of the section if empty
-	 *
-	 * @param section the section we want to add
-	 */
-	public void addSection(Section section){
-		if(!stationConnection.contains(section.getLeftConnection())){
-			stationConnection.add(section.getLeftConnection());
-			stations.add(section.getLeftConnection().getStationRef());
-		}
-		if(!stationConnection.contains(section.getRightConnection())){
-			stationConnection.add(section.getRightConnection());
-			stations.add(section.getRightConnection().getStationRef());
-		}
-		//if the line don't have any section
-		if(isEmpty()){
-			lastConnections.setLeft(section.getLeftConnection());
-			lastConnections.setRight(section.getRightConnection());
-		}
-		sections.add(section);
-	}
-
-	/**
-	 * remove a section
-	 * remove the station that are in the section
-	 * remove the last Connection if the line become empty
-	 *
-	 * @param section the section we want to remove
-	 */
-	public void removeSection(Section section){
-		sections.remove(section);
-		if(isEmpty()){
-			lastConnections.setRight(null);
-			lastConnections.setLeft(null);
-		}
-	}
-
-	/**
-	 * add a station
-	 *
-	 * @param station the station to add
-	 */
-	public void addStation(Station station){
-		stations.add(station);
-	}
-
-	/**
-	 * remove a station
-	 *
-	 * @param station the station to remove
-	 */
-	public void removeStation(Station station){
-		stations.remove(station);
-	}
-
-	/**
-	 * add a section with a station (for prolongation)
-	 *
-	 * @param section the section to add
-	 * @param station the station to add
-	 */
-	public void addSectionStation(Section section, Station station){
-		addSection(section);
-		if(!stations.contains(station)) {
-			addStation(station);
-		}
-		if(station.containsConnection(section.getRightConnection())) {
-			stationConnection.add(section.getRightConnection());
-		} else {
-			stationConnection.add(section.getLeftConnection());
-		}
+		return this.sections.isEmpty();
 	}
 
 	/**
@@ -158,15 +198,4 @@ public class Line {
 		return this.stations.contains(station);
 	}
 
-	@Override
-	public String toString() {
-		return "Line{" +
-				"gameId=" + gameId +
-				", view=" + view +
-				", stations=" + stations +
-				", lastConnections=" + lastConnections +
-				", sections=" + sections +
-				", stationConnection=" + stationConnection +
-				'}';
-	}
 }
