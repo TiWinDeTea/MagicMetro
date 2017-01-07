@@ -44,6 +44,10 @@ import org.arakhne.afc.math.geometry.d2.d.Rectangle2d;
 import org.arakhne.afc.math.geometry.d2.dfx.MultiShape2dfx;
 import org.arakhne.afc.math.geometry.d2.dfx.Point2dfx;
 import org.arakhne.afc.math.geometry.d2.dfx.Rectangle2dfx;
+import org.tiwindetea.magicmetro.global.eventdispatcher.EventDispatcher;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineCreationEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineExtensionEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineInnerExtensionEvent;
 import org.tiwindetea.magicmetro.model.TrainType;
 
 import javax.annotation.Nonnull;
@@ -207,7 +211,13 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 				this.concreteLineView.addSection(this.sectionView);
 				MapView.this.inventoryView.setUsed(this.concreteLineView.gameId);
 
-				//TODO: event to model...
+				EventDispatcher.getInstance().fire(new LineCreationEvent(
+				  this.concreteLineView.gameId,
+				  this.sectionView.gameId,
+				  this.sectionView.getFromStation().gameId,
+				  this.sectionView.getToStation().gameId,
+				  this.sectionView.getMiddleForModel()
+				));
 			}
 		}
 	}
@@ -319,7 +329,17 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 				this.oldSectionView.setFromHookVisible(false);
 				this.oldSectionView.setToHookVisible(false);
 
-				//TODO: event to model...
+				EventDispatcher.getInstance().fire(new LineInnerExtensionEvent(
+				  this.concreteLineView.gameId,
+				  this.oldSectionView.gameId,
+				  this.fromSectionView.gameId,
+				  this.toSectionView.gameId,
+				  this.fromSectionView.getFromStation().gameId,
+				  this.fromSectionView.getToStation().gameId,
+				  this.toSectionView.getToStation().gameId,
+				  this.fromSectionView.getMiddleForModel(),
+				  this.toSectionView.getMiddleForModel()
+				));
 			}
 		}
 	}
@@ -459,7 +479,13 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 
 				this.srcSectionView.getLine().addSection(this.sectionView);
 
-				//TODO: event to model...
+				EventDispatcher.getInstance().fire(new LineExtensionEvent(
+				  this.srcSectionView.getLine().gameId,
+				  this.sectionView.gameId,
+				  this.sectionView.getFromStation().gameId,
+				  this.sectionView.getToStation().gameId,
+				  this.sectionView.getMiddleForModel()
+				));
 			}
 			else {
 				if(this.from) {
@@ -604,15 +630,6 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 			}
 		});
 
-		/*this.addEventFilter(MouseEvent.ANY, new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				System.out.println("MapView : " + event.getEventType());
-				if(event.getEventType().toString().equals("MOUSE-DRAG_OVER")) {
-					int a = 3;
-				}
-			}
-		});*/
 		this.addEventFilter(MouseDragEvent.MOUSE_DRAG_OVER, new EventHandler<MouseDragEvent>() {
 			@Override
 			public void handle(MouseDragEvent event) {
@@ -622,23 +639,6 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 			}
 		});
 
-		/*addEventFilter(MouseEvent.MOUSE_DRAGGED, new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				MapView.this.modificationStateLock.lock();
-				MapView.this.modificationState.update(event.getX(), event.getY());
-				MapView.this.modificationStateLock.unlock();
-			}
-		});*/
-		/*addEventFilter(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				MapView.this.modificationStateLock.lock();
-				MapView.this.modificationState.apply(event.getX(), event.getY());
-				MapView.this.modificationState = MapView.this.voidModificationState;
-				MapView.this.modificationStateLock.unlock();
-			}
-		});*/
 		addEventFilter(MouseDragEvent.MOUSE_DRAG_RELEASED, new EventHandler<MouseDragEvent>() {
 			@Override
 			public void handle(MouseDragEvent event) {
