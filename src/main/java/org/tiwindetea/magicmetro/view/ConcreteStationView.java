@@ -151,18 +151,20 @@ public class ConcreteStationView extends Parent implements StationView {
 
 	@Override
 	public void warn() {
-		this.progressIndicator.setProgress(0);
-		this.progressIndicator.setVisible(true);
+		Platform.runLater(() -> {
+			this.progressIndicator.setProgress(0);
+			this.progressIndicator.setVisible(true);
+		});
 	}
 
 	@Override
 	public void unWard() {
-		this.progressIndicator.setVisible(false);
+		Platform.runLater(() -> this.progressIndicator.setVisible(false));
 	}
 
 	@Override
 	public void setWarnValue(double percentage) {
-		this.progressIndicator.setProgress(percentage);
+		Platform.runLater(() -> this.progressIndicator.setProgress(percentage));
 	}
 
 	public void setStationMouseListener(StationMouseListener stationMouseListener) {

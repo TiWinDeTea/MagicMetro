@@ -115,7 +115,7 @@ public class Connection {
 	 */
 	@Nonnull
 	public Point2d getPosition() {
-		return this.position;
+		return new Point2d(this.position);
 	}
 
 	/**

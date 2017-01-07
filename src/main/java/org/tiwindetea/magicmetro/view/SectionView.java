@@ -336,7 +336,7 @@ public class SectionView extends Parent {
 	 */
 	@Nonnull
 	public Point2dfx getMiddle() {
-		return this.c.clone();
+		return this.b.clone();
 	}
 
 	/**
@@ -346,7 +346,7 @@ public class SectionView extends Parent {
 	 */
 	@Nonnull
 	public Point2d getMiddleForModel() {
-		return new Point2d(this.c.getX(), this.c.getY());
+		return new Point2d(this.b.getX(), this.b.getY());
 	}
 
 	/**

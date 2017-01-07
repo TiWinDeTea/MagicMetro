@@ -82,7 +82,7 @@ public class PassengerView extends Parent {
 	 * @return the position
 	 */
 	public Point2d getPosition() {
-		return this.position;
+		return new Point2d(this.position);
 	}
 
 	/**
