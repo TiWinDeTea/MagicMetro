@@ -27,7 +27,6 @@ package org.tiwindetea.magicmetro.model;
 import org.arakhne.afc.math.geometry.d2.d.Point2d;
 import org.tiwindetea.magicmetro.global.TimeManager;
 import org.tiwindetea.magicmetro.model.lines.Connection;
-import org.tiwindetea.magicmetro.model.lines.Line;
 import org.tiwindetea.magicmetro.view.StationView;
 
 import javax.annotation.Nonnull;
@@ -95,7 +94,6 @@ public class Station {
 			this.warnStart = TimeManager.getInstance().getTimeAsMillis();
 			this.warnEnd = this.warnStart + STATION_FULL_DELAY;
 			this.stationManager.addWarnedStation(this);
-			//TODO: add station to a list in the game loop to check if the game is lost. (with starting time of the delay)
 		}
 	}
 
@@ -114,7 +112,6 @@ public class Station {
 				this.view.unWard();
 				this.warn = false;
 				this.stationManager.removeWarnedStation(this);
-				//TODO: remove station from game loop check list.
 			}
 		}
 		return false;
@@ -131,7 +128,7 @@ public class Station {
 	}
 
 	public Point2d getPosition() {
-		return position;
+		return new Point2d(this.position);
 	}
 
 	/**
@@ -174,7 +171,7 @@ public class Station {
 	 * @return true if the station contains this connection, else otherwise
 	 */
 	public boolean containsConnection(Connection connection){
-		return connections.contains(connection);
+		return this.connections.contains(connection);
 	}
 
 	/**
@@ -204,20 +201,13 @@ public class Station {
 		this.view.setWarnValue(percentage);
 	}
 
-	@Override
-	public String toString() {
-		return "Station{" +
-				"gameId=" + gameId +
-				", stationManager=" + stationManager +
-				", warnStart=" + warnStart +
-				", warnEnd=" + warnEnd +
-				", warn=" + warn +
-				", position=" + position +
-				", type=" + type +
-				", view=" + view +
-				", maxCapacity=" + maxCapacity +
-				", passengers=" + passengers +
-				", connections=" + connections +
-				'}';
+	/**
+	 * Gets passengers.
+	 *
+	 * @return the passengers
+	 */
+	public List<Passenger> getPassengers() {
+		return this.passengers;
 	}
+
 }
