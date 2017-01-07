@@ -26,6 +26,9 @@ package org.tiwindetea.magicmetro.model;
 
 import org.tiwindetea.magicmetro.global.eventdispatcher.EventDispatcher;
 import org.tiwindetea.magicmetro.global.eventdispatcher.EventListener;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineCreationEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineExtensionEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineInnerExtensionEvent;
 import org.tiwindetea.magicmetro.model.lines.Connection;
 import org.tiwindetea.magicmetro.model.lines.Line;
 import org.tiwindetea.magicmetro.model.lines.Section;
@@ -53,33 +56,32 @@ public class GameMap {
 	private List<Line> lines = new LinkedList<>();
 	private Inventory inventory;
 
-	private final EventListener<LineModificationAddStationEvent> modifLineEventListener = event -> {
-	    //initialisation of station and line
-	    Station stationA = getStationWithId(event.idStationRight);
-	    Station stationB = getStationWithId(event.idStationLeft);
-	    Station stationC = getStationWithId(event.idStationMiddle);
-	    Line line = getLineWithId(event.idLine);
+	private final EventListener<LineCreationEvent> onLineCreationEvent = event -> {
+		for(Line line : this.lines) {
+			if(line.gameId == event.lineId) {
+				line.manage(event, this.stations);
+				break;
+			}
+		}
+	};
 
-	    //create the connection for the sections
-	    Connection aToC = new Connection(event.aToC);
-	    Connection bToC = new Connection(event.bToC);
+	private final EventListener<LineExtensionEvent> onLineExtensionEvent = event -> {
+		for(Line line : this.lines) {
+			if(line.gameId == event.lineId) {
+				line.manage(event, this.stations);
+				break;
+			}
+		}
+	};
 
-	    //get connection of the station with the line
-	    Connection stationRight = getConnectionInStationWithLine(stationA, line);
-	    Connection stationLeft = getConnectionInStationWithLine(stationB, line);
-	    Connection stationMiddle = getConnectionInStationWithLine(stationC, line);
-
-	    //creation of the section
-	    Section aToCSection = new Section(stationRight, stationMiddle, aToC, line);
-	    Section bToCSection = new Section(stationMiddle, stationLeft, bToC, line);
-
-	    line.addSection(aToCSection);
-	    line.addSection(bToCSection);
-
-	    //taking the section to remove
-        Section sectionRemove = getSectionWithConnections(stationRight, stationLeft);
-	    //if(sectionRemove != null && )
-    };
+	private final EventListener<LineInnerExtensionEvent> onLineInnerExtensionEvent = event -> {
+		for(Line line : this.lines) {
+			if(line.gameId == event.lineId) {
+				line.manage(event, this.stations);
+				break;
+			}
+		}
+	};
 
 	private double[][] stationHeuristics;
 
@@ -88,53 +90,9 @@ public class GameMap {
      */
     public GameMap(Inventory inventory){
         this.inventory = inventory;
-        EventDispatcher.getInstance().addListener(CreateLineEvent.class, event -> {
-            System.out.println("YOLO!");
-            Station stationA = getStationWithId(event.idStationRight);
-            Station stationB = getStationWithId(event.idStationLeft);
-            Line line = getLineWithId(event.idLine);
-
-            Connection connectionA = new Connection(stationA.getPosition(), stationA);
-            Connection connectionB = new Connection(stationB.getPosition(), stationB);
-            Connection connectionMiddle = new Connection(event.middlePoint);
-
-            Section section;
-            if(connectionA.getPosition().getX() < connectionB.getPosition().getX()) {
-                section = new Section(connectionA, connectionB, connectionMiddle, line);
-            } else {
-                section = new Section(connectionB, connectionA, connectionMiddle, line);
-            }
-            line.addSection(section);
-            //System.out.println(line.toString());
-            Train train = this.inventory.takeTrain();
-            if(train != null){
-                train.makeItLivable(line, connectionA, connectionMiddle);
-                addTrain(train);
-            }
-        });
-
-        EventDispatcher.getInstance().addListener(ExtensionLineEvent.class, event -> {
-            System.out.println("LOL!");
-            Station stationBegin = getStationWithId(event.idStationA);
-            Station stationExtension = getStationWithId(event.idStationExtension);
-            Line line = getLineWithId(event.idLine);
-
-            Connection connectionBegin = getConnectionInStationWithLine(stationBegin, line);
-            Connection connectionExtension = new Connection(stationExtension.getPosition(), stationExtension);
-            Connection connectionMiddleSection = new Connection(event.connectionSectionMiddle);
-
-            Section section;
-            if(connectionBegin.getPosition().getX() < connectionExtension.getPosition().getX()){
-                section = new Section(connectionBegin, connectionExtension, connectionMiddleSection, line);
-            } else {
-                section = new Section(connectionExtension, connectionBegin, connectionMiddleSection, line);
-            }
-            line.addSection(section);
-            System.out.println("Fin de LOL!");
-            //System.out.println(line.toString());
-        });
-
-        //EventDispatcher.getInstance().addListener(ExtensionLineEvent);
+	    EventDispatcher.getInstance().addListener(LineCreationEvent.class, this.onLineCreationEvent);
+	    EventDispatcher.getInstance().addListener(LineExtensionEvent.class, this.onLineExtensionEvent);
+	    EventDispatcher.getInstance().addListener(LineInnerExtensionEvent.class, this.onLineInnerExtensionEvent);
     }
 
 	Passenger addPassengerToStation() {
@@ -261,10 +219,14 @@ public class GameMap {
         int i = 0;
         if(line.contains(station)){
             while (i < station.getConnections().size() && (station.getConnections().get(i).getRightSubSection() != null &&
-                    station.getConnections().get(i).getRightSubSection().getSectionRef().getLineRef() != line
+              station.getConnections().get(i).getRightSubSection().getSection().getLine() != line
                     || station.getConnections().get(i).getLeftSubSection() != null &&
-                    station.getConnections().get(i).getLeftSubSection().getSectionRef().getLineRef() != line)){ //TODO Make the left section
-                ++i;
+              station.getConnections()
+	            .get(i)
+	            .getLeftSubSection()
+	            .getSection()
+	            .getLine() != line)) { //TODO Make the left section
+	            ++i;
             }
             if(i < station.getConnections().size()){
                 return station.getConnections().get(i);
@@ -278,14 +240,16 @@ public class GameMap {
 
     private Section getSectionWithConnections(Connection connectionA, Connection connectionB){
         if(connectionA.getLeftSubSection() != null && connectionB.getRightSubSection() != null &&
-                connectionA.getLeftSubSection().getSectionRef() != null && connectionB.getRightSubSection().getSectionRef() != null &&
-                connectionA.getLeftSubSection().getSectionRef() == connectionB.getRightSubSection().getSectionRef()){
-            return connectionA.getLeftSubSection().getSectionRef();
+          connectionA.getLeftSubSection().getSection() != null && connectionB.getRightSubSection()
+          .getSection() != null &&
+          connectionA.getLeftSubSection().getSection() == connectionB.getRightSubSection().getSection()) {
+	        return connectionA.getLeftSubSection().getSection();
         } else {
             if(connectionA.getRightSubSection() != null && connectionB.getLeftSubSection() != null &&
-                    connectionA.getRightSubSection().getSectionRef() != null && connectionB.getLeftSubSection().getSectionRef() != null &&
-                    connectionA.getRightSubSection().getSectionRef() == connectionB.getLeftSubSection().getSectionRef()){
-                return connectionA.getRightSubSection().getSectionRef();
+              connectionA.getRightSubSection().getSection() != null && connectionB.getLeftSubSection()
+              .getSection() != null &&
+              connectionA.getRightSubSection().getSection() == connectionB.getLeftSubSection().getSection()) {
+	            return connectionA.getRightSubSection().getSection();
             } else {
                 return null;
             }
@@ -355,22 +319,22 @@ public class GameMap {
         if(station.getConnections()!=null) {
             for (Connection connection : station.getConnections()) {
                 //we get the section which link the station and the temporary station
-                Section section = connection.getSubSections().getRight().getSectionRef();
-                //we verify section isn't null
-                if(section != null) {
-                    double tmp = section.getLength();
-                    Station station1 = section.getRightConnection().getStationRef();
-                    //we verify if tmp is different from 0 and we are not passed by this station before
-                    if (tmp != 0 && !stationsNotVisited.contains(section.getRightConnection().getStationRef())) {
-                        int index = this.stations.indexOf(station);
-                        int index2 = this.stations.indexOf(station1);
-                        //if mini is superior als the distance between station A and the temporary station
-                        if (mini > this.stationHeuristics[index][index2]) {
-                            //we save the temporary station inside result
-                            result = section.getRightConnection().getStationRef();
-                            //we affect mini with the good value
-                            mini = this.stationHeuristics[index][index2];
-                        }
+	            Section section = connection.getSubSections().getRight().getSection();
+	            //we verify section isn't null
+	            if(section != null) {
+		            double tmp = section.getLength();
+		            Station station1 = section.getRightConnection().getStation();
+		            //we verify if tmp is different from 0 and we are not passed by this station before
+		            if(tmp != 0 && !stationsNotVisited.contains(section.getRightConnection().getStation())) {
+			            int index = this.stations.indexOf(station);
+			            int index2 = this.stations.indexOf(station1);
+			            //if mini is superior als the distance between station A and the temporary station
+			            if(mini > this.stationHeuristics[index][index2]) {
+				            //we save the temporary station inside result
+				            result = section.getRightConnection().getStation();
+				            //we affect mini with the good value
+				            mini = this.stationHeuristics[index][index2];
+			            }
                     }
                 }
             }
@@ -438,9 +402,12 @@ public class GameMap {
                     stationsSearching.remove(stationTmp);
                     for (Connection connection : stationTmp.getConnections()) {
                         //we verify if we have a section and so a station
-                        if(connection.getRightSubSection().getSectionRef() != null) {
-                            updateDistance(stationTmp, connection.getRightSubSection().getSectionRef().getRightConnection().getStationRef(), stationA, predecessor);
-                        }
+	                    if(connection.getRightSubSection().getSection() != null) {
+		                    updateDistance(stationTmp,
+		                      connection.getRightSubSection().getSection().getRightConnection().getStation(),
+		                      stationA,
+		                      predecessor);
+	                    }
                     }
                 }
             }
@@ -502,12 +469,21 @@ public class GameMap {
      */
     private double distanceBetweenTwoStationConnected(Station stationA, Station stationB){
         int i = 0;
-        while (i < stationA.getConnections().size() && stationA.getConnections().get(i).getRightSubSection().getSectionRef().getRightConnection() != null
-                && stationA.getConnections().get(i).getRightSubSection().getSectionRef().getRightConnection().getStationRef() != stationB){
-            ++i;
-        }
+	    while(i < stationA.getConnections().size() && stationA.getConnections()
+	      .get(i)
+	      .getRightSubSection()
+	      .getSection()
+	      .getRightConnection() != null
+	      && stationA.getConnections()
+	      .get(i)
+	      .getRightSubSection()
+	      .getSection()
+	      .getRightConnection()
+	      .getStation() != stationB) {
+		    ++i;
+	    }
         if(i < stationA.getConnections().size()) {
-            return stationA.getConnections().get(i).getRightSubSection().getSectionRef().getLength();
+	        return stationA.getConnections().get(i).getRightSubSection().getSection().getLength();
         } else {
             return -1;
         }
