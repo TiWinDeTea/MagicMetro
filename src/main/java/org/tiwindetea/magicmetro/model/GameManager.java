@@ -27,9 +27,9 @@ package org.tiwindetea.magicmetro.model;
 import org.tiwindetea.magicmetro.global.TimeManager;
 import org.tiwindetea.magicmetro.global.eventdispatcher.EventDispatcher;
 import org.tiwindetea.magicmetro.global.eventdispatcher.EventListener;
-import org.tiwindetea.magicmetro.global.eventdispatcher.events.TimePauseEvent;
-import org.tiwindetea.magicmetro.global.eventdispatcher.events.TimeSpeedChangeEvent;
-import org.tiwindetea.magicmetro.global.eventdispatcher.events.TimeStartEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.timeevents.TimePauseEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.timeevents.TimeSpeedChangeEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.timeevents.TimeStartEvent;
 import org.tiwindetea.magicmetro.global.scripts.MapScript;
 import org.tiwindetea.magicmetro.global.scripts.StationScript;
 import org.tiwindetea.magicmetro.global.util.Utils;
@@ -141,7 +141,7 @@ public class GameManager implements StationManager {
 
 		this.viewManager = viewManager;
 		this.inventory = new Inventory(this.viewManager.getInventoryView());
-		this.gameMap = new GameMap(inventory);
+		this.gameMap = new GameMap(this.inventory);
 
 		this.viewManager.setMapSize(mapScript.mapWidth, mapScript.mapHeight);
 		this.viewManager.setWater(this.mapScript.water);
