@@ -156,14 +156,21 @@ public class GameManager implements StationManager {
 			stationScript = this.mapScript.stationScripts.peek();
 		}
 
-		//TODO: initial lines
 		for(int i = 0; i < mapScript.initialLines; ++i) {
 			Line line = new Line(this.viewManager.createLineView());
 			this.inventory.addLine(line);
 			this.gameMap.addLine(line);
 		}
 
-		this.inventory.addTrain(new Train(0.01, 0.01, viewManager.createTrainView(TrainType.NORMAL)));
+		for(int i = 0; i < mapScript.initialTrains; ++i) {
+			this.inventory.addTrain(new Train(
+			  TrainType.NORMAL.maxSpeed,
+			  TrainType.NORMAL.acceleration,
+			  viewManager.createTrainView(TrainType.NORMAL
+			  )));
+		}
+
+		//TODO: initial station upgrade and passenger cars
 
 		this.executorService.submit(this.gameLoop);
 		this.executorService.shutdown();
