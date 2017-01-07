@@ -24,18 +24,18 @@
 
 package org.tiwindetea.magicmetro.model;
 
-import org.tiwindetea.magicmetro.model.lines.Connection;
-
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Stack;
 
 /**
+ * Passenger, appear in a station and is moved by trains according to his path.
+ *
  * @author Julien Barbier
- * @since  0.1
+ * @author Maxime PINARD
+ * @since 0.1
  */
 public class Passenger {
 
-	private List<Connection> path = new LinkedList<>();
+	private Stack<Station> path = new Stack<>();
 	private Station station;
 	private final StationType stationWanted;
 
@@ -73,8 +73,16 @@ public class Passenger {
      *
      * @param path the path we want to set to the the Passenger
      */
-	public void setPath(List<Connection> path){
+    public void setPath(Stack<Station> path) {
 	    this.path = path;
     }
 
+	/**
+	 * Gets path.
+	 *
+	 * @return the path
+	 */
+	public Stack<Station> getPath() {
+		return this.path;
+	}
 }
