@@ -31,6 +31,7 @@ import org.tiwindetea.magicmetro.global.util.SimplePair;
 import org.tiwindetea.magicmetro.model.Station;
 import org.tiwindetea.magicmetro.view.LineView;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -68,8 +69,6 @@ public class Line {
 	}
 
 	public void manage(LineCreationEvent event, Collection<Station> stations) {
-		System.out.println("Line: manage LineCreationEvent"); //FIXME: test output
-
 		if(!this.sections.isEmpty()) {
 			throw new IllegalStateException("Line creation event on a non empty line");
 		}
@@ -120,8 +119,6 @@ public class Line {
 	}
 
 	public void manage(LineExtensionEvent event, Collection<Station> stations) {
-		System.out.println("Line: manage LineExtensionEvent"); //FIXME: test output
-
 		boolean left = true;
 
 		//Station fromStation = null;
@@ -196,6 +193,16 @@ public class Line {
 	 */
 	public boolean contains(Station station) {
 		return this.stations.contains(station);
+	}
+
+	/**
+	 * Gets last connections.
+	 *
+	 * @return the last connections
+	 */
+	@Nonnull
+	public SimplePair<Connection> getLastConnections() {
+		return this.lastConnections;
 	}
 
 }

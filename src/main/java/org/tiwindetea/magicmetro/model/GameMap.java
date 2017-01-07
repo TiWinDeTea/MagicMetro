@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.Stack;
 
 /**
  * Map of the game contains trains, stations and lines that are active in the game.<p>
@@ -60,6 +61,7 @@ public class GameMap {
 		for(Line line : this.lines) {
 			if(line.gameId == event.lineId) {
 				line.manage(event, this.stations);
+				GameMap.this.initLine(line);
 				break;
 			}
 		}
@@ -106,7 +108,16 @@ public class GameMap {
 		}
 		Passenger passenger = new Passenger(station, wantedStationType);
 		station.addPassenger(passenger);
+		//passenger.setPath(findShortestPath(station, wantedStationType)); //TODO
 		return passenger;
+	}
+
+	private void initLine(Line line) {
+		Train train = this.inventory.takeTrain();
+		if(train != null) {
+			train.start(line);
+			this.addTrain(train);
+		}
 	}
 
     /**
@@ -271,15 +282,15 @@ public class GameMap {
      * @param stationWanted the type of station we want
      * @return the shortest path between the station and the type of station wanted, null if the station doesn't have connection or we don't have the type of station
      */
-    public List<Station> findShortestPath(Station stationA, StationType stationWanted){
+    public Stack<Station> findShortestPath(Station stationA, StationType stationWanted) {
         List<Station> predecessor = dijkstra(stationA);
-        List<Station> stationsSearching = null;
+	    Stack<Station> stationsSearching = null;
 	    this.stationHeuristics = new double[this.stations.size()][];
 	    Station stationTmp = findTheNearestStationWithType(stationA, stationWanted);
 	    if(predecessor != null) {
-		    stationsSearching = new ArrayList<>();
+		    stationsSearching = new Stack<>();
 		    while(predecessor.size() != 0) {
-			    stationsSearching.add(stationTmp);
+			    stationsSearching.push(stationTmp);
 			    stationTmp = predecessor.get(this.stations.indexOf(stationTmp));
 			    predecessor.remove(stationTmp);
 		    }

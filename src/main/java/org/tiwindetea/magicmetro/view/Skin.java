@@ -60,9 +60,9 @@ public class Skin implements PassengerViewFactory {
 	private static final Color STATIONS_COLOR2 = Color.BLACK;
 	private static final Color ERROR_COLOR = Color.BLACK;
 	private static final List<Color> LINES_COLORS = new ArrayList<Color>() {{
-		add(Color.YELLOW);
 		add(Color.RED);
 		add(Color.BLUE);
+		add(Color.YELLOW);
 		add(Color.GREEN);
 		add(Color.PINK);
 		add(Color.CYAN);
