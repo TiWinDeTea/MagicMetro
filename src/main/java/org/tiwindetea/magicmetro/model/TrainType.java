@@ -25,10 +25,23 @@
 package org.tiwindetea.magicmetro.model;
 
 /**
- * TODO
+ * Possible types for the trains.
+ *
+ * @author Maxime PINARD
+ * @since 0.1
  */
 public enum TrainType {
-	NORMAL,
-	FAST,
-	SLOW
+
+	NORMAL(1.5, 0.01),
+	FAST(1.5, 0.045),
+	SLOW(0.5, 0.025);
+
+	public final double maxSpeed;
+	public final double acceleration;
+
+	TrainType(double maxSpeed, double acceleration) {
+		this.maxSpeed = maxSpeed;
+		this.acceleration = acceleration;
+	}
+
 }
