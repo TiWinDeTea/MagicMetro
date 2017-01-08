@@ -121,14 +121,11 @@ public class Line {
 	public void manage(LineExtensionEvent event, Collection<Station> stations) {
 		boolean left = true;
 
-		//Station fromStation = null;
 		Connection fromConnection = null;
 		if(this.lastConnections.getLeft().getStation().gameId == event.fromStationId) {
-			//fromStation = this.lastConnections.getLeft().getStation();
 			fromConnection = this.lastConnections.getLeft();
 		}
 		if(this.lastConnections.getRight().getStation().gameId == event.fromStationId) {
-			//fromStation = this.lastConnections.getRight().getStation();
 			fromConnection = this.lastConnections.getRight();
 			left = false;
 		}
@@ -150,9 +147,11 @@ public class Line {
 
 		if(left) {
 			fromConnection.setSubSectionLeft(leftSubSection);
+			this.lastConnections.setLeft(toConnection);
 		}
 		else {
 			fromConnection.setSubSectionRight(leftSubSection);
+			this.lastConnections.setRight(toConnection);
 		}
 		middleConnection.setSubSections(leftSubSection, rightSubSection);
 		toConnection.setSubSections(rightSubSection, rightSubSection);
