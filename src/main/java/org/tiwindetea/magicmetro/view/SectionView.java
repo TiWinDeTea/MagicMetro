@@ -54,7 +54,7 @@ public class SectionView extends Parent {
 	public final int gameId = IdGenerator.newId();
 
 	private static final double STROKE_WIDTH = 20d;
-	private static final double HOOK_LENGTH = 30d;
+	private static final double HOOK_LENGTH = 40d;
 	private static final double HOOK_WIDTH = 50d;
 	private static final ArrayList<Double> LINE_DOTS = new ArrayList<Double>() {{
 		add(15d);

@@ -46,6 +46,7 @@ import org.arakhne.afc.math.geometry.d2.dfx.Point2dfx;
 import org.arakhne.afc.math.geometry.d2.dfx.Rectangle2dfx;
 import org.tiwindetea.magicmetro.global.eventdispatcher.EventDispatcher;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineCreationEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineDecreaseEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineExtensionEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineInnerExtensionEvent;
 import org.tiwindetea.magicmetro.model.TrainType;
@@ -434,8 +435,6 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 							MapView.this.modificationState = new LineExtensionState(this.srcSectionView.getPrevSection(),
 							  this.srcSectionView.getFromStation(),
 							  this.fromStation);
-
-							//TODO: event to model...
 						}
 						else { // only one section left
 							this.sectionView.getLine().removeSection(this.srcSectionView);
@@ -443,9 +442,12 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 							MapView.this.modificationState = new LineModificationState(this.sectionView.getLine(),
 							  this.srcSectionView.getFromStation(),
 							  this.fromStation);
-
-							//TODO: event to model...
 						}
+						EventDispatcher.getInstance().fire(new LineDecreaseEvent(
+						  this.srcSectionView.getLine().gameId,
+						  this.srcSectionView.gameId,
+						  this.fromStation.gameId
+						));
 					}
 				}
 			}

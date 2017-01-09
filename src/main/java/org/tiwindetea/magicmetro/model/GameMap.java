@@ -27,6 +27,7 @@ package org.tiwindetea.magicmetro.model;
 import org.tiwindetea.magicmetro.global.eventdispatcher.EventDispatcher;
 import org.tiwindetea.magicmetro.global.eventdispatcher.EventListener;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineCreationEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineDecreaseEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineExtensionEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineInnerExtensionEvent;
 import org.tiwindetea.magicmetro.model.lines.Connection;
@@ -85,6 +86,15 @@ public class GameMap {
 		}
 	};
 
+	private final EventListener<LineDecreaseEvent> onLineDecreaseEvent = event -> {
+		for(Line line : this.lines) {
+			if(line.gameId == event.lineId) {
+				line.manage(event);
+				break;
+			}
+		}
+	};
+
 	private double[][] stationHeuristics;
 
     /**
@@ -95,6 +105,7 @@ public class GameMap {
 	    EventDispatcher.getInstance().addListener(LineCreationEvent.class, this.onLineCreationEvent);
 	    EventDispatcher.getInstance().addListener(LineExtensionEvent.class, this.onLineExtensionEvent);
 	    EventDispatcher.getInstance().addListener(LineInnerExtensionEvent.class, this.onLineInnerExtensionEvent);
+	    EventDispatcher.getInstance().addListener(LineDecreaseEvent.class, this.onLineDecreaseEvent);
     }
 
 	Passenger addPassengerToStation() {
