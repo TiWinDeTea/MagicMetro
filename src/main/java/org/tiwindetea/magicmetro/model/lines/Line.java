@@ -25,6 +25,7 @@
 package org.tiwindetea.magicmetro.model.lines;
 
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineCreationEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineDecreaseEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineExtensionEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineInnerExtensionEvent;
 import org.tiwindetea.magicmetro.global.util.SimplePair;
@@ -286,11 +287,68 @@ public class Line {
 		  rightSubsection
 		);
 
-		//TODO: remove old section (maybe)
+		//TODO: remove old section from view
+		this.sections.remove(oldSection);
 
 		this.stations.add(middleStation);
 		this.sections.add(leftSection);
 		this.sections.add(rightSection);
+	}
+
+	public void manage(LineDecreaseEvent event) {
+
+		Station oldStation = null;
+		for(Station station : this.stations) {
+			if(station.gameId == event.oldStationId) {
+				oldStation = station;
+				break;
+			}
+		}
+
+		if(oldStation == null) {
+			throw new IllegalStateException("oldStation is not part of the line");
+		}
+
+		Connection oldConnection = null;
+		if(this.lastConnections.getLeft().getStation() == oldStation) {
+			oldConnection = this.lastConnections.getLeft();
+		}
+		if(this.lastConnections.getRight().getStation() == oldStation) {
+			oldConnection = this.lastConnections.getRight();
+		}
+
+		if(oldConnection == null) {
+			throw new IllegalStateException("oldStation doesn't contain one of the last connections of the line");
+		}
+
+		Section oldSection = null;
+		for(Section section : this.sections) {
+			if(section.gameId == event.oldSectionId) {
+				oldSection = section;
+			}
+		}
+
+		if(oldSection == null) {
+			throw new IllegalStateException("oldSection is not part of the line");
+		}
+
+		Connection lastConnection = null;
+		if(oldSection.getLeftConnection() == oldConnection) {
+			lastConnection = oldSection.getRightConnection();
+		}
+		if(oldSection.getRightConnection() == oldConnection) {
+			lastConnection = oldSection.getLeftConnection();
+		}
+
+		if(oldSection.getLeftSubSection() == lastConnection.getLeftSubSection() ||
+		  oldSection.getRightSubSection() == lastConnection.getLeftSubSection()) {
+			lastConnection.setSubSectionLeft(lastConnection.getRightSubSection());
+		}
+
+		//TODO: remove old section from view
+
+		this.stations.remove(oldStation);
+		this.sections.remove(oldSection);
 	}
 
 	/**
