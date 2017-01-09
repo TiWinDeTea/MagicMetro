@@ -137,6 +137,10 @@ public class Line {
 			}
 		}
 
+		if(toStation == null) {
+			throw new IllegalStateException("toStation is not on the map");
+		}
+
 		Connection middleConnection = new Connection(event.middleConnectionPosition);
 		Connection toConnection = new Connection(toStation);
 
@@ -171,8 +175,122 @@ public class Line {
 	}
 
 	public void manage(LineInnerExtensionEvent event, Collection<Station> stations) {
-		System.out.println("Line: manage LineInnerExtensionEvent"); //FIXME: test output
-		//TODO
+
+		Section oldSection = null;
+		for(Section section : this.sections) {
+			if(section.gameId == event.oldSectionId) {
+				oldSection = section;
+				break;
+			}
+		}
+
+		if(oldSection == null) {
+			throw new IllegalStateException("oldSection is not part of the line");
+		}
+
+		Connection leftConnection = oldSection.getLeftConnection();
+		Station leftStation = leftConnection.getStation();
+		Connection rightConnection = oldSection.getRightConnection();
+		Station rightStation = rightConnection.getStation();
+		Connection oldConnection = oldSection.getMiddleConnection();
+
+		if(leftConnection == rightConnection ||
+		  leftConnection == oldConnection ||
+		  rightConnection == oldConnection) {
+			throw new IllegalStateException("oldSection connections are not valid");
+		}
+		if(leftStation == null || rightStation == null) {
+			throw new IllegalStateException("oldSection stations are not valid");
+		}
+
+		Station middleStation = null;
+		for(Station station : stations) {
+			if(station.gameId == event.addedStationId) {
+				middleStation = station;
+				break;
+			}
+		}
+
+		if(middleStation == null) {
+			throw new IllegalStateException("middleStation is not on the map");
+		}
+
+		Connection middleLeftConnection = new Connection(event.middleLeftConnectionPosition);
+		Connection middleConnection = new Connection(middleStation);
+		Connection middleRightConnection = new Connection(event.middleRightConnectionPosition);
+
+		middleStation.addConnection(middleConnection);
+
+		SubSection leftSubsection = new SubSection(false, //TODO: tunnel management
+		  leftConnection,
+		  middleLeftConnection);
+		SubSection middleLeftSubsection = new SubSection(false, //TODO: tunnel management
+		  middleLeftConnection,
+		  middleConnection);
+		SubSection middleRightSubsection = new SubSection(false, //TODO: tunnel management
+		  middleConnection,
+		  middleRightConnection);
+		SubSection rightSubsection = new SubSection(false, //TODO: tunnel management
+		  middleRightConnection,
+		  rightConnection);
+
+		//left connection
+		if(leftConnection.getRightSubSection() == oldConnection.getLeftSubSection() ||
+		  leftConnection.getRightSubSection() == oldConnection.getRightSubSection()) {
+			leftConnection.setSubSectionRight(leftSubsection);
+		}
+		if(leftConnection.getLeftSubSection() == oldConnection.getLeftSubSection() ||
+		  leftConnection.getLeftSubSection() == oldConnection.getRightSubSection()) {
+			leftConnection.setSubSectionLeft(leftSubsection);
+		}
+
+		//middle left connection
+		middleLeftConnection.setSubSectionLeft(leftSubsection);
+		middleLeftConnection.setSubSectionRight(middleLeftSubsection);
+
+		//middle connection
+		middleConnection.setSubSectionLeft(middleLeftSubsection);
+		middleConnection.setSubSectionRight(middleRightSubsection);
+
+		//middle right connection
+		middleRightConnection.setSubSectionLeft(middleRightSubsection);
+		middleRightConnection.setSubSectionRight(rightSubsection);
+
+		//right subsection
+		if(rightConnection.getRightSubSection() == oldConnection.getLeftSubSection() ||
+		  rightConnection.getRightSubSection() == oldConnection.getRightSubSection()) {
+			rightConnection.setSubSectionRight(rightSubsection);
+		}
+		if(rightConnection.getLeftSubSection() == oldConnection.getLeftSubSection() ||
+		  rightConnection.getLeftSubSection() == oldConnection.getRightSubSection()) {
+			rightConnection.setSubSectionLeft(rightSubsection);
+		}
+
+		Section leftSection = new Section(
+		  event.newLeftSectionId,
+		  this,
+		  leftConnection,
+		  middleConnection,
+		  middleLeftConnection,
+		  leftSubsection,
+		  middleLeftSubsection
+		);
+
+		Section rightSection = new Section(
+		  event.newRightSectionId,
+		  this,
+		  middleConnection,
+		  rightConnection,
+		  middleRightConnection,
+		  middleRightSubsection,
+		  rightSubsection
+		);
+
+		//TODO: remove old section (maybe)
+
+		this.stations.add(middleStation);
+		this.sections.add(leftSection);
+		this.sections.add(rightSection);
 	}
 
 	/**

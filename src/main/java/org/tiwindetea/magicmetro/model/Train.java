@@ -34,8 +34,6 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * A train, move by following connections and subsections of a line.<p>
@@ -264,8 +262,6 @@ public class Train {
 			}
 		}
 	}
-
-	private Lock aaaaaLock = new ReentrantLock();
 
 	private class AtStationState implements TrainState {
 
