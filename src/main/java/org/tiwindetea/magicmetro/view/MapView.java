@@ -431,13 +431,15 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 					if(this.fromStationBounds.contains(x, y)) {
 						MapView.this.lineGroup.getChildren().remove(this.sectionView);
 						if(this.srcSectionView.getPrevSection() != null) {
-							this.sectionView.getLine().removeSection(this.srcSectionView);
+							//this.sectionView.getLine().removeSection(this.srcSectionView);
+							this.srcSectionView.setMouseTransparent(true);
 							MapView.this.modificationState = new LineExtensionState(this.srcSectionView.getPrevSection(),
 							  this.srcSectionView.getFromStation(),
 							  this.fromStation);
 						}
 						else { // only one section left
-							this.sectionView.getLine().removeSection(this.srcSectionView);
+							//this.sectionView.getLine().removeSection(this.srcSectionView);
+							this.srcSectionView.setMouseTransparent(true);
 							MapView.this.inventoryView.setUnused(this.sectionView.getLine().gameId);
 							MapView.this.modificationState = new LineModificationState(this.sectionView.getLine(),
 							  this.srcSectionView.getFromStation(),

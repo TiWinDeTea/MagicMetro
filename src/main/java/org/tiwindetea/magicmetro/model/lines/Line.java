@@ -296,6 +296,7 @@ public class Line {
 	}
 
 	public void manage(LineDecreaseEvent event) {
+		System.out.println("Line: LineDecreaseEvent");
 
 		Station oldStation = null;
 		for(Station station : this.stations) {
@@ -343,12 +344,23 @@ public class Line {
 		if(oldSection.getLeftSubSection() == lastConnection.getLeftSubSection() ||
 		  oldSection.getRightSubSection() == lastConnection.getLeftSubSection()) {
 			lastConnection.setSubSectionLeft(lastConnection.getRightSubSection());
+			this.lastConnections.setLeft(lastConnection);
+		}
+
+		if(oldSection.getLeftSubSection() == lastConnection.getRightSubSection() ||
+		  oldSection.getRightSubSection() == lastConnection.getRightSubSection()) {
+			lastConnection.setSubSectionRight(lastConnection.getLeftSubSection());
+			this.lastConnections.setRight(lastConnection);
 		}
 
 		//TODO: remove old section from view
 
 		this.stations.remove(oldStation);
 		this.sections.remove(oldSection);
+
+		if(sections.isEmpty()){
+			//TODO: remove train and last connections
+		}
 	}
 
 	/**
