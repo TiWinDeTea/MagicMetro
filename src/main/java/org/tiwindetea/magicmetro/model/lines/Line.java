@@ -358,7 +358,7 @@ public class Line {
 		this.stations.remove(oldStation);
 		this.sections.remove(oldSection);
 
-		if(sections.isEmpty()){
+		if(this.sections.isEmpty()) {
 			//TODO: remove train and last connections
 		}
 	}

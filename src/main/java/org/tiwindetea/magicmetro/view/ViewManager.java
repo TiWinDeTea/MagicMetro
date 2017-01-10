@@ -140,7 +140,7 @@ public class ViewManager {
 		inventoryStackPane.getChildren().add(this.concreteInventoryView);
 		AnchorPane.setRightAnchor(inventoryStackPane, 0d);
 		AnchorPane.setLeftAnchor(inventoryStackPane, 0d);
-		AnchorPane.setBottomAnchor(inventoryStackPane, 0d);
+		AnchorPane.setBottomAnchor(inventoryStackPane, 10d);
 		this.mainAnchorPane.getChildren().add(inventoryStackPane);
 
 		this.mapView.setInventoryView(this.concreteInventoryView); //FIXME: cyclic reference, care at deletion

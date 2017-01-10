@@ -29,11 +29,14 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
 import org.tiwindetea.magicmetro.global.util.Pair;
 
 import javax.annotation.Nonnull;
@@ -48,41 +51,57 @@ import java.util.List;
  */
 public class ConcreteInventoryView extends Parent implements InventoryView {
 
+	//TODO: externalise in resource bundle
+	private static final Image STATION_UPGRADE_IMAGE = new Image(ConcreteInventoryView.class.getResource(
+	  "InventoryStationUpgrade.png").toString());
+	private static final Image PASSENGER_CAR_IMAGE = new Image(ConcreteInventoryView.class.getResource(
+	  "InventoryPassengerCar.png").toString());
+	private static final Image TRAIN_IMAGE = new Image(ConcreteInventoryView.class.getResource(
+	  "InventoryTrain.png").toString());
+	private static final Image TUNNEL_IMAGE = new Image(ConcreteInventoryView.class.getResource(
+	  "InventoryTunnel.png").toString());
+
 	private final MapView mapView;
 	private final InventoryMouseListener inventoryMouseListener;
 
 	private HBox mainHBox = new HBox();
 	private HBox linesHBox = new HBox();
 
-	private final CircleCounter stationUpgradeCounter = new CircleCounter("Station\nupgrade");
-	private final CircleCounter passengerCarCounter = new CircleCounter("Passenger\ncar");
-	private final CircleCounter trainCounter = new CircleCounter("Train");
-	private final CircleCounter tunnelCounter = new CircleCounter("Tunnel");
+	private final CircleCounter stationUpgradeCounter = new CircleCounter(STATION_UPGRADE_IMAGE);
+	private final CircleCounter passengerCarCounter = new CircleCounter(PASSENGER_CAR_IMAGE);
+	private final CircleCounter trainCounter = new CircleCounter(TRAIN_IMAGE);
+	private final CircleCounter tunnelCounter = new CircleCounter(TUNNEL_IMAGE);
 
 	private final List<Pair<ConcreteLineView, LineDisplayer>> lineDisplayers = new ArrayList<>(6);
 
-	//TODO: make this beautiful
 	private class CircleCounter extends Parent {
 
 		private int number = 0;
-		private final StackPane mainStackPane = new StackPane();
-		private final Circle circle = new Circle(30);
+		private final AnchorPane mainAnchorPane = new AnchorPane();
+		private final ImageView imageView;
 		private final Label label;
-		private final String text;
 
 		/**
 		 * Instantiates a new CircleCounter.
 		 *
-		 * @param text the text
+		 * @param image the image
 		 */
-		public CircleCounter(String text) {
-			this.text = text;
-			this.label = new Label(text + ": " + this.number);
-			this.label.setTextFill(Color.WHITE);
+		public CircleCounter(Image image) {
+			this.imageView = new ImageView(image);
+			this.imageView.setFitWidth(60);
+			this.imageView.setFitHeight(60);
 
-			this.getChildren().add(this.mainStackPane);
-			this.mainStackPane.getChildren().add(this.circle);
-			this.mainStackPane.getChildren().add(this.label);
+			this.label = new Label("" + this.number);
+			this.label.setTextFill(Color.BLACK);
+			this.label.setFont(new Font(20));
+			AnchorPane.setRightAnchor(this.label, 0d);
+			AnchorPane.setBottomAnchor(this.label, 0d);
+
+			this.mainAnchorPane.setMinWidth(70);
+			this.mainAnchorPane.getChildren().add(this.imageView);
+			this.mainAnchorPane.getChildren().add(this.label);
+			this.getChildren().add(this.mainAnchorPane);
+
 			Platform.runLater(this::requestLayout); // JavaFx dark magic debug
 		}
 
@@ -93,7 +112,7 @@ public class ConcreteInventoryView extends Parent implements InventoryView {
 		 */
 		public void setNumber(int number) {
 			this.number = number;
-			this.label.setText(this.text + ": " + this.number);
+			this.label.setText("" + this.number);
 		}
 
 	}
@@ -219,12 +238,14 @@ public class ConcreteInventoryView extends Parent implements InventoryView {
 		});
 		this.mainHBox.getChildren().add(this.trainCounter);
 
-		this.mainHBox.getChildren().add(this.tunnelCounter);
-
 		this.linesHBox.setAlignment(Pos.CENTER);
+		this.linesHBox.setSpacing(20);
 		this.mainHBox.getChildren().add(this.linesHBox);
 
+		this.mainHBox.getChildren().add(this.tunnelCounter);
+
 		this.mainHBox.setAlignment(Pos.CENTER);
+		this.mainHBox.setSpacing(20);
 		this.getChildren().add(this.mainHBox);
 
 	}
