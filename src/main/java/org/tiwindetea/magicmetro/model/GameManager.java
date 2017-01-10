@@ -44,7 +44,7 @@ import java.util.concurrent.Executors;
 /**
  * TODO
  */
-public class GameManager implements StationManager {
+public class GameManager implements StationManager, LineManager {
 
 	private static final int LOOP_DELAY_MILLIS = 10; // number of milliseconds (of the TimeManager) between two game tick
 
@@ -157,7 +157,7 @@ public class GameManager implements StationManager {
 		}
 
 		for(int i = 0; i < mapScript.initialLines; ++i) {
-			Line line = new Line(this.viewManager.createLineView());
+			Line line = new Line(this.viewManager.createLineView(), this);
 			this.inventory.addLine(line);
 			this.gameMap.addLine(line);
 		}
@@ -187,4 +187,15 @@ public class GameManager implements StationManager {
 		this.warnedStations.remove(station);
 	}
 
+	@Override
+	public void lineDeleted(Line deletedLine) {
+		for(Train train : this.gameMap.getTrainsCopy()) {
+			if(train.getLine() == deletedLine) {
+				this.gameMap.removeTrain(train);
+				this.inventory.addTrain(train);
+				train.stop();
+				//TODO: manage passengers
+			}
+		}
+	}
 }
