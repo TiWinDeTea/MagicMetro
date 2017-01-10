@@ -84,10 +84,10 @@ public class Skin implements PassengerViewFactory {
 		case SQUARE: {
 			Polygon polygon = new Polygon();
 			polygon.getPoints().addAll(
-			  0.0, 0.0,
-			  20.0, 0.0,
-			  20.0, 20.0,
-			  0.0, 20.0
+			  0d, 0d,
+			  20d, 0d,
+			  20d, 20d,
+			  0d, 20d
 			);
 			polygon.setFill(PASSENGERS_COLOR);
 			return polygon;
@@ -95,9 +95,9 @@ public class Skin implements PassengerViewFactory {
 		case TRIANGLE: {
 			Polygon polygon = new Polygon();
 			polygon.getPoints().addAll(
-			  10.0, 0.0,
-			  20.0, 20.0,
-			  0.0, 20.0
+			  10d, 0d,
+			  20d, 20d,
+			  0d, 20d
 			);
 			polygon.setFill(PASSENGERS_COLOR);
 			return polygon;
@@ -110,18 +110,48 @@ public class Skin implements PassengerViewFactory {
 			return circle;
 		}
 		case STAR: {
-			//TODO
-			Circle circle = new Circle(10);
-			circle.setFill(ERROR_COLOR);
-			return circle;
+			Polygon polygon = new Polygon();
+			polygon.getPoints().addAll(
+			  10d, 0d,
+			  12.245, 6.91,
+			  19.51, 6.91,
+			  13.635, 11.18,
+			  15.88, 18.09,
+			  10d, 13.82,
+			  4.12, 18.09,
+			  6.865, 11.16,
+			  0.49, 6.91,
+			  7.795, 6.795
+			);
+			polygon.setFill(PASSENGERS_COLOR);
+			return polygon;
 		}
 		case DIAMOND: {
 			Polygon polygon = new Polygon();
 			polygon.getPoints().addAll(
-			  10.0, 0.0,
-			  20.0, 10.0,
-			  10.0, 20.0,
-			  0.0, 10.0
+			  10d, 0d,
+			  20d, 10d,
+			  10d, 20d,
+			  0d, 10d
+			);
+			polygon.setFill(PASSENGERS_COLOR);
+			return polygon;
+		}
+		case CROSS: {
+			Polygon polygon = new Polygon();
+			polygon.getPoints().addAll(
+			  6.6665, 0d,
+			  13.333, 0d,
+			  13.333, 6.6665,
+			  20d, 6.6665,
+			  20d, 13.333,
+			  13.333, 13.333d,
+			  13.333, 20d,
+			  6.6665, 20d,
+			  6.6665, 13.333,
+			  0d, 13.333,
+			  0d, 6.6665,
+			  6.6665, 6.6665
 			);
 			polygon.setFill(PASSENGERS_COLOR);
 			return polygon;
@@ -141,10 +171,10 @@ public class Skin implements PassengerViewFactory {
 		case SQUARE: {
 			Polygon polygon = new Polygon();
 			polygon.getPoints().addAll(
-			  0.0, 0.0,
-			  40.0, 0.0,
-			  40.0, 40.0,
-			  0.0, 40.0
+			  0d, 0d,
+			  40d, 0d,
+			  40d, 40d,
+			  0d, 40d
 			);
 			polygon.setFill(STATIONS_COLOR1);
 			polygon.setStroke(STATIONS_COLOR2);
@@ -154,9 +184,9 @@ public class Skin implements PassengerViewFactory {
 		case TRIANGLE: {
 			Polygon polygon = new Polygon();
 			polygon.getPoints().addAll(
-			  20.0, 0.0,
-			  40.0, 40.0,
-			  0.0, 40.0
+			  20d, 0d,
+			  40d, 40d,
+			  0d, 40d
 			);
 			polygon.setFill(STATIONS_COLOR1);
 			polygon.setStroke(STATIONS_COLOR2);
@@ -173,18 +203,52 @@ public class Skin implements PassengerViewFactory {
 			return circle;
 		}
 		case STAR: {
-			//TODO
-			Circle circle = new Circle(20);
-			circle.setFill(ERROR_COLOR);
-			return circle;
+			Polygon polygon = new Polygon();
+			polygon.getPoints().addAll(
+			  20d, 0d,
+			  24.49, 13.82,
+			  39.02, 13.82,
+			  27.27, 22.36,
+			  31.76, 36.18,
+			  20d, 27.64,
+			  8.24, 36.18,
+			  12.73, 22.36,
+			  0.98, 13.82,
+			  15.59, 13.59
+			);
+			polygon.setFill(STATIONS_COLOR1);
+			polygon.setStroke(STATIONS_COLOR2);
+			polygon.setStrokeWidth(4);
+			return polygon;
 		}
 		case DIAMOND: {
 			Polygon polygon = new Polygon();
 			polygon.getPoints().addAll(
-			  20.0, 0.0,
-			  40.0, 20.0,
-			  20.0, 40.0,
-			  0.0, 20.0
+			  20d, 0d,
+			  40d, 20d,
+			  20d, 40d,
+			  0d, 20d
+			);
+			polygon.setFill(STATIONS_COLOR1);
+			polygon.setStroke(STATIONS_COLOR2);
+			polygon.setStrokeWidth(7);
+			return polygon;
+		}
+		case CROSS: {
+			Polygon polygon = new Polygon();
+			polygon.getPoints().addAll(
+			  13.333, 0d,
+			  26.666, 0d,
+			  26.666, 13.333,
+			  40d, 13.333,
+			  40d, 26.666,
+			  26.666, 26.666d,
+			  26.666, 40d,
+			  13.333, 40d,
+			  13.333, 26.666,
+			  0d, 26.666,
+			  0d, 13.333,
+			  13.333, 13.333
 			);
 			polygon.setFill(STATIONS_COLOR1);
 			polygon.setStroke(STATIONS_COLOR2);
@@ -205,11 +269,11 @@ public class Skin implements PassengerViewFactory {
 		//TODO: switch type
 		Polygon polygon = new Polygon();
 		polygon.getPoints().addAll(
-		  0.0, 0.0,
-		  60.0, 0.0,
-		  75.0, 20.0,
-		  60.0, 40.0,
-		  0.0, 40.0
+		  0d, 0d,
+		  60d, 0d,
+		  75d, 20d,
+		  60d, 40d,
+		  0d, 40d
 		);
 		polygon.setFill(ERROR_COLOR);
 		return polygon;
@@ -219,10 +283,10 @@ public class Skin implements PassengerViewFactory {
 	public Shape newPassengerCarView(@Nonnull TrainType type) {
 		Polygon polygon = new Polygon();
 		polygon.getPoints().addAll(
-		  0.0, 0.0,
-		  60.0, 0.0,
-		  60.0, 40.0,
-		  0.0, 40.0
+		  0d, 0d,
+		  60d, 0d,
+		  60d, 40d,
+		  0d, 40d
 		);
 		polygon.setFill(ERROR_COLOR);
 		return polygon;
