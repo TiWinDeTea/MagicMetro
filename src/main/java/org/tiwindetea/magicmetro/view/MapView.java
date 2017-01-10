@@ -28,6 +28,7 @@ import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -185,7 +186,9 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 				if(this.oldToStationBounds.contains(x, y)) {
 					this.stationsBounds.addAll(this.oldToStationBounds);
 					this.apply(x, y);
-					MapView.this.modificationState = new LineExtensionState(this.sectionView, this.toStation, null);
+					if(this.toStation != null) {
+						MapView.this.modificationState = new LineExtensionState(this.sectionView, this.toStation, null);
+					}
 				}
 			}
 			if(this.oldToStation != null) {
@@ -617,6 +620,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 	private Lock modificationStateLock = new ReentrantLock();
 
 	private final Skin skin;
+	private Collection<Node> HUD = new LinkedList<>();
 
 	public MapView(Skin skin) {
 		super();
@@ -633,7 +637,19 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 		addEventFilter(MouseEvent.DRAG_DETECTED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
+				for(Node node : MapView.this.HUD) {
+					node.setMouseTransparent(true);
+				}
 				MapView.this.startFullDrag();
+			}
+		});
+
+		addEventFilter(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				for(Node node : MapView.this.HUD) {
+					node.setMouseTransparent(false);
+				}
 			}
 		});
 
@@ -655,6 +671,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 				MapView.this.modificationStateLock.unlock();
 			}
 		});
+
 	}
 
 	public void setInventoryView(ConcreteInventoryView inventoryView) {
@@ -802,4 +819,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 		  Insets.EMPTY)));
 	}
 
+	public void setHUD(Collection<Node> HUD) {
+		this.HUD = HUD;
+	}
 }

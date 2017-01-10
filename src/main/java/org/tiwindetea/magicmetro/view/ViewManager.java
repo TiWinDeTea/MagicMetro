@@ -28,6 +28,7 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -49,6 +50,8 @@ import org.tiwindetea.magicmetro.global.TimeManager;
 import org.tiwindetea.magicmetro.global.util.Utils;
 import org.tiwindetea.magicmetro.model.StationType;
 import org.tiwindetea.magicmetro.model.TrainType;
+
+import java.util.LinkedList;
 
 /**
  * ViewManager, manage the view, create graphical elements and display them.
@@ -132,9 +135,6 @@ public class ViewManager {
 		this.mainAnchorPane.getChildren().add(timeVBox);
 
 		// ----- inventory and map -----
-		this.mapView.setBackgroundColor(MAP_BACKGROUND_COLOR);
-		this.cPane.getChildren().add(this.mapView);
-
 		this.concreteInventoryView = new ConcreteInventoryView(this.mapView); //FIXME: cyclic reference, care at deletion
 		StackPane inventoryStackPane = new StackPane();
 		inventoryStackPane.getChildren().add(this.concreteInventoryView);
@@ -142,6 +142,13 @@ public class ViewManager {
 		AnchorPane.setLeftAnchor(inventoryStackPane, 0d);
 		AnchorPane.setBottomAnchor(inventoryStackPane, 10d);
 		this.mainAnchorPane.getChildren().add(inventoryStackPane);
+
+		this.mapView.setBackgroundColor(MAP_BACKGROUND_COLOR);
+		LinkedList<Node> HUD = new LinkedList<>();
+		HUD.add(timeVBox);
+		HUD.add(inventoryStackPane);
+		this.mapView.setHUD(HUD);
+		this.cPane.getChildren().add(this.mapView);
 
 		this.mapView.setInventoryView(this.concreteInventoryView); //FIXME: cyclic reference, care at deletion
 	}
