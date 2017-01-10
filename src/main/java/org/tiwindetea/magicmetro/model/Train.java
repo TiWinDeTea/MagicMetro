@@ -274,6 +274,8 @@ public class Train {
 		public synchronized void init() {
 			this.delayCounter = 0;
 			this.actualStation = Train.this.lastConnection.getStation();
+			this.finishedOut = false;
+			this.finishedIn = false;
 		}
 
 		@Override
