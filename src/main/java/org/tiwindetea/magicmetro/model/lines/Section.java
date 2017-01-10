@@ -32,6 +32,7 @@ import java.util.Objects;
  * A section of a line composed of several connections and subsections.
  * The right and left connections are part of different stations linked by the section.
  *
+ * @author Julien Barbier
  * @author Maxime PINARD
  * @see SubSection
  * @see Connection
@@ -86,6 +87,7 @@ public class Section {
 		this.rightSubSection.setSection(this);
 		this.leftSubSection.setSection(this);
 	}
+
 
 	/**
 	 * Gets if has tunnel.
@@ -179,6 +181,20 @@ public class Section {
 	 */
 	public void setMiddleConnection(@Nonnull Connection middleConnection) {
 		this.middleConnection = middleConnection;
+	}
+
+	/**
+	 * get the other Station Connection
+	 *
+	 * @param connection the station Connection
+	 * @return the other station Connection or left if it's not a station Connection
+	 */
+	public Connection getOtherStationConnection(@Nonnull Connection connection){
+		if(connection == leftConnection){
+			return rightConnection;
+		} else {
+			return leftConnection;
+		}
 	}
 
 	/**
