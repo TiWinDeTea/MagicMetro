@@ -27,7 +27,6 @@ package org.tiwindetea.magicmetro.model;
 import org.arakhne.afc.math.geometry.d2.d.Point2d;
 import org.tiwindetea.magicmetro.global.TimeManager;
 import org.tiwindetea.magicmetro.model.lines.Connection;
-import org.tiwindetea.magicmetro.model.lines.Line;
 import org.tiwindetea.magicmetro.view.StationView;
 
 import javax.annotation.Nonnull;
@@ -87,14 +86,16 @@ public class Station {
 	 * @param passenger the passenger
 	 */
 	public void addPassenger(@Nonnull Passenger passenger) {
-		this.passengers.add(passenger);
-		this.view.addPassenger(passenger.getWantedStation());
-		if(this.passengers.size() > this.maxCapacity && !this.warn) {
-			this.view.warn();
-			this.warn = true;
-			this.warnStart = TimeManager.getInstance().getTimeAsMillis();
-			this.warnEnd = this.warnStart + STATION_FULL_DELAY;
-			this.stationManager.addWarnedStation(this);
+		if(passenger.getWantedStation() != this.type) {
+			this.passengers.add(passenger);
+			this.view.addPassenger(passenger.getWantedStation());
+			if(this.passengers.size() > this.maxCapacity && !this.warn) {
+				this.view.warn();
+				this.warn = true;
+				this.warnStart = TimeManager.getInstance().getTimeAsMillis();
+				this.warnEnd = this.warnStart + STATION_FULL_DELAY;
+				this.stationManager.addWarnedStation(this);
+			}
 		}
 	}
 
@@ -218,7 +219,7 @@ public class Station {
 	 * @return the connection
 	 */
 	public Connection getConnection(int gameIdLine){
-		for(Connection connection : connections){
+		for(Connection connection : this.connections) {
 			if(connection.getLeftSubSection() != null && connection.getLeftSubSection().getSection().getLine().gameId == gameIdLine ||
 					connection.getRightSubSection() != null && connection.getRightSubSection().getSection().getLine().gameId == gameIdLine){
 				return connection;
