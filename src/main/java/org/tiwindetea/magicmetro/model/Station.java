@@ -27,6 +27,7 @@ package org.tiwindetea.magicmetro.model;
 import org.arakhne.afc.math.geometry.d2.d.Point2d;
 import org.tiwindetea.magicmetro.global.TimeManager;
 import org.tiwindetea.magicmetro.model.lines.Connection;
+import org.tiwindetea.magicmetro.model.lines.Line;
 import org.tiwindetea.magicmetro.view.StationView;
 
 import javax.annotation.Nonnull;
@@ -208,6 +209,30 @@ public class Station {
 	 */
 	public List<Passenger> getPassengers() {
 		return this.passengers;
+	}
+
+	/**
+	 * get the connection of the line
+	 *
+	 * @param gameIdLine the id of the line
+	 * @return the connection
+	 */
+	public Connection getConnection(int gameIdLine){
+		for(Connection connection : connections){
+			if(connection.getLeftSubSection() != null && connection.getLeftSubSection().getSection().getLine().gameId == gameIdLine ||
+					connection.getRightSubSection() != null && connection.getRightSubSection().getSection().getLine().gameId == gameIdLine){
+				return connection;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public String toString() {
+		return "Station{" +
+				"gameId=" + gameId +
+				", typeStation=" +type+
+				'}';
 	}
 
 }
