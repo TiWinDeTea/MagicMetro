@@ -31,6 +31,7 @@ import org.tiwindetea.magicmetro.model.lines.Line;
 import org.tiwindetea.magicmetro.view.TrainView;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -140,6 +141,11 @@ public class Train {
 	public void stop() {
 		this.line = null;
 		this.view.setVisible(false);
+	}
+
+	@Nullable
+	public Line getLine() {
+		return this.line;
 	}
 
 	private synchronized boolean addPassenger(Passenger passenger) {
@@ -284,12 +290,24 @@ public class Train {
 				if(!this.finishedOut) {
 					this.finishedOut = true;
 					for(Passenger passenger : Train.this.passengers) {
-						if(passenger.getPath().peek() == this.actualStation) {
-							removePassenger(passenger);
-							passenger.getPath().pop();
-							this.actualStation.addPassenger(passenger);
-							this.finishedOut = false;
-							break;
+						Station station = null;
+						Stack<Station> passengerPath = passenger.getPath();
+						if(passengerPath != null) {
+							if(!passengerPath.isEmpty()) { // for stack dark magic purpose
+								station = passengerPath.peek();
+							}
+							if(station == this.actualStation) {
+								passenger.getPath().pop();
+								if(!passengerPath.isEmpty()) { // for stack dark magic purpose
+									station = passengerPath.peek();
+								}
+								if(!Train.this.line.contains(station) || station == this.actualStation) {
+									removePassenger(passenger);
+									this.actualStation.addPassenger(passenger);
+									this.finishedOut = false;
+									break;
+								}
+							}
 						}
 					}
 				}
@@ -299,14 +317,17 @@ public class Train {
 						for(Passenger passenger : this.actualStation.getPassengers()) {
 							Station station = null;
 							Stack<Station> passengerPath = passenger.getPath();
-							if(!passengerPath.isEmpty()) { // for stack dark magic purpose
-								station = passengerPath.peek();
-							}
-							if(Train.this.line.contains(station)) {
-								addPassenger(passenger);
-								this.actualStation.removePassenger(passenger);
-								this.finishedIn = false;
-								break;
+							if(passengerPath != null) {
+								if(!passengerPath.isEmpty()) { // for stack dark magic purpose
+									station = passengerPath.peek();
+								}
+								if(Train.this.line.contains(station)) {
+									if(Train.this.addPassenger(passenger)) {
+										this.actualStation.removePassenger(passenger);
+										this.finishedIn = false;
+										break;
+									}
+								}
 							}
 						}
 					}
