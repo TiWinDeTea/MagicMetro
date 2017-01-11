@@ -103,29 +103,57 @@ public class Main extends Application {
 		MapScript testMapScript = new MapScript("test map", 1920, 1080, multiShape2d);
 		testMapScript.stationScripts.add(
 		  new StationScript(Duration.ofSeconds(0),
-		    new Point2d(400, 620),
-			StationType.TRIANGLE));
+		    new Point2d(830, 750),
+		    StationType.CIRCLE));
 		testMapScript.stationScripts.add(
 		  new StationScript(Duration.ofSeconds(0),
-			new Point2d(900, 750),
-			StationType.SQUARE));
+		    new Point2d(560, 700),
+		    StationType.TRIANGLE));
 		testMapScript.stationScripts.add(
 		  new StationScript(Duration.ofSeconds(0),
-			new Point2d(750, 320),
-			StationType.DIAMOND));
+		    new Point2d(610, 480),
+		    StationType.SQUARE));
 		testMapScript.stationScripts.add(
 		  new StationScript(Duration.ofSeconds(30),
-			new Point2d(1400, 200),
-			StationType.CIRCLE));
+		    new Point2d(1300, 690),
+		    StationType.CIRCLE));
 		testMapScript.stationScripts.add(
 		  new StationScript(Duration.ofSeconds(60),
-			new Point2d(1300, 800),
-			StationType.TRIANGLE));
+		    new Point2d(150, 530),
+		    StationType.CROSS));
 		testMapScript.stationScripts.add(
 		  new StationScript(Duration.ofSeconds(90),
-			new Point2d(300, 400),
+			new Point2d(1620, 170),
+			StationType.CIRCLE));
+		testMapScript.stationScripts.add(
+		  new StationScript(Duration.ofSeconds(120),
+			new Point2d(1250, 380),
+			StationType.TRIANGLE));
+		testMapScript.stationScripts.add(
+		  new StationScript(Duration.ofSeconds(150),
+			new Point2d(1610, 640),
+			StationType.CROSS));
+		testMapScript.stationScripts.add(
+		  new StationScript(Duration.ofSeconds(180),
+			new Point2d(980, 330),
+			StationType.DIAMOND));
+		testMapScript.stationScripts.add(
+		  new StationScript(Duration.ofSeconds(210),
+			new Point2d(1030, 850),
 			StationType.STAR));
-		testMapScript.initialLines = 5;
+		testMapScript.stationScripts.add(
+		  new StationScript(Duration.ofSeconds(240),
+			new Point2d(350, 280),
+			StationType.SQUARE));
+		testMapScript.stationScripts.add(
+		  new StationScript(Duration.ofSeconds(270),
+			new Point2d(930, 590),
+			StationType.TRIANGLE));
+		testMapScript.stationScripts.add(
+		  new StationScript(Duration.ofSeconds(300),
+			new Point2d(670, 350),
+			StationType.DIAMOND));
+		testMapScript.initialLines = 4;
 		testMapScript.initialTrains = 3;
 		testMapScript.initialTunnels = 3;
 		this.mapScripts.add(testMapScript);
