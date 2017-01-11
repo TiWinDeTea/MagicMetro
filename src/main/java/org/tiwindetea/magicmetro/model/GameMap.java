@@ -30,13 +30,17 @@ import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineCr
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineDecreaseEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineExtensionEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineInnerExtensionEvent;
-import org.tiwindetea.magicmetro.global.util.BooleanWrapper;
 import org.tiwindetea.magicmetro.model.lines.Connection;
 import org.tiwindetea.magicmetro.model.lines.Line;
 import org.tiwindetea.magicmetro.model.lines.Section;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Random;
+import java.util.Stack;
 
 /**
  * Map of the game contains trains, stations and lines that are active in the game.<p>
@@ -73,7 +77,7 @@ public class GameMap {
 				break;
 			}
 		}
-		haveChanged = true;
+		this.haveChanged = true;
 		calculateChangementPath();
 	};
 
@@ -84,7 +88,7 @@ public class GameMap {
 				break;
 			}
 		}
-		haveChanged = true;
+		this.haveChanged = true;
 		calculateChangementPath();
 	};
 
@@ -108,7 +112,7 @@ public class GameMap {
 	    EventDispatcher.getInstance().addListener(LineExtensionEvent.class, this.onLineExtensionEvent);
 	    EventDispatcher.getInstance().addListener(LineInnerExtensionEvent.class, this.onLineInnerExtensionEvent);
 	    EventDispatcher.getInstance().addListener(LineDecreaseEvent.class, this.onLineDecreaseEvent);
-	    haveChanged = false;
+	    this.haveChanged = false;
     }
 
 	Passenger addPassengerToStation() {
@@ -130,7 +134,7 @@ public class GameMap {
 	}
 
 	private void initLine(Line line) {
-    	haveChanged = true;
+		this.haveChanged = true;
 		Train train = this.inventory.takeTrain();
 		if(train != null) {
 			train.start(line);
@@ -140,7 +144,7 @@ public class GameMap {
 	}
 
 	private void calculateChangementPath(){
-		for(Station station : stations){
+		for(Station station : this.stations) {
 			for(Passenger passenger : station.getPassengers()){
 				passenger.setPath(pathFinding(station, passenger.getWantedStation()));
 			}
@@ -230,10 +234,10 @@ public class GameMap {
      */
     @Nullable
     private Station getStationWithId(int id){
-        for(Station station : stations){
-            if(station.gameId == id){
-                return station;
-            }
+	    for(Station station : this.stations) {
+		    if(station.gameId == id) {
+			    return station;
+		    }
         }
         return null;
     }
@@ -245,10 +249,10 @@ public class GameMap {
      * @return the line with the id, null if the line with this id isn't in the map
      */
     private Line getLineWithId(int id){
-        for(Line line : lines){
-            if(line.gameId == id){
-                return line;
-            }
+	    for(Line line : this.lines) {
+		    if(line.gameId == id) {
+			    return line;
+		    }
         }
         return null;
     }
@@ -324,14 +328,14 @@ public class GameMap {
     }
 
     private synchronized void initHeuristics(Station station){
-    	int index = stations.indexOf(station);
-    	int i = 0;
-    	stationHeuristics = new double[stations.size()][stations.size()];
-		for (Station station1 : stations) {
+	    int index = this.stations.indexOf(station);
+	    int i = 0;
+	    this.stationHeuristics = new double[this.stations.size()][this.stations.size()];
+	    for(Station station1 : this.stations) {
 			if (station1 == station) {
-				stationHeuristics[index][i] = 0;
+				this.stationHeuristics[index][i] = 0;
 			} else {
-				stationHeuristics[index][i] = Double.MAX_VALUE;
+				this.stationHeuristics[index][i] = Double.MAX_VALUE;
 			}
 			++i;
 		}
@@ -366,9 +370,9 @@ public class GameMap {
 	 * @return the path
 	 */
     public synchronized Stack<Station> pathFinding(Station station, StationType stationType){
-		System.out.println("Wanted type = " + stationType + " and station is " + station.toString());
+	    //System.out.println("Wanted type = " + stationType + " and station is " + station.toString());
 		Stack<Station> result = new Stack<>();
-		Station[] predecessor = new Station[stations.size()];
+	    Station[] predecessor = new Station[this.stations.size()];
 		Station current = station;
 
 		initHeuristics(station);
@@ -376,24 +380,26 @@ public class GameMap {
 			PriorityQueue<Station> path = new PriorityQueue<>(new Comparator<Station>() {
 				@Override
 				public int compare(Station o1, Station o2) {
-					return (int) (stationHeuristics[stations.indexOf(station)][stations.indexOf(o1)] -
-							stationHeuristics[stations.indexOf(station)][stations.indexOf(o2)]);
+					return (int) (GameMap.this.stationHeuristics[GameMap.this.stations.indexOf(station)][GameMap.this.stations
+					  .indexOf(o1)] -
+					  GameMap.this.stationHeuristics[GameMap.this.stations.indexOf(station)][GameMap.this.stations.indexOf(
+						o2)]);
 				}
 			});
 			path.add(station);
 			Stack<Station> finished = new Stack<>();
-			predecessor[stations.indexOf(station)] = current;
+			predecessor[this.stations.indexOf(station)] = current;
 			while (!path.isEmpty()){
-				System.out.println(path.toString());
+				//System.out.println(path.toString());
 				current = path.poll();
 				if(current.getType() == stationType){
-					System.out.println("Waiting Result");
+					//System.out.println("Waiting Result");
 					while (current != station){
-						int index = stations.indexOf(current);
+						int index = this.stations.indexOf(current);
 						result.push(current);
 						current = predecessor[index];
 					}
-					System.out.println("Path finded : " + result.toString());
+					//System.out.println("Path finded : " + result.toString());
 					return result;
 				}
 				for(Connection connection : current.getConnections()){
@@ -411,9 +417,9 @@ public class GameMap {
 				finished.add(current);
 			}
 		} else{
-			System.out.println("The station is of type wanted");
+			//System.out.println("The station is of type wanted");
 		}
-		System.out.println("No path finded");
+	    //System.out.println("No path finded");
 		return null;
 	}
 }
