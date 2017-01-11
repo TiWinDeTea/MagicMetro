@@ -30,9 +30,11 @@ import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineCr
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineDecreaseEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineExtensionEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineInnerExtensionEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.moveevents.TrainInventoryMoveEvent;
 import org.tiwindetea.magicmetro.model.lines.Connection;
 import org.tiwindetea.magicmetro.model.lines.Line;
 import org.tiwindetea.magicmetro.model.lines.Section;
+import sun.plugin.dom.exception.InvalidStateException;
 
 import javax.annotation.Nullable;
 import java.util.Comparator;
@@ -58,7 +60,6 @@ public class GameMap {
 	private List<StationType> stationsTypes = new LinkedList<>();
 	private List<Line> lines = new LinkedList<>();
 	private Inventory inventory;
-	private boolean haveChanged;
 
 	private final EventListener<LineCreationEvent> onLineCreationEvent = event -> {
 		for(Line line : this.lines) {
@@ -68,6 +69,7 @@ public class GameMap {
 				break;
 			}
 		}
+		recomputePassengersPaths();
 	};
 
 	private final EventListener<LineExtensionEvent> onLineExtensionEvent = event -> {
@@ -77,8 +79,7 @@ public class GameMap {
 				break;
 			}
 		}
-		this.haveChanged = true;
-		calculateChangementPath();
+		recomputePassengersPaths();
 	};
 
 	private final EventListener<LineInnerExtensionEvent> onLineInnerExtensionEvent = event -> {
@@ -88,14 +89,31 @@ public class GameMap {
 				break;
 			}
 		}
-		this.haveChanged = true;
-		calculateChangementPath();
+		recomputePassengersPaths();
 	};
 
 	private final EventListener<LineDecreaseEvent> onLineDecreaseEvent = event -> {
 		for(Line line : this.lines) {
 			if(line.gameId == event.lineId) {
 				line.manage(event);
+				break;
+			}
+		}
+		recomputePassengersPaths();
+	};
+
+	private final EventListener<TrainInventoryMoveEvent> onTrainInventoryMoveEvent = event -> {
+		for(Line line : this.lines) {
+			if(line.gameId == event.lineId) {
+				Train train = this.inventory.takeTrain();
+				if(train != null) {
+					Section section = line.getSectionFromId(event.sectionId);
+					if(section == null) {
+						throw new InvalidStateException("section is not in the line");
+					}
+					train.start(section);
+					GameMap.this.addTrain(train);
+				}
 				break;
 			}
 		}
@@ -112,7 +130,7 @@ public class GameMap {
 	    EventDispatcher.getInstance().addListener(LineExtensionEvent.class, this.onLineExtensionEvent);
 	    EventDispatcher.getInstance().addListener(LineInnerExtensionEvent.class, this.onLineInnerExtensionEvent);
 	    EventDispatcher.getInstance().addListener(LineDecreaseEvent.class, this.onLineDecreaseEvent);
-	    this.haveChanged = false;
+	    EventDispatcher.getInstance().addListener(TrainInventoryMoveEvent.class, this.onTrainInventoryMoveEvent);
     }
 
 	Passenger addPassengerToStation() {
@@ -134,16 +152,14 @@ public class GameMap {
 	}
 
 	private void initLine(Line line) {
-		this.haveChanged = true;
 		Train train = this.inventory.takeTrain();
 		if(train != null) {
 			train.start(line);
 			this.addTrain(train);
 		}
-		calculateChangementPath();
 	}
 
-	private void calculateChangementPath(){
+	private void recomputePassengersPaths() {
 		for(Station station : this.stations) {
 			for(Passenger passenger : station.getPassengers()){
 				passenger.setPath(pathFinding(station, passenger.getWantedStation()));

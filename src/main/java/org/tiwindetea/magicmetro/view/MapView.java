@@ -50,6 +50,7 @@ import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineCr
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineDecreaseEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineExtensionEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineInnerExtensionEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.moveevents.TrainInventoryMoveEvent;
 import org.tiwindetea.magicmetro.model.TrainType;
 
 import javax.annotation.Nonnull;
@@ -615,7 +616,11 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 			MapView.this.trainGroup.getChildren().remove(this.trainShape);
 			MapView.this.dragOverLock.lock();
 			if(MapView.this.dragOverSection != null) {
-				//TODO: event to model... (add train to section, model check if a train is available)
+				EventDispatcher.getInstance().fire(new TrainInventoryMoveEvent(
+				  MapView.this.dragOverSection.getLine().gameId,
+				  MapView.this.dragOverSection.gameId,
+				  new Point2d(x, y)
+				));
 			}
 			MapView.this.dragOverLock.unlock();
 		}
