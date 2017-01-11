@@ -37,4 +37,6 @@ public interface LineView {
 
 	int getGameId();
 
+	void deleteSection(int sectionId);
+
 }
