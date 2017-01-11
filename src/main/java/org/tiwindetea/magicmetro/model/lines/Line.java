@@ -34,6 +34,7 @@ import org.tiwindetea.magicmetro.model.Station;
 import org.tiwindetea.magicmetro.view.LineView;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -398,6 +399,16 @@ public class Line {
 	@Nonnull
 	public SimplePair<Connection> getLastConnections() {
 		return this.lastConnections;
+	}
+
+	@Nullable
+	public Section getSectionFromId(int sectionId) {
+		for(Section section : this.sections) {
+			if(section.gameId == sectionId) {
+				return section;
+			}
+		}
+		return null;
 	}
 
 }
