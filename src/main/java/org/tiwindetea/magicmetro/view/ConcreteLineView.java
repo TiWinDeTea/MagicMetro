@@ -24,8 +24,10 @@
 
 package org.tiwindetea.magicmetro.view;
 
+import javafx.animation.FadeTransition;
 import javafx.scene.Parent;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 import org.tiwindetea.magicmetro.global.IdGenerator;
 
 import java.util.LinkedList;
@@ -61,6 +63,24 @@ public class ConcreteLineView extends Parent implements LineView {
 	@Override
 	public int getGameId() {
 		return this.gameId;
+	}
+
+	@Override
+	public void deleteSection(int sectionId) {
+		for(SectionView section : this.sections) {
+			if(section.gameId == sectionId) {
+				FadeTransition fadeTransition = new FadeTransition(Duration.seconds(7), section);
+				fadeTransition.setFromValue(0.6);
+				fadeTransition.setToValue(0);
+				fadeTransition.play();
+				fadeTransition.setOnFinished(event -> {
+					ConcreteLineView.this.getChildren().remove(section);
+					fadeTransition.setNode(null);
+				});
+				this.sections.remove(section);
+				break;
+			}
+		}
 	}
 
 }
