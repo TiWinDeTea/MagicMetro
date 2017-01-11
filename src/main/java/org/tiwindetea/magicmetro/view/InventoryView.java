@@ -38,6 +38,8 @@ public interface InventoryView {
 
 	void setPassengerCars(int value);
 
+	void setTunnels(int value);
+
 	void setAvailableLine(int lineId);
 
 	void setUsed(int lineId);

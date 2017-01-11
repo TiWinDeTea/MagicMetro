@@ -50,6 +50,8 @@ public class Inventory {
 	private final LinkedList<Train> trains = new LinkedList<>();
 	private final LinkedList<PassengerCar> passengerCars = new LinkedList<>();
 
+	private int tunnelNumber = 0;
+
 	//TODO: documentation
 
 	public Inventory(@Nonnull InventoryView view) {
@@ -117,6 +119,20 @@ public class Inventory {
 		StationUpgrade stationUpgrade = this.stationUpgrades.poll();
 		this.view.setStationUpgrades(this.stationUpgrades.size());
 		return stationUpgrade;
+	}
+
+	public void addTunnel() {
+		++this.tunnelNumber;
+		this.view.setTunnels(this.tunnelNumber);
+	}
+
+	public boolean removeTunnel() {
+		if(this.tunnelNumber > 0) {
+			--this.tunnelNumber;
+			this.view.setTunnels(this.tunnelNumber);
+			return true;
+		}
+		return false;
 	}
 
 }

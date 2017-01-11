@@ -283,6 +283,11 @@ public class ConcreteInventoryView extends Parent implements InventoryView {
 	}
 
 	@Override
+	public void setTunnels(int value) {
+		this.tunnelCounter.setNumber(value);
+	}
+
+	@Override
 	public synchronized void setAvailableLine(int lineId) {
 		ConcreteLineView line = this.mapView.getLineFromId(lineId);
 		LineDisplayer lineDisplayer = new LineDisplayer();
