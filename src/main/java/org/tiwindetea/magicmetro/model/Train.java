@@ -30,7 +30,6 @@ import org.tiwindetea.magicmetro.model.lines.Connection;
 import org.tiwindetea.magicmetro.model.lines.Line;
 import org.tiwindetea.magicmetro.model.lines.Section;
 import org.tiwindetea.magicmetro.view.TrainView;
-import sun.plugin.dom.exception.InvalidStateException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -142,7 +141,7 @@ public class Train {
 
 	public void start(@Nonnull Section section) {
 		if(section.getLine() == null) {
-			throw new InvalidStateException("section is not in a line");
+			throw new IllegalStateException("section is not in a line");
 		}
 		this.line = section.getLine();
 		this.view.setLine(this.line.gameId);

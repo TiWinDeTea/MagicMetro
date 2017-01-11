@@ -34,7 +34,6 @@ import org.tiwindetea.magicmetro.global.eventdispatcher.events.moveevents.TrainI
 import org.tiwindetea.magicmetro.model.lines.Connection;
 import org.tiwindetea.magicmetro.model.lines.Line;
 import org.tiwindetea.magicmetro.model.lines.Section;
-import sun.plugin.dom.exception.InvalidStateException;
 
 import javax.annotation.Nullable;
 import java.util.Comparator;
@@ -109,7 +108,7 @@ public class GameMap {
 				if(train != null) {
 					Section section = line.getSectionFromId(event.sectionId);
 					if(section == null) {
-						throw new InvalidStateException("section is not in the line");
+						throw new IllegalStateException("section is not in the line");
 					}
 					train.start(section);
 					GameMap.this.addTrain(train);
