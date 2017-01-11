@@ -30,7 +30,9 @@ import org.tiwindetea.magicmetro.global.eventdispatcher.Event;
 import javax.annotation.Nonnull;
 
 /**
- * Event for modification of Line
+ * Event for the inner extension of a Line (addition of a station not at the end or the beginning of the line).
+ *
+ * @author Maxime PINARD
  * @author Julien Barbier
  * @since 0.1
  */
