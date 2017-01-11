@@ -77,11 +77,13 @@ public class ConcreteTrainView extends Parent implements TrainView {
 	                         MapView mapView) {
 		this.sprite = sprite;
 		this.mapView = mapView;
-		this.getChildren().add(this.sprite);
-		this.sprite.setTranslateX(0);
-		this.sprite.setTranslateY(0);
-		this.setLayoutX(-spriteWidth / 2);
-		this.setLayoutY(-spriteHeight / 2);
+		Platform.runLater(() -> {
+			this.getChildren().add(this.sprite);
+			this.sprite.setTranslateX(0);
+			this.sprite.setTranslateY(0);
+			this.setLayoutX(-spriteWidth / 2);
+			this.setLayoutY(-spriteHeight / 2);
+		});
 		this.passengersPositions = passengersPositions;
 		this.freePassengersPositionsIndex = new LinkedList<>();
 		for(int i = 0; i < this.passengersPositions.size(); ++i) {
@@ -97,13 +99,15 @@ public class ConcreteTrainView extends Parent implements TrainView {
 
 	@Override
 	public void setRotation(double angle) {
-		this.setRotate(angle);
+		Platform.runLater(() -> this.setRotate(angle));
 	}
 
 	@Override
 	public void setPosition(@Nonnull Point2d position) {
-		this.setTranslateX(position.getX());
-		this.setTranslateY(position.getY());
+		Platform.runLater(() -> {
+			this.setTranslateX(position.getX());
+			this.setTranslateY(position.getY());
+		});
 	}
 
 	@Override
@@ -138,7 +142,7 @@ public class ConcreteTrainView extends Parent implements TrainView {
 	public void setLine(int lineId) {
 		this.line = this.mapView.getLineFromId(lineId);
 		if(this.line != null) {
-			this.sprite.setFill(this.line.color);
+			Platform.runLater(() -> this.sprite.setFill(this.line.color));
 		}
 	}
 }
