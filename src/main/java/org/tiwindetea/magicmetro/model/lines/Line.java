@@ -29,6 +29,7 @@ import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineDe
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineExtensionEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineInnerExtensionEvent;
 import org.tiwindetea.magicmetro.global.util.SimplePair;
+import org.tiwindetea.magicmetro.model.LineManager;
 import org.tiwindetea.magicmetro.model.Station;
 import org.tiwindetea.magicmetro.view.LineView;
 
@@ -59,13 +60,18 @@ public class Line {
 	private SimplePair<Connection> lastConnections;
 	private List<Connection> stationConnection = new LinkedList<>();
 
+	private final LineManager lineManager;
+
 	/**
-	 * Default constructor.
-	 * @param view the LineView
+	 * Instantiates a new Line.
+	 *
+	 * @param view        the view
+	 * @param lineManager the line manager
 	 */
-	public Line(LineView view) {
+	public Line(LineView view, LineManager lineManager) {
 		this.view = view;
 		this.gameId = view.getGameId();
+		this.lineManager = lineManager;
 		this.lastConnections = new SimplePair<>(null, null);
 	}
 
@@ -287,8 +293,8 @@ public class Line {
 		  rightSubsection
 		);
 
-		//TODO: remove old section from view
 		this.sections.remove(oldSection);
+		this.view.deleteSection(oldSection.gameId);
 
 		this.stations.add(middleStation);
 		this.sections.add(leftSection);
@@ -296,7 +302,6 @@ public class Line {
 	}
 
 	public void manage(LineDecreaseEvent event) {
-		System.out.println("Line: LineDecreaseEvent");
 
 		Station oldStation = null;
 		for(Station station : this.stations) {
@@ -357,9 +362,12 @@ public class Line {
 
 		this.stations.remove(oldStation);
 		this.sections.remove(oldSection);
+		this.view.deleteSection(oldSection.gameId);
 
 		if(this.sections.isEmpty()) {
-			//TODO: remove train and last connections
+			lastConnection.setSubSectionLeft(null);
+			lastConnection.setSubSectionRight(null);
+			this.lineManager.lineDeleted(this);
 		}
 	}
 
