@@ -137,6 +137,12 @@ public class ViewManager {
 		// ----- inventory and map -----
 		this.concreteInventoryView = new ConcreteInventoryView(this.mapView); //FIXME: cyclic reference, care at deletion
 		StackPane inventoryStackPane = new StackPane();
+
+		LinkedList<Node> HUD = new LinkedList<>();
+		HUD.add(timeVBox);
+		HUD.add(inventoryStackPane);
+
+		this.concreteInventoryView.setHUD(HUD);
 		inventoryStackPane.getChildren().add(this.concreteInventoryView);
 		AnchorPane.setRightAnchor(inventoryStackPane, 0d);
 		AnchorPane.setLeftAnchor(inventoryStackPane, 0d);
@@ -144,9 +150,6 @@ public class ViewManager {
 		this.mainAnchorPane.getChildren().add(inventoryStackPane);
 
 		this.mapView.setBackgroundColor(MAP_BACKGROUND_COLOR);
-		LinkedList<Node> HUD = new LinkedList<>();
-		HUD.add(timeVBox);
-		HUD.add(inventoryStackPane);
 		this.mapView.setHUD(HUD);
 		this.cPane.getChildren().add(this.mapView);
 

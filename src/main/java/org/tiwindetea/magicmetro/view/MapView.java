@@ -511,16 +511,17 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 
 	private class StationUpgradeMoveState implements ModificationState {
 
-		private final Shape StationUpgradeShape;
+		private final Shape stationUpgradeShape;
 
 		public StationUpgradeMoveState(Shape StationUpgradeShape) {
-			this.StationUpgradeShape = StationUpgradeShape;
+			this.stationUpgradeShape = StationUpgradeShape;
 			// Circles already have a good layout
-			//this.StationUpgradeShape.setLayoutX(-Skin.STATION_UPGRADE_VIEW_WIDTH / 2);
-			//this.StationUpgradeShape.setLayoutY(-Skin.STATION_UPGRADE_VIEW_HEIGHT / 2);
+			//this.stationUpgradeShape.setLayoutX(-Skin.STATION_UPGRADE_VIEW_WIDTH / 2);
+			//this.stationUpgradeShape.setLayoutY(-Skin.STATION_UPGRADE_VIEW_HEIGHT / 2);
 
-			this.StationUpgradeShape.setMouseTransparent(true);
-			MapView.this.trainGroup.getChildren().add(this.StationUpgradeShape);
+			this.stationUpgradeShape.setMouseTransparent(true);
+			MapView.this.trainGroup.getChildren().add(this.stationUpgradeShape);
+			this.stationUpgradeShape.setVisible(false);
 		}
 
 		@Override
@@ -530,13 +531,14 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 
 		@Override
 		public void update(double x, double y) {
-			this.StationUpgradeShape.setTranslateX(x);
-			this.StationUpgradeShape.setTranslateY(y);
+			this.stationUpgradeShape.setTranslateX(x);
+			this.stationUpgradeShape.setTranslateY(y);
+			this.stationUpgradeShape.setVisible(true);
 		}
 
 		@Override
 		public void apply(double x, double y) {
-			MapView.this.trainGroup.getChildren().remove(this.StationUpgradeShape);
+			MapView.this.trainGroup.getChildren().remove(this.stationUpgradeShape);
 			MapView.this.dragOverLock.lock();
 			if(MapView.this.dragOverStation != null) {
 				//TODO: event to model... (upgrade station, model check if a station upgrade is available)
@@ -556,6 +558,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 
 			this.passengerCarShape.setMouseTransparent(true);
 			MapView.this.trainGroup.getChildren().add(this.passengerCarShape);
+			this.passengerCarShape.setVisible(false);
 		}
 
 		@Override
@@ -567,6 +570,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 		public void update(double x, double y) {
 			this.passengerCarShape.setTranslateX(x);
 			this.passengerCarShape.setTranslateY(y);
+			this.passengerCarShape.setVisible(true);
 		}
 
 		@Override
@@ -591,6 +595,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 
 			this.trainShape.setMouseTransparent(true);
 			MapView.this.trainGroup.getChildren().add(this.trainShape);
+			this.trainShape.setVisible(false);
 		}
 
 		@Override
@@ -602,6 +607,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 		public void update(double x, double y) {
 			this.trainShape.setTranslateX(x);
 			this.trainShape.setTranslateY(y);
+			this.trainShape.setVisible(true);
 		}
 
 		@Override

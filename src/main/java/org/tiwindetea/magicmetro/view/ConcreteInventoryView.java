@@ -27,6 +27,7 @@ package org.tiwindetea.magicmetro.view;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -41,6 +42,8 @@ import org.tiwindetea.magicmetro.global.util.Pair;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -166,6 +169,8 @@ public class ConcreteInventoryView extends Parent implements InventoryView {
 
 	}
 
+	private Collection<Node> HUD = new LinkedList<>();
+
 	/**
 	 * Instantiates a new ConcreteInventoryView.
 	 *
@@ -184,14 +189,18 @@ public class ConcreteInventoryView extends Parent implements InventoryView {
 		this.stationUpgradeCounter.addEventFilter(MouseEvent.DRAG_DETECTED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				ConcreteInventoryView.this.setMouseTransparent(true);
+				for(Node node : ConcreteInventoryView.this.HUD) {
+					node.setMouseTransparent(true);
+				}
 				ConcreteInventoryView.this.startFullDrag();
 			}
 		});
 		this.stationUpgradeCounter.addEventFilter(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				ConcreteInventoryView.this.setMouseTransparent(false);
+				for(Node node : ConcreteInventoryView.this.HUD) {
+					node.setMouseTransparent(false);
+				}
 			}
 		});
 		this.mainHBox.getChildren().add(this.stationUpgradeCounter);
@@ -205,14 +214,18 @@ public class ConcreteInventoryView extends Parent implements InventoryView {
 		this.passengerCarCounter.addEventFilter(MouseEvent.DRAG_DETECTED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				ConcreteInventoryView.this.setMouseTransparent(true);
+				for(Node node : ConcreteInventoryView.this.HUD) {
+					node.setMouseTransparent(true);
+				}
 				ConcreteInventoryView.this.startFullDrag();
 			}
 		});
 		this.passengerCarCounter.addEventFilter(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				ConcreteInventoryView.this.setMouseTransparent(false);
+				for(Node node : ConcreteInventoryView.this.HUD) {
+					node.setMouseTransparent(false);
+				}
 			}
 		});
 		this.mainHBox.getChildren().add(this.passengerCarCounter);
@@ -226,14 +239,18 @@ public class ConcreteInventoryView extends Parent implements InventoryView {
 		this.trainCounter.addEventFilter(MouseEvent.DRAG_DETECTED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				ConcreteInventoryView.this.setMouseTransparent(true);
+				for(Node node : ConcreteInventoryView.this.HUD) {
+					node.setMouseTransparent(true);
+				}
 				ConcreteInventoryView.this.startFullDrag();
 			}
 		});
 		this.trainCounter.addEventFilter(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				ConcreteInventoryView.this.setMouseTransparent(false);
+				for(Node node : ConcreteInventoryView.this.HUD) {
+					node.setMouseTransparent(false);
+				}
 			}
 		});
 		this.mainHBox.getChildren().add(this.trainCounter);
@@ -306,6 +323,10 @@ public class ConcreteInventoryView extends Parent implements InventoryView {
 			}
 		}
 		return null;
+	}
+
+	public void setHUD(Collection<Node> HUD) {
+		this.HUD = HUD;
 	}
 
 }
