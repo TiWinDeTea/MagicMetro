@@ -36,5 +36,6 @@ public enum StationType {
 	TRIANGLE,
 	CIRCLE,
 	STAR,
-	DIAMOND
+	DIAMOND,
+	CROSS
 }
