@@ -228,11 +228,21 @@ public class Station {
 		return null;
 	}
 
+	public void upgrade(@Nonnull StationUpgrade stationUpgrade) {
+		this.maxCapacity += stationUpgrade.getCapacityBonus();
+		this.view.makeBigger();
+		if(this.warn && this.passengers.size() < this.maxCapacity) {
+			this.view.unWard();
+			this.warn = false;
+			this.stationManager.removeWarnedStation(this);
+		}
+	}
+
 	@Override
 	public String toString() {
 		return "Station{" +
-				"gameId=" + gameId +
-				", typeStation=" +type+
+		  "gameId=" + this.gameId +
+		  ", typeStation=" + this.type +
 				'}';
 	}
 

@@ -25,26 +25,36 @@
 package org.tiwindetea.magicmetro.model;
 
 /**
- * TODO
+ * A station upgrade, can be apply to a station.
  */
 public class StationUpgrade {
 
 	private final static int CAPACITY_BONUS_DEFAULT = 5;
-	private int capacityBonus;
+	private final int capacityBonus;
 
 	/**
-	 * Default constructor
+	 * Instantiates a new StationUpgrade.
 	 */
 	public StationUpgrade() {
-		capacityBonus = CAPACITY_BONUS_DEFAULT;
+		this.capacityBonus = CAPACITY_BONUS_DEFAULT;
 	}
 
 	/**
-	 * Constructor with the capacityBonus in argument
-	 * @param bonus the bonus of the upgrade
+	 * Instantiates a new StationUpgrade.
+	 *
+	 * @param capacityBonus the capacity bonus
 	 */
-	public StationUpgrade(int bonus){
-		capacityBonus = bonus;
+	public StationUpgrade(int capacityBonus) {
+		this.capacityBonus = capacityBonus;
+	}
+
+	/**
+	 * Gets capacity bonus.
+	 *
+	 * @return the capacity bonus
+	 */
+	public int getCapacityBonus() {
+		return this.capacityBonus;
 	}
 
 }
