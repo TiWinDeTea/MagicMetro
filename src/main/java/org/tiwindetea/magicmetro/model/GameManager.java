@@ -173,7 +173,10 @@ public class GameManager implements StationManager, LineManager {
 		for(int i = 0; i < mapScript.initialTunnels; ++i) {
 			this.inventory.addTunnel();
 		}
-		//TODO: initial station upgrade and passenger cars
+
+		for(int i = 0; i < mapScript.initialStationUpgrades; ++i) {
+			this.inventory.addStationUpgrade(new StationUpgrade());
+		}
 
 		this.executorService.submit(this.gameLoop);
 		this.executorService.shutdown();

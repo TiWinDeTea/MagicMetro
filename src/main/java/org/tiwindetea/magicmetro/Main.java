@@ -153,6 +153,7 @@ public class Main extends Application {
 		  new StationScript(Duration.ofSeconds(300),
 			new Point2d(670, 350),
 			StationType.DIAMOND));
+		testMapScript.initialStationUpgrades = 2;
 		testMapScript.initialLines = 4;
 		testMapScript.initialTrains = 5;
 		testMapScript.initialTunnels = 3;
