@@ -67,7 +67,7 @@ public class ConcreteStationView extends Parent implements StationView {
 	                           int spriteHeight,
 	                           PassengerViewFactory passengerViewFactory) {
 		this.sprite = sprite;
-		this.getChildren().add(sprite);
+		this.getChildren().add(this.sprite);
 		this.sprite.setTranslateX(0);
 		this.sprite.setTranslateY(0);
 		this.setLayoutX(-spriteWidth / 2);
@@ -79,11 +79,13 @@ public class ConcreteStationView extends Parent implements StationView {
 		this.tilePane.setTranslateX(spriteWidth + PASSENGER_OFFSET_X);
 		this.tilePane.setTranslateY(PASSENGER_OFFSET_Y);
 
-		this.progressIndicator.setMinSize(2.5 * spriteWidth, 2.5 * spriteHeight);
-		this.progressIndicator.setTranslateX(-0.75 * spriteWidth);
-		this.progressIndicator.setTranslateY(-0.75 * spriteHeight + 5);
+		this.progressIndicator.setMinSize(3 * spriteWidth, 3 * spriteHeight);
+		this.progressIndicator.setTranslateX(-spriteWidth);
+		this.progressIndicator.setTranslateY(-spriteHeight + 10);
 		this.progressIndicator.setStyle(" -fx-progress-color: darkgray;");
-		this.progressIndicator.setProgress(0.7);
+		this.progressIndicator.setProgress(0);
+		this.progressIndicator.setOpacity(0.6);
+		this.progressIndicator.setMouseTransparent(true);
 		this.progressIndicator.setVisible(false);
 		this.getChildren().add(this.progressIndicator);
 		this.progressIndicator.toBack();
@@ -146,7 +148,8 @@ public class ConcreteStationView extends Parent implements StationView {
 
 	@Override
 	public void makeBigger() {
-		//TODO
+		this.sprite.setScaleX(1.5);
+		this.sprite.setScaleY(1.5);
 	}
 
 	@Override
