@@ -30,6 +30,7 @@ import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineCr
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineDecreaseEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineExtensionEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineInnerExtensionEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.moveevents.StationUpgradeInventoryMoveEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.moveevents.TrainInventoryMoveEvent;
 import org.tiwindetea.magicmetro.model.lines.Connection;
 import org.tiwindetea.magicmetro.model.lines.Line;
@@ -118,6 +119,18 @@ public class GameMap {
 		}
 	};
 
+	private final EventListener<StationUpgradeInventoryMoveEvent> onStationUpgradeInventoryMoveEvent = event -> {
+		StationUpgrade stationUpgrade = this.inventory.takeStationUpgrade();
+		if(stationUpgrade != null) {
+			for(Station station : this.stations) {
+				if(station.gameId == event.stationId) {
+					station.upgrade(stationUpgrade);
+					break;
+				}
+			}
+		}
+	};
+
 	private double[][] stationHeuristics;
 
     /**
@@ -130,6 +143,8 @@ public class GameMap {
 	    EventDispatcher.getInstance().addListener(LineInnerExtensionEvent.class, this.onLineInnerExtensionEvent);
 	    EventDispatcher.getInstance().addListener(LineDecreaseEvent.class, this.onLineDecreaseEvent);
 	    EventDispatcher.getInstance().addListener(TrainInventoryMoveEvent.class, this.onTrainInventoryMoveEvent);
+	    EventDispatcher.getInstance()
+	      .addListener(StationUpgradeInventoryMoveEvent.class, this.onStationUpgradeInventoryMoveEvent);
     }
 
 	Passenger addPassengerToStation() {

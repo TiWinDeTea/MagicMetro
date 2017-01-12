@@ -50,6 +50,7 @@ import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineCr
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineDecreaseEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineExtensionEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineInnerExtensionEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.moveevents.StationUpgradeInventoryMoveEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.moveevents.TrainInventoryMoveEvent;
 import org.tiwindetea.magicmetro.model.TrainType;
 
@@ -543,6 +544,8 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 			MapView.this.dragOverLock.lock();
 			if(MapView.this.dragOverStation != null) {
 				//TODO: event to model... (upgrade station, model check if a station upgrade is available)
+				EventDispatcher.getInstance()
+				  .fire(new StationUpgradeInventoryMoveEvent(MapView.this.dragOverStation.gameId));
 			}
 			MapView.this.dragOverLock.unlock();
 		}
