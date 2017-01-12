@@ -435,20 +435,30 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 				else {
 					if(this.fromStationBounds.contains(x, y)) {
 						MapView.this.lineGroup.getChildren().remove(this.sectionView);
-						boolean left = this.srcSectionView.getPrevSection() == null;
+						boolean from = this.srcSectionView.getFromStation() == this.fromStation;
 						if(this.srcSectionView.getPrevSection() != null || this.srcSectionView.getNextSection() != null) {
 							this.srcSectionView.setMouseTransparent(true);
 							MapView.this.modificationState = new LineExtensionState(
-							  left ? this.srcSectionView.getNextSection() : this.srcSectionView.getPrevSection(),
-							  left ? this.srcSectionView.getToStation() : this.srcSectionView.getFromStation(),
+							  from ? this.srcSectionView.getNextSection() : this.srcSectionView.getPrevSection(),
+							  from ? this.srcSectionView.getToStation() : this.srcSectionView.getFromStation(),
 							  this.fromStation);
 						}
 						else { // only one section left
 							this.srcSectionView.setMouseTransparent(true);
 							MapView.this.inventoryView.setUnused(this.sectionView.getLine().gameId);
 							MapView.this.modificationState = new LineModificationState(this.sectionView.getLine(),
-							  this.srcSectionView.getFromStation(),
+							  from ? this.srcSectionView.getToStation() : this.srcSectionView.getFromStation(),
 							  this.fromStation);
+						}
+						if(from) {
+							if(this.srcSectionView.getNextSection() != null) {
+								this.srcSectionView.getNextSection().setPrevSection(null);
+							}
+						}
+						else {
+							if(this.srcSectionView.getPrevSection() != null) {
+								this.srcSectionView.getPrevSection().setNextSection(null);
+							}
 						}
 						EventDispatcher.getInstance().fire(new LineDecreaseEvent(
 						  this.srcSectionView.getLine().gameId,
@@ -543,7 +553,6 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 			MapView.this.trainGroup.getChildren().remove(this.stationUpgradeShape);
 			MapView.this.dragOverLock.lock();
 			if(MapView.this.dragOverStation != null) {
-				//TODO: event to model... (upgrade station, model check if a station upgrade is available)
 				EventDispatcher.getInstance()
 				  .fire(new StationUpgradeInventoryMoveEvent(MapView.this.dragOverStation.gameId));
 			}
