@@ -35,6 +35,11 @@ import org.tiwindetea.magicmetro.model.Train;
  */
 public interface TrainView extends PassengerCarView {
 
+	/**
+	 * Sets line.
+	 *
+	 * @param lineId the line id
+	 */
 	void setLine(int lineId);
 
 }

@@ -41,6 +41,11 @@ import javax.annotation.Nonnull;
  */
 public class ExitMenu extends StackPane {
 
+	/**
+	 * Instantiates a new ExitMenu.
+	 *
+	 * @param menuListener the menu listener
+	 */
 	public ExitMenu(@Nonnull MenuListener menuListener) {
 		Rectangle rectangle = new Rectangle();
 		rectangle.widthProperty().bind(this.widthProperty());

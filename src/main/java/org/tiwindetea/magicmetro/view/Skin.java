@@ -44,7 +44,7 @@ import java.util.List;
  */
 public class Skin implements PassengerViewFactory {
 
-	//FIXME: temporary test implementation
+	//FIXME: Default skin implementation, create an interface to implement different skins
 
 	public static final int STATION_VIEW_WIDTH = 40;
 	public static final int STATION_VIEW_HEIGHT = 40;
@@ -161,12 +161,17 @@ public class Skin implements PassengerViewFactory {
 		default: // return undefined shape
 			break;
 		}
-		//TODO
 		Circle circle = new Circle(10);
 		circle.setFill(ERROR_COLOR);
 		return circle;
 	}
 
+	/**
+	 * Create a new station view.
+	 *
+	 * @param type the type
+	 * @return the shape
+	 */
 	@Nonnull
 	public Shape newStationView(@Nonnull StationType type) {
 		switch(type) {
@@ -260,12 +265,17 @@ public class Skin implements PassengerViewFactory {
 		default: // return undefined shape
 			break;
 		}
-		//TODO
 		Circle circle = new Circle(20);
 		circle.setFill(ERROR_COLOR);
 		return circle;
 	}
 
+	/**
+	 * Create a new train view.
+	 *
+	 * @param type the type
+	 * @return the shape
+	 */
 	@Nonnull
 	public Shape newTrainView(@Nonnull TrainType type) {
 		//TODO: switch type
@@ -281,6 +291,11 @@ public class Skin implements PassengerViewFactory {
 		return polygon;
 	}
 
+	/**
+	 * Create a new passenger car view.
+	 *
+	 * @return the shape
+	 */
 	@Nonnull
 	public Shape newPassengerCarView() {
 		Polygon polygon = new Polygon();
@@ -294,6 +309,12 @@ public class Skin implements PassengerViewFactory {
 		return polygon;
 	}
 
+	/**
+	 * Gets line color.
+	 *
+	 * @param lineNumber the line number
+	 * @return the line color
+	 */
 	@Nonnull
 	public Color getLineColor(int lineNumber) {
 		if(lineNumber < LINES_COLORS.size()) {
@@ -302,16 +323,31 @@ public class Skin implements PassengerViewFactory {
 		return ERROR_COLOR;
 	}
 
+	/**
+	 * Gets train passenger positions.
+	 *
+	 * @return the train passenger positions
+	 */
 	@Nonnull
 	public List<Point2d> getTrainPassengerPositions() {
 		return TRAIN_PASSENGERS_POSITIONS;
 	}
 
+	/**
+	 * Gets passenger car passenger positions.
+	 *
+	 * @return the passenger car passenger positions
+	 */
 	@Nonnull
 	public List<Point2d> getPassengerCarPassengerPositions() {
 		return TRAIN_PASSENGERS_POSITIONS;
 	}
 
+	/**
+	 * Create a new station upgrade view.
+	 *
+	 * @return the shape
+	 */
 	public Shape newStationUpgradeView() {
 		Circle circle = new Circle(20);
 		circle.setFill(ERROR_COLOR);

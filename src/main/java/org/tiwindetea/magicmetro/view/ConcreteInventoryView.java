@@ -47,7 +47,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * TODO
+ * JavaFx implementation of InventoryView.
  *
  * @author Maxime PINARD
  * @since 0.1
@@ -320,6 +320,11 @@ public class ConcreteInventoryView extends Parent implements InventoryView {
 		return null;
 	}
 
+	/**
+	 * Sets hud.
+	 *
+	 * @param HUD the hud
+	 */
 	public void setHUD(Collection<Node> HUD) {
 		this.HUD = HUD;
 	}

@@ -38,6 +38,12 @@ public class InventoryElementAdditionEvent implements Event {
 	public final ElementScript elementScript;
 	public final int number;
 
+	/**
+	 * Instantiates a new InventoryElementAdditionEvent.
+	 *
+	 * @param elementScript the element script
+	 * @param number        the number
+	 */
 	public InventoryElementAdditionEvent(ElementScript elementScript, int number) {
 		this.elementScript = elementScript;
 		this.number = number;

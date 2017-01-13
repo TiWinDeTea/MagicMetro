@@ -50,6 +50,7 @@ public class MapMenu implements Menu {
 	 * Instantiates a new MapMenu.
 	 *
 	 * @param menuController the menu controller
+	 * @param mapScripts     the map scripts
 	 */
 	public MapMenu(MenuController menuController, Collection<MapScript> mapScripts) {
 

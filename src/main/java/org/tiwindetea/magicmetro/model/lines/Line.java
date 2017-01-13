@@ -49,7 +49,6 @@ import java.util.List;
  * @see SubSection
  * @since 0.1
  */
-
 public class Line {
 
 	public final int gameId;
@@ -76,6 +75,12 @@ public class Line {
 		this.lastConnections = new SimplePair<>(null, null);
 	}
 
+	/**
+	 * Manage a LineCreationEvent, modify the line according to the event informations.
+	 *
+	 * @param event    the event
+	 * @param stations the stations on the map
+	 */
 	public void manage(LineCreationEvent event, Collection<Station> stations) {
 		if(!this.sections.isEmpty()) {
 			throw new IllegalStateException("Line creation event on a non empty line");
@@ -126,6 +131,12 @@ public class Line {
 		this.sections.add(section);
 	}
 
+	/**
+	 * Manage a LineExtensionEvent, modify the line according to the event informations.
+	 *
+	 * @param event    the event
+	 * @param stations the stations on the map
+	 */
 	public void manage(LineExtensionEvent event, Collection<Station> stations) {
 		boolean left = true;
 
@@ -182,6 +193,12 @@ public class Line {
 		this.sections.add(section);
 	}
 
+	/**
+	 * Manage a LineInnerExtensionEvent, modify the line according to the event informations.
+	 *
+	 * @param event    the event
+	 * @param stations the stations on the map
+	 */
 	public void manage(LineInnerExtensionEvent event, Collection<Station> stations) {
 
 		Section oldSection = null;
@@ -302,6 +319,11 @@ public class Line {
 		this.sections.add(rightSection);
 	}
 
+	/**
+	 * Manage a LineDecreaseEvent, modify the line according to the event informations.
+	 *
+	 * @param event the event
+	 */
 	public void manage(LineDecreaseEvent event) {
 
 		Station oldStation = null;
@@ -401,6 +423,12 @@ public class Line {
 		return this.lastConnections;
 	}
 
+	/**
+	 * Gets section from id.
+	 *
+	 * @param sectionId the section id
+	 * @return the section from id
+	 */
 	@Nullable
 	public Section getSectionFromId(int sectionId) {
 		for(Section section : this.sections) {

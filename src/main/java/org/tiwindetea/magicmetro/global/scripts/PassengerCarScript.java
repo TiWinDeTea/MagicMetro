@@ -25,7 +25,7 @@
 package org.tiwindetea.magicmetro.global.scripts;
 
 /**
- * TODO
+ * Describe a passenger car.
  *
  * @author Maxime PINARD
  * @since 0.1

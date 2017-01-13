@@ -133,35 +133,37 @@ public class GameMap {
 
 	private double[][] stationHeuristics;
 
-    /**
-     * Default Constructor
-     */
-    public GameMap(Inventory inventory){
-        this.inventory = inventory;
-	    EventDispatcher.getInstance().addListener(LineCreationEvent.class, this.onLineCreationEvent);
-	    EventDispatcher.getInstance().addListener(LineExtensionEvent.class, this.onLineExtensionEvent);
-	    EventDispatcher.getInstance().addListener(LineInnerExtensionEvent.class, this.onLineInnerExtensionEvent);
-	    EventDispatcher.getInstance().addListener(LineDecreaseEvent.class, this.onLineDecreaseEvent);
-	    EventDispatcher.getInstance().addListener(TrainInventoryMoveEvent.class, this.onTrainInventoryMoveEvent);
-	    EventDispatcher.getInstance()
-	      .addListener(StationUpgradeInventoryMoveEvent.class, this.onStationUpgradeInventoryMoveEvent);
-    }
+	/**
+	 * Instantiates a new GameMap.
+	 *
+	 * @param inventory the inventory
+	 */
+	public GameMap(Inventory inventory) {
+		this.inventory = inventory;
+		EventDispatcher.getInstance().addListener(LineCreationEvent.class, this.onLineCreationEvent);
+		EventDispatcher.getInstance().addListener(LineExtensionEvent.class, this.onLineExtensionEvent);
+		EventDispatcher.getInstance().addListener(LineInnerExtensionEvent.class, this.onLineInnerExtensionEvent);
+		EventDispatcher.getInstance().addListener(LineDecreaseEvent.class, this.onLineDecreaseEvent);
+		EventDispatcher.getInstance().addListener(TrainInventoryMoveEvent.class, this.onTrainInventoryMoveEvent);
+		EventDispatcher.getInstance()
+		  .addListener(StationUpgradeInventoryMoveEvent.class, this.onStationUpgradeInventoryMoveEvent);
+	}
 
-	Passenger addPassengerToStation() {
-		//TODO: create passenger with a wantedStation present on the map and add it to a station
-		//FIXME: test
+	/**
+	 * Create a passenger randomly and add the to a randomly chosen station.
+	 *
+	 * @return the passenger
+	 */
+	public Passenger addPassengerToStation() {
 		Random random = new Random();
 		Station station = this.stations.get(random.nextInt(this.stations.size()));
 		StationType wantedStationType = this.stationsTypes.get(random.nextInt(this.stationsTypes.size()));
-		while(wantedStationType == station.getType()) {
+		while(wantedStationType == station.getType()) { //TODO: do it a better way
 			wantedStationType = this.stationsTypes.get(random.nextInt(this.stationsTypes.size()));
 		}
 		Passenger passenger = new Passenger(station, wantedStationType);
 		passenger.setPath(pathFinding(station, wantedStationType));
-
-		//passenger.setPath();
 		station.addPassenger(passenger);
-		//passenger.setPath(findShortestPath(station, wantedStationType)); //TODO
 		return passenger;
 	}
 
@@ -181,25 +183,25 @@ public class GameMap {
 		}
 	}
 
-    /**
-     * Add a trains.
-     *
-     * @param train the train
-     * @return true if the trains in the map changed, false otherwise
-     */
-    public synchronized boolean addTrain(Train train) {
+	/**
+	 * Add a trains.
+	 *
+	 * @param train the train
+	 * @return true if the trains in the map changed, false otherwise
+	 */
+	public synchronized boolean addTrain(Train train) {
 	    boolean result = this.trains.add(train);
 	    this.trainsCopy = this.trains.toArray(new Train[this.trains.size()]);
-	    return result;
-    }
+		return result;
+	}
 
-    /**
-     * Remove a trains.
-     *
-     * @param train the train
-     * @return true if the trains was removed, false otherwise
-     */
-    public synchronized boolean removeTrain(Train train) {
+	/**
+	 * Remove a train.
+	 *
+	 * @param train the train
+	 * @return true if the trains was removed, false otherwise
+	 */
+	public synchronized boolean removeTrain(Train train) {
 	    boolean result = this.trains.remove(train);
 	    this.trainsCopy = this.trains.toArray(new Train[this.trains.size()]);
 	    return result;
@@ -214,71 +216,71 @@ public class GameMap {
 		return this.trainsCopy;
 	}
 
-    /**
-     * Add a station.
-     *
-     * @param station the station
-     * @return true if the stations in the map changed, false otherwise
-     */
-    public boolean addStation(Station station){
-	    this.stationsTypes.add(station.getType());
-	    return this.stations.add(station);
-    }
+	/**
+	 * Add a station.
+	 *
+	 * @param station the station
+	 * @return true if the stations in the map changed, false otherwise
+	 */
+	public boolean addStation(Station station) {
+		this.stationsTypes.add(station.getType());
+		return this.stations.add(station);
+	}
 
-    /**
-     * Add a line.
-     *
-     * @param line the line
-     * @return true if the lines in the map changed, false otherwise
-     */
-    public boolean addLine(Line line){
-	    return this.lines.add(line);
-    }
+	/**
+	 * Add a line.
+	 *
+	 * @param line the line
+	 * @return true if the lines in the map changed, false otherwise
+	 */
+	public boolean addLine(Line line) {
+		return this.lines.add(line);
+	}
 
-    /**
-     * Remove a line.
-     *
-     * @param line the line
-     * @return true if the line was removed, false otherwise
-     */
-    public boolean removeLine(Line line){
-	    return this.lines.remove(line);
-    }
+	/**
+	 * Remove a line.
+	 *
+	 * @param line the line
+	 * @return true if the line was removed, false otherwise
+	 */
+	public boolean removeLine(Line line) {
+		return this.lines.remove(line);
+	}
 
-    /**
-     * Determine if a line contains a station..
-     *
-     * @param line    the line
-     * @param station the station
-     * @return true if the line contains the station, false otherwise
-     */
-    public boolean isInLine(Line line, Station station){
-	    return line.contains(station);
-    }
+	/**
+	 * Determine if a line contains a station..
+	 *
+	 * @param line    the line
+	 * @param station the station
+	 * @return true if the line contains the station, false otherwise
+	 */
+	public boolean isInLine(Line line, Station station) {
+		return line.contains(station);
+	}
 
-    /**
-     * get the station with the id
-     *
-     * @param id the id of the station
-     * @return the station with the good id, null if the station with this id isn't in the map
-     */
-    @Nullable
-    private Station getStationWithId(int id){
+	/**
+	 * Get the station with the id.
+	 *
+	 * @param id the id of the station
+	 * @return the station or null if the station with this id isn't in the map
+	 */
+	@Nullable
+	private Station getStationWithId(int id){
 	    for(Station station : this.stations) {
 		    if(station.gameId == id) {
 			    return station;
 		    }
-        }
-        return null;
-    }
+	    }
+		return null;
+	}
 
-    /**
-     * get line with the id
-     *
-     * @param id the id of the line
-     * @return the line with the id, null if the line with this id isn't in the map
-     */
-    private Line getLineWithId(int id){
+	/**
+	 * get line with the id.
+	 *
+	 * @param id the id of the line
+	 * @return the line or null if the line with this id isn't in the map
+	 */
+	private Line getLineWithId(int id){
 	    for(Line line : this.lines) {
 		    if(line.gameId == id) {
 			    return line;
@@ -287,61 +289,8 @@ public class GameMap {
         return null;
     }
 
-    private Connection getConnectionInStationWithLine(Station station, Line line){
-        int i = 0;
-        if(line.contains(station)){
-            while (i < station.getConnections().size() && (station.getConnections().get(i).getRightSubSection() != null &&
-              station.getConnections().get(i).getRightSubSection().getSection().getLine() != line
-                    || station.getConnections().get(i).getLeftSubSection() != null &&
-              station.getConnections()
-	            .get(i)
-	            .getLeftSubSection()
-	            .getSection()
-	            .getLine() != line)) { //TODO Make the left section
-	            ++i;
-            }
-            if(i < station.getConnections().size()){
-                return station.getConnections().get(i);
-            } else {
-                return null;
-            }
-        }
-        return null;
-    }
+    // All function for path finding (not optimized)
 
-    private Section getSectionWithConnections(Connection connectionA, Connection connectionB){
-        if(connectionA.getLeftSubSection() != null && connectionB.getRightSubSection() != null &&
-          connectionA.getLeftSubSection().getSection() != null && connectionB.getRightSubSection()
-          .getSection() != null &&
-          connectionA.getLeftSubSection().getSection() == connectionB.getRightSubSection().getSection()) {
-	        return connectionA.getLeftSubSection().getSection();
-        } else {
-            if(connectionA.getRightSubSection() != null && connectionB.getLeftSubSection() != null &&
-              connectionA.getRightSubSection().getSection() != null && connectionB.getLeftSubSection()
-              .getSection() != null &&
-              connectionA.getRightSubSection().getSection() == connectionB.getLeftSubSection().getSection()) {
-	            return connectionA.getRightSubSection().getSection();
-            } else {
-                return null;
-            }
-        }
-    }
-
-    private boolean isTrainInSection(Section section, Line line){
-        int i = 0;
-        return true;
-    }
-
-    //all function for path finding (not Optimized)
-
-    /**
-     * compute the distance between two station connected
-	 * Recursive
-     *
-     * @param stationA the first station
-     * @param stationB the second station
-     * @return the distance between the two station, -1 if the two station isn't connected
-     */
     private synchronized double distanceBetweenTwoStationConnected(Station stationA, Station stationB){
     	if(stationA != stationB) {
 			for (Connection connection : stationA.getConnections()) {
@@ -371,13 +320,6 @@ public class GameMap {
 		}
 	}
 
-	/**
-	 * update the distance inside the stationsHeuristique between two stations (MUST BE CONNECTED)
-	 *
-	 * @param stationA the station A
-	 * @param stationB the station B
-	 * @param beginStation the station where we begin
-	 */
 	private void updateDistance(Station stationA, Station stationB, Station beginStation, Station[] predecessor){
 		double i = distanceBetweenTwoStationConnected(stationA, stationB);
 		int index = this.stations.indexOf(stationA);
@@ -392,15 +334,14 @@ public class GameMap {
 	}
 
 	/**
-	 * path finding for the passenger
+	 * Path-finding for the passenger.
 	 * Not Optimized
 	 *
-	 * @param station the station of the passenger
+	 * @param station     the station of the passenger
 	 * @param stationType the type of station wanted
 	 * @return the path
 	 */
-    public synchronized Stack<Station> pathFinding(Station station, StationType stationType){
-	    //System.out.println("Wanted type = " + stationType + " and station is " + station.toString());
+	public synchronized Stack<Station> pathFinding(Station station, StationType stationType){
 		Stack<Station> result = new Stack<>();
 	    Station[] predecessor = new Station[this.stations.size()];
 		Station current = station;
@@ -420,16 +361,13 @@ public class GameMap {
 			Stack<Station> finished = new Stack<>();
 			predecessor[this.stations.indexOf(station)] = current;
 			while (!path.isEmpty()){
-				//System.out.println(path.toString());
 				current = path.poll();
 				if(current.getType() == stationType){
-					//System.out.println("Waiting Result");
 					while (current != station){
 						int index = this.stations.indexOf(current);
 						result.push(current);
 						current = predecessor[index];
 					}
-					//System.out.println("Path finded : " + result.toString());
 					return result;
 				}
 				for(Connection connection : current.getConnections()){
@@ -446,10 +384,8 @@ public class GameMap {
 				}
 				finished.add(current);
 			}
-		} else{
-			//System.out.println("The station is of type wanted");
 		}
-	    //System.out.println("No path finded");
 		return null;
 	}
+
 }

@@ -30,7 +30,7 @@ import org.arakhne.afc.math.geometry.d2.d.Rectangle2d;
 import java.util.PriorityQueue;
 
 /**
- * TODO
+ * Describe the map ans all the events that happens during a game on this map.
  *
  * @author Maxime PINARD
  * @since 0.1
@@ -47,7 +47,6 @@ public class MapScript {
 	  (int) (o1.apparitionTime.toMillis() - o2.apparitionTime.toMillis()));
 
 	public final MultiShape2d<Rectangle2d> water;
-	//TODO: map description: water...
 
 	public int initialLines = 0;
 	public int initialTrains = 0;
@@ -56,7 +55,12 @@ public class MapScript {
 	public int initialTunnels = 0;
 
 	/**
-	 * Default constructor.
+	 * Instantiates a new MapScript.
+	 *
+	 * @param mapName   the map name
+	 * @param mapWidth  the map width
+	 * @param mapHeight the map height
+	 * @param water     the water
 	 */
 	public MapScript(String mapName, double mapWidth, double mapHeight, MultiShape2d<Rectangle2d> water) {
 		this.mapName = mapName;
@@ -65,6 +69,11 @@ public class MapScript {
 		this.water = water;
 	}
 
+	/**
+	 * Instantiates a new MapScript, copy constructor.
+	 *
+	 * @param mapScript the map script to copy
+	 */
 	public MapScript(MapScript mapScript) {
 		this.mapName = mapScript.mapName;
 		this.mapWidth = mapScript.mapWidth;

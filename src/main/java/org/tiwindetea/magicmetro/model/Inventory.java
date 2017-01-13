@@ -35,7 +35,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * TODO
+ * Inventory, contains the element that the user can use.
  *
  * @author Maxime PINARD
  * @since 0.1
@@ -52,32 +52,61 @@ public class Inventory {
 
 	private int tunnelNumber = 0;
 
-	//TODO: documentation
-
+	/**
+	 * Instantiates a new Inventory.
+	 *
+	 * @param view the view
+	 */
 	public Inventory(@Nonnull InventoryView view) {
 		this.view = view;
 	}
 
+	/**
+	 * Add a station upgrade.
+	 *
+	 * @param stationUpgrade the station upgrade
+	 */
 	public void addStationUpgrade(@Nonnull StationUpgrade stationUpgrade) {
 		this.stationUpgrades.add(stationUpgrade);
 		this.view.setStationUpgrades(this.stationUpgrades.size());
 	}
 
+	/**
+	 * Add a train.
+	 *
+	 * @param train the train
+	 */
 	public void addTrain(@Nonnull Train train) {
 		this.trains.add(train);
 		this.view.setTrains(this.trains.size());
 	}
 
+	/**
+	 * Add a passenger car.
+	 *
+	 * @param passengerCar the passenger car
+	 */
 	public void addPassengerCar(@Nonnull PassengerCar passengerCar) {
 		this.passengerCars.add(passengerCar);
 		this.view.setPassengerCars(this.passengerCars.size());
 	}
 
+	/**
+	 * Add a line.
+	 *
+	 * @param line the line
+	 */
 	public void addLine(Line line) {
 		this.lines.add(new Pair<>(line, new BooleanWrapper(false)));
 		this.view.setAvailableLine(line.gameId);
 	}
 
+	/**
+	 * Sets a line as used.
+	 *
+	 * @param line the line
+	 * @return true if the line was set as used, false if the line isn't in the inventory
+	 */
 	public boolean setUsed(@Nonnull Line line) {
 		for(Pair<Line, BooleanWrapper> pair : this.lines) {
 			if(pair.getLeft() == line) {
@@ -89,6 +118,12 @@ public class Inventory {
 		return false;
 	}
 
+	/**
+	 * Sets a line as unused.
+	 *
+	 * @param line the line
+	 * @return true if the line was set as unused, false if the line isn't in the inventory
+	 */
 	public boolean setUnused(@Nonnull Line line) {
 		for(Pair<Line, BooleanWrapper> pair : this.lines) {
 			if(pair.getLeft() == line) {
@@ -100,6 +135,11 @@ public class Inventory {
 		return false;
 	}
 
+	/**
+	 * Take a train.
+	 *
+	 * @return the train if available, null otherwise
+	 */
 	@Nullable
 	public Train takeTrain() {
 		Train train = this.trains.poll();
@@ -107,6 +147,11 @@ public class Inventory {
 		return train;
 	}
 
+	/**
+	 * Take a passenger car.
+	 *
+	 * @return the passenger car if available, null otherwise
+	 */
 	@Nullable
 	public PassengerCar takePassengerCar() {
 		PassengerCar passengerCar = this.passengerCars.poll();
@@ -114,6 +159,11 @@ public class Inventory {
 		return passengerCar;
 	}
 
+	/**
+	 * Take a station upgrade.
+	 *
+	 * @return the station upgrade if available, null otherwise
+	 */
 	@Nullable
 	public StationUpgrade takeStationUpgrade() {
 		StationUpgrade stationUpgrade = this.stationUpgrades.poll();
@@ -121,11 +171,19 @@ public class Inventory {
 		return stationUpgrade;
 	}
 
+	/**
+	 * Add a tunnel.
+	 */
 	public void addTunnel() {
 		++this.tunnelNumber;
 		this.view.setTunnels(this.tunnelNumber);
 	}
 
+	/**
+	 * Remove a tunnel.
+	 *
+	 * @return true if a tunnel was removed, false if there is no tunnel available
+	 */
 	public boolean removeTunnel() {
 		if(this.tunnelNumber > 0) {
 			--this.tunnelNumber;

@@ -98,10 +98,28 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 
 	private interface ModificationState {
 
+		/**
+		 * Init the state.
+		 *
+		 * @param x x coordinate
+		 * @param y y coordinate
+		 */
 		void init(double x, double y);
 
+		/**
+		 * Update the state.
+		 *
+		 * @param x x coordinate
+		 * @param y y coordinate
+		 */
 		void update(double x, double y);
 
+		/**
+		 * Apply the state.
+		 *
+		 * @param x x coordinate
+		 * @param y y coordinate
+		 */
 		void apply(double x, double y);
 
 	}
@@ -137,6 +155,13 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 
 		private final MultiShape2d<Circle2d> stationsBounds;
 
+		/**
+		 * Instantiates a new LineModificationState.
+		 *
+		 * @param unusedLine   the unused line
+		 * @param fromStation  the from station
+		 * @param oldToStation the old to station
+		 */
 		public LineModificationState(@Nonnull ConcreteLineView unusedLine,
 		                             @Nonnull ConcreteStationView fromStation,
 		                             @Nullable ConcreteStationView oldToStation) {
@@ -242,9 +267,14 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 		private SectionView toSectionView;
 
 		private final MultiShape2d<Circle2d> stationsBounds;
-		//private final Circle2d oldFromStationBounds;
-		//private final Circle2d oldToStationBounds;
 
+		/**
+		 * Instantiates a new LineDoubleModificationState.
+		 *
+		 * @param modifiedSection the modified section
+		 * @param x               the x coordinate of the modification
+		 * @param y               the y coordinate of the modification
+		 */
 		public LineDoubleModificationState(SectionView modifiedSection, double x, double y) {
 			this.oldSectionView = modifiedSection;
 			this.concreteLineView = modifiedSection.getLine();
@@ -272,15 +302,6 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 					this.stationsBounds.add(circle2d);
 				}
 			}
-
-			/*this.oldFromStationBounds = new Circle2d(new Point2d(
-			  this.oldSectionView.getFromStation().getTranslateX(),
-			  this.oldSectionView.getFromStation().getTranslateY()),
-			  STATION_BOUNDS_RADIUS);
-			this.oldToStationBounds = new Circle2d(new Point2d(
-			  this.oldSectionView.getToStation().getTranslateX(),
-			  this.oldSectionView.getToStation().getTranslateY()),
-			  STATION_BOUNDS_RADIUS);*/
 		}
 
 		@Override
@@ -372,6 +393,13 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 		private final MultiShape2d<Circle2d> oldToStationBounds;
 		private boolean wasInToStationBounds = true;
 
+		/**
+		 * Instantiates a new LineExtensionState.
+		 *
+		 * @param srcSectionView the source section view
+		 * @param fromStation    the from station
+		 * @param oldToStation   the old to station
+		 */
 		public LineExtensionState(@Nonnull SectionView srcSectionView,
 		                          @Nonnull ConcreteStationView fromStation,
 		                          @Nullable ConcreteStationView oldToStation) {
@@ -528,6 +556,11 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 
 		private final Shape stationUpgradeShape;
 
+		/**
+		 * Instantiates a new StationUpgradeMoveState.
+		 *
+		 * @param StationUpgradeShape the station upgrade shape
+		 */
 		public StationUpgradeMoveState(Shape StationUpgradeShape) {
 			this.stationUpgradeShape = StationUpgradeShape;
 			// Circles already have a good layout
@@ -567,6 +600,11 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 
 		private final Shape passengerCarShape;
 
+		/**
+		 * Instantiates a new PassengerCarMoveState.
+		 *
+		 * @param passengerCarShape the passenger car shape
+		 */
 		public PassengerCarMoveState(Shape passengerCarShape) {
 			this.passengerCarShape = passengerCarShape;
 			this.passengerCarShape.setLayoutX(-Skin.PASSENGERCAR_VIEW_WIDTH / 2);
@@ -604,6 +642,11 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 
 		private final Shape trainShape;
 
+		/**
+		 * Instantiates a new TrainMoveState.
+		 *
+		 * @param trainShape the train shape
+		 */
 		public TrainMoveState(Shape trainShape) {
 			this.trainShape = trainShape;
 			this.trainShape.setLayoutX(-Skin.TRAIN_VIEW_WIDTH / 2);
@@ -648,6 +691,11 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 	private final Skin skin;
 	private Collection<Node> HUD = new LinkedList<>();
 
+	/**
+	 * Instantiates a new MapView.
+	 *
+	 * @param skin the skin
+	 */
 	public MapView(Skin skin) {
 		super();
 		this.skin = skin;
@@ -704,6 +752,11 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 
 	}
 
+	/**
+	 * Sets inventory view.
+	 *
+	 * @param inventoryView the inventory view
+	 */
 	public void setInventoryView(ConcreteInventoryView inventoryView) {
 		this.inventoryView = inventoryView;
 	}
@@ -782,6 +835,12 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 		this.modificationStateLock.unlock();
 	}
 
+	/**
+	 * Gets line from id.
+	 *
+	 * @param gameId the game id
+	 * @return the line from id
+	 */
 	@Nullable
 	public ConcreteLineView getLineFromId(int gameId) {
 		for(ConcreteLineView line : this.lines) {
@@ -792,18 +851,33 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 		return null;
 	}
 
+	/**
+	 * Sets width.
+	 *
+	 * @param width the width
+	 */
 	public void setWidth(double width) {
 		this.mainPane.setMinWidth(width);
 		this.mainPane.setMaxWidth(width);
 		this.mainPane.setPrefWidth(width);
 	}
 
+	/**
+	 * Sets height.
+	 *
+	 * @param height the height
+	 */
 	public void setHeight(double height) {
 		this.mainPane.setMinHeight(height);
 		this.mainPane.setMaxHeight(height);
 		this.mainPane.setPrefHeight(height);
 	}
 
+	/**
+	 * Sets water.
+	 *
+	 * @param water the water
+	 */
 	public void setWater(@Nonnull MultiShape2d<Rectangle2d> water) {
 		this.waterGroup.getChildren().clear();
 		this.waterRectangles.clear();
@@ -826,22 +900,42 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 		}
 	}
 
+	/**
+	 * Add station.
+	 *
+	 * @param station the station
+	 */
 	public void addStation(@Nonnull ConcreteStationView station) {
 		this.stations.add(station);
 		this.stationsGroup.getChildren().add(station);
 		station.setStationMouseListener(this);
 	}
 
+	/**
+	 * Add train.
+	 *
+	 * @param train the train
+	 */
 	public void addTrain(@Nonnull ConcreteTrainView train) {
 		this.trains.add(train);
 		this.trainGroup.getChildren().add(train);
 	}
 
+	/**
+	 * Add line.
+	 *
+	 * @param line the line
+	 */
 	public void addLine(@Nonnull ConcreteLineView line) {
 		this.lines.add(line);
 		Platform.runLater(() -> this.lineGroup.getChildren().add(line));
 	}
 
+	/**
+	 * Sets background color.
+	 *
+	 * @param backgroundColor the background color
+	 */
 	public void setBackgroundColor(@Nonnull Color backgroundColor) {
 		this.mainPane.setBackground(new Background(new BackgroundFill(
 		  backgroundColor,
@@ -849,10 +943,18 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 		  Insets.EMPTY)));
 	}
 
+	/**
+	 * Sets hud.
+	 *
+	 * @param HUD the hud
+	 */
 	public void setHUD(Collection<Node> HUD) {
 		this.HUD = HUD;
 	}
 
+	/**
+	 * Apply state.
+	 */
 	public void applyState() {
 		MapView.this.modificationStateLock.lock();
 		MapView.this.modificationState.apply(this.mouseLastX, this.mouseLastY);

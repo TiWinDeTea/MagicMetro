@@ -25,7 +25,7 @@
 package org.tiwindetea.magicmetro.global.scripts;
 
 /**
- * TODO
+ * Describe a tunnel.
  *
  * @author Maxime PINARD
  * @since 0.1

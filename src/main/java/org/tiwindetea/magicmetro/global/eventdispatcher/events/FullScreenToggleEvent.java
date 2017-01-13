@@ -39,7 +39,7 @@ public class FullScreenToggleEvent implements Event {
 	/**
 	 * Instantiates a new FullScreenToggleEvent.
 	 *
-	 * @param fullScreen the full screen
+	 * @param fullScreen the full screen state
 	 */
 	public FullScreenToggleEvent(boolean fullScreen) {
 		this.fullScreen = fullScreen;

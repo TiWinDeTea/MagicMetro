@@ -25,7 +25,7 @@
 package org.tiwindetea.magicmetro.global.scripts;
 
 /**
- * TODO
+ * Describe a station upgrade.
  *
  * @author Maxime PINARD
  * @since 0.1
@@ -35,9 +35,9 @@ public class StationUpgradeScript extends ElementScript {
 	public final int capacityBonus;
 
 	/**
-	 * Default constructor.
+	 * Instantiates a new StationUpgradeScript.
 	 *
-	 * @param capacityBonus TODO
+	 * @param capacityBonus the capacity bonus
 	 */
 	public StationUpgradeScript(int capacityBonus) {
 

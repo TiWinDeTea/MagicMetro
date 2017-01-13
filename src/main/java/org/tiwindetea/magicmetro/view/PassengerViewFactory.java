@@ -37,6 +37,12 @@ import javax.annotation.Nonnull;
  */
 public interface PassengerViewFactory {
 
+	/**
+	 * Create a new passenger view shape.
+	 *
+	 * @param wantedStation the wanted station
+	 * @return the shape
+	 */
 	Shape newPassengerView(@Nonnull StationType wantedStation);
 
 }

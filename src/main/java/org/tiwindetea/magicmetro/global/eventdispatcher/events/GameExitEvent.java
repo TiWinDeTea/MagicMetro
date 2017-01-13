@@ -34,6 +34,9 @@ import org.tiwindetea.magicmetro.global.eventdispatcher.Event;
  */
 public class GameExitEvent implements Event {
 
+	/**
+	 * Instantiates a new GameExitEvent.
+	 */
 	public GameExitEvent() {
 
 	}

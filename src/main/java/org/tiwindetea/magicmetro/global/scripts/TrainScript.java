@@ -27,7 +27,7 @@ package org.tiwindetea.magicmetro.global.scripts;
 import org.tiwindetea.magicmetro.model.TrainType;
 
 /**
- * TODO
+ * Describe a train.
  *
  * @author Maxime PINARD
  * @since 0.1
@@ -37,9 +37,9 @@ public class TrainScript extends ElementScript {
 	public final TrainType type;
 
 	/**
-	 * Default constructor.
+	 * Instantiates a new TrainScript.
 	 *
-	 * @param type TODO
+	 * @param type the train type
 	 */
 	public TrainScript(TrainType type) {
 

@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 import java.time.Duration;
 
 /**
- * TODO
+ * Describe a station.
  *
  * @author Maxime PINARD
  * @since 0.1

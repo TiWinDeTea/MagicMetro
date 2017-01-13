@@ -49,6 +49,11 @@ public enum StationType {
 	private static final int SIZE = VALUES.size();
 	private static final Random RANDOM = new Random();
 
+	/**
+	 * Random station type.
+	 *
+	 * @return a random station type
+	 */
 	public static StationType random() {
 		return VALUES.get(RANDOM.nextInt(SIZE));
 	}

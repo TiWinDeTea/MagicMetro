@@ -26,7 +26,7 @@ package org.tiwindetea.magicmetro.global.scripts;
 
 
 /**
- * TODO
+ * Describe a line.
  *
  * @author Maxime PINARD
  * @since 0.1

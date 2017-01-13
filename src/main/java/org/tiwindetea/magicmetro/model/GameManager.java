@@ -42,7 +42,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * TODO
+ * Logic of the game, manage the main loop.
+ *
+ * @author Maxime PINARD
+ * @author Julien Barbier
+ * @since 0.1
  */
 public class GameManager implements StationManager, LineManager {
 
@@ -79,7 +83,6 @@ public class GameManager implements StationManager, LineManager {
 						GameManager.this.mapScript.elementChoiceScripts.poll();
 						GameManager.this.viewManager.askElementChoice(elementChoiceScript.elementScripts);
 					}
-
 					// stations apparition
 					StationScript stationScript = GameManager.this.mapScript.stationScripts.peek();
 					if((stationScript != null) && (stationScript.apparitionTime.toMillis() < currentTime)) {
@@ -107,7 +110,7 @@ public class GameManager implements StationManager, LineManager {
 						GameManager.this.gameEnded = true;
 					}
 					// passenger apparition
-					//FIXME: test
+					//FIXME: test apparition, add a frequency apparition descriptor in MapScript
 					++test;
 					if(test == 200) {
 						GameManager.this.gameMap.addPassengerToStation();
@@ -115,7 +118,6 @@ public class GameManager implements StationManager, LineManager {
 					}
 
 					nextLoop += LOOP_DELAY_MILLIS;
-					//TODO
 				}
 
 				try {
@@ -128,7 +130,10 @@ public class GameManager implements StationManager, LineManager {
 	};
 
 	/**
-	 * Default constructor
+	 * Instantiates a new GameManager.
+	 *
+	 * @param viewManager the view manager
+	 * @param mapScript   the map script
 	 */
 	public GameManager(ViewManager viewManager, MapScript mapScript) {
 		this.refreshDelay = TimeManager.getInstance().getRefreshDelay();
@@ -180,7 +185,6 @@ public class GameManager implements StationManager, LineManager {
 
 		this.executorService.submit(this.gameLoop);
 		this.executorService.shutdown();
-		//TODO
 
 		this.onInventoryElementAdditionEvent = new EventListener<InventoryElementAdditionEvent>() {
 			@Override
@@ -249,7 +253,7 @@ public class GameManager implements StationManager, LineManager {
 				this.gameMap.removeTrain(train);
 				this.inventory.addTrain(train);
 				train.stop();
-				//TODO: manage passengers
+				//TODO: manage passengers, send them back to their initial stations
 			}
 		}
 	}

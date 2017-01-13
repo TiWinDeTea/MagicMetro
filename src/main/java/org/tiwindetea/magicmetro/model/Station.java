@@ -43,9 +43,9 @@ public class Station {
 
 	public final int gameId;
 
-	private static final int STATION_DEFAULT_CAPACITY = 10; // TODO: real value
-	private static final int STATION_FULL_DELAY = 15000; // as millis TODO: real value
-	private static final int STATION_MAX_CONNECTIONS = 10; // TODO: real value
+	private static final int STATION_DEFAULT_CAPACITY = 10;
+	private static final int STATION_FULL_DELAY = 15000; // as millis
+	private static final int STATION_MAX_CONNECTIONS = 10;
 
 	private final StationManager stationManager;
 	private long warnStart = 0;
@@ -129,6 +129,11 @@ public class Station {
 		return this.type;
 	}
 
+	/**
+	 * Gets position.
+	 *
+	 * @return the position
+	 */
 	public Point2d getPosition() {
 		return new Point2d(this.position);
 	}
@@ -228,6 +233,11 @@ public class Station {
 		return null;
 	}
 
+	/**
+	 * Upgrade the station.
+	 *
+	 * @param stationUpgrade the station upgrade
+	 */
 	public void upgrade(@Nonnull StationUpgrade stationUpgrade) {
 		this.maxCapacity += stationUpgrade.getCapacityBonus();
 		this.view.makeBigger();
@@ -236,14 +246,6 @@ public class Station {
 			this.warn = false;
 			this.stationManager.removeWarnedStation(this);
 		}
-	}
-
-	@Override
-	public String toString() {
-		return "Station{" +
-		  "gameId=" + this.gameId +
-		  ", typeStation=" + this.type +
-				'}';
 	}
 
 }

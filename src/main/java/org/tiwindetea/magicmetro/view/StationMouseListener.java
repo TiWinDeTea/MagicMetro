@@ -27,17 +27,32 @@ package org.tiwindetea.magicmetro.view;
 import javax.annotation.Nonnull;
 
 /**
- * TODO
+ * Listener of the mouse actions on the stations.
  *
  * @author Maxime PINARD
  * @since 0.1
  */
 public interface StationMouseListener {
 
+	/**
+	 * Mouse pressed on station.
+	 *
+	 * @param station the station
+	 */
 	void mousePressedOnStation(@Nonnull ConcreteStationView station);
 
+	/**
+	 * Mouse drag entered on station.
+	 *
+	 * @param station the station
+	 */
 	void mouseDragEnteredOnStation(@Nonnull ConcreteStationView station);
 
+	/**
+	 * Mouse drag exited on station.
+	 *
+	 * @param station the station
+	 */
 	void mouseDragExitedOnStation(@Nonnull ConcreteStationView station);
 
 }

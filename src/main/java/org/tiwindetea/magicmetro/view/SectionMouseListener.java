@@ -27,19 +27,42 @@ package org.tiwindetea.magicmetro.view;
 import javax.annotation.Nonnull;
 
 /**
- * TODO
+ * Listener of the mouse actions on the sections.
  *
  * @author Maxime PINARD
  * @since 0.1
  */
 public interface SectionMouseListener {
 
+	/**
+	 * Mouse pressed on section.
+	 *
+	 * @param section the section
+	 * @param mouseX  the mouse x
+	 * @param mouseY  the mouse y
+	 */
 	void mousePressedOnSection(@Nonnull SectionView section, double mouseX, double mouseY);
 
+	/**
+	 * Mouse pressed on section hook.
+	 *
+	 * @param section     the section
+	 * @param fromStation the from station
+	 */
 	void mousePressedOnSectionHook(@Nonnull SectionView section, ConcreteStationView fromStation);
 
+	/**
+	 * Mouse drag entered on section.
+	 *
+	 * @param section the section
+	 */
 	void mouseDragEnteredOnSection(@Nonnull SectionView section);
 
+	/**
+	 * Mouse drag exited on section.
+	 *
+	 * @param section the section
+	 */
 	void mouseDragExitedOnSection(@Nonnull SectionView section);
 
 }

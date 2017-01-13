@@ -35,8 +35,18 @@ import org.tiwindetea.magicmetro.model.lines.Line;
  */
 public interface LineView {
 
+	/**
+	 * Gets game id.
+	 *
+	 * @return the game id
+	 */
 	int getGameId();
 
+	/**
+	 * Delete section.
+	 *
+	 * @param sectionId the section id
+	 */
 	void deleteSection(int sectionId);
 
 }

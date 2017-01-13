@@ -34,6 +34,11 @@ public class IdGenerator {
 
 	private static int lastId = Integer.MIN_VALUE;
 
+	/**
+	 * Generate a new unique id.
+	 *
+	 * @return the new id
+	 */
 	public static int newId() {
 		return ++lastId;
 	}

@@ -39,19 +39,53 @@ import javax.annotation.Nonnull;
  */
 public interface StationView {
 
+	/**
+	 * Gets game id.
+	 *
+	 * @return the game id
+	 */
 	int getGameId();
 
+	/**
+	 * Sets position.
+	 *
+	 * @param position the position
+	 */
 	void setPosition(@Nonnull Point2d position);
 
+	/**
+	 * Add passenger.
+	 *
+	 * @param wantedStation the wanted station
+	 */
 	void addPassenger(@Nonnull StationType wantedStation);
 
+	/**
+	 * Remove passenger.
+	 *
+	 * @param wantedStation the wanted station
+	 */
 	void removePassenger(@Nonnull StationType wantedStation);
 
+	/**
+	 * Make bigger.
+	 */
 	void makeBigger();
 
+	/**
+	 * Warn.
+	 */
 	void warn();
 
+	/**
+	 * Un ward.
+	 */
 	void unWard();
 
+	/**
+	 * Sets warn value.
+	 *
+	 * @param percentage the percentage
+	 */
 	void setWarnValue(double percentage);
 }

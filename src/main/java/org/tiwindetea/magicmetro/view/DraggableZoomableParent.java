@@ -11,6 +11,7 @@ import javafx.scene.input.ScrollEvent;
  * DraggableZoomableParent, a JavaFX draggable (right mouse button) and zoomable (mouse wheel) Parent.
  *
  * @author Maxime PINARD
+ * @since 0.1
  */
 public abstract class DraggableZoomableParent extends Parent {
 

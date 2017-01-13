@@ -38,6 +38,13 @@ public class LineDecreaseEvent implements Event {
 	public final int oldSectionId;
 	public final int oldStationId;
 
+	/**
+	 * Instantiates a new LineDecreaseEvent.
+	 *
+	 * @param lineId       the line id
+	 * @param oldSectionId the old section id
+	 * @param oldStationId the old station id
+	 */
 	public LineDecreaseEvent(int lineId, int oldSectionId, int oldStationId) {
 		this.lineId = lineId;
 		this.oldSectionId = oldSectionId;

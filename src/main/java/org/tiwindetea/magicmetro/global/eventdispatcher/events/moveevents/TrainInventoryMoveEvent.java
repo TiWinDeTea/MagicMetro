@@ -39,6 +39,13 @@ public class TrainInventoryMoveEvent implements Event {
 	public final int sectionId;
 	public final Point2d position;
 
+	/**
+	 * Instantiates a new TrainInventoryMoveEvent.
+	 *
+	 * @param lineId    the line id
+	 * @param sectionId the section id
+	 * @param position  the position
+	 */
 	public TrainInventoryMoveEvent(int lineId, int sectionId, Point2d position) {
 		this.lineId = lineId;
 		this.sectionId = sectionId;

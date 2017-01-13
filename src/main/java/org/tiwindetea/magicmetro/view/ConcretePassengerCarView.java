@@ -56,6 +56,15 @@ public class ConcretePassengerCarView extends Parent implements PassengerCarView
 
 	private ConcreteLineView line = null;
 
+	/**
+	 * Instantiates a new ConcretePassengerCarView.
+	 *
+	 * @param sprite               the sprite
+	 * @param spriteWidth          the sprite width
+	 * @param spriteHeight         the sprite height
+	 * @param passengersPositions  the passengers positions
+	 * @param passengerViewFactory the passenger view factory
+	 */
 	public ConcretePassengerCarView(Shape sprite,
 	                                int spriteWidth,
 	                                int spriteHeight,

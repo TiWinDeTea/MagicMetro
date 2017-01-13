@@ -27,7 +27,7 @@ package org.tiwindetea.magicmetro.global.scripts;
 import javax.annotation.Nonnull;
 
 /**
- * TODO
+ * Script that describe a game element.
  *
  * @author Maxime PINARD
  * @since 0.1
@@ -35,7 +35,7 @@ import javax.annotation.Nonnull;
 public abstract class ElementScript {
 
 	/**
-	 * TODO
+	 * The type of a game element.
 	 */
 	public enum ElementType {
 		TRAIN("Train"),
@@ -59,7 +59,7 @@ public abstract class ElementScript {
 	public final ElementType type;
 
 	/**
-	 * Instantiates a new element script.
+	 * Instantiates a new ElementScript.
 	 *
 	 * @param type the type of script
 	 */

@@ -50,30 +50,33 @@ public class Passenger {
 		this.stationWanted = stationWanted;
 	}
 
-    /**
-     * Getters of the station wanted
-     *
-     * @return the station wanted by the passenger
-     */
+
+	/**
+	 * Gets wanted station.
+	 *
+	 * @return the wanted station
+	 */
 	public StationType getWantedStation() {
 		return this.stationWanted;
 	}
 
-    /**
-     * Getters of the station where the passenger is
-     *
-     * @return the station where the passenger is
-     */
+
+	/**
+	 * Get station station.
+	 *
+	 * @return the station
+	 */
 	public Station getStation(){
 		return this.station;
 	}
 
-    /**
-     * Setter for the path of the Passenger
-     *
-     * @param path the path we want to set to the the Passenger
-     */
-    public void setPath(Stack<Station> path) {
+
+	/**
+	 * Sets path.
+	 *
+	 * @param path the path
+	 */
+	public void setPath(Stack<Station> path) {
 	    this.path = path;
     }
 

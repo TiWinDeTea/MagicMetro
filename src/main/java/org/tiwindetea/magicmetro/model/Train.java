@@ -127,6 +127,11 @@ public class Train {
 		this.view.setPosition(this.position);
 	}
 
+	/**
+	 * Start the train.
+	 *
+	 * @param line the line
+	 */
 	public void start(@Nonnull Line line) {
 		this.line = line;
 		this.view.setLine(this.line.gameId);
@@ -139,6 +144,11 @@ public class Train {
 		this.view.setVisible(true);
 	}
 
+	/**
+	 * Start the train.
+	 *
+	 * @param section the section
+	 */
 	public void start(@Nonnull Section section) {
 		if(section.getLine() == null) {
 			throw new IllegalStateException("section is not in a line");
@@ -153,11 +163,19 @@ public class Train {
 		this.view.setVisible(true);
 	}
 
+	/**
+	 * Stop the train.
+	 */
 	public void stop() {
 		this.line = null;
 		this.view.setVisible(false);
 	}
 
+	/**
+	 * Gets line.
+	 *
+	 * @return the line
+	 */
 	@Nullable
 	public Line getLine() {
 		return this.line;

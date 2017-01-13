@@ -32,8 +32,18 @@ package org.tiwindetea.magicmetro.model;
  */
 public interface StationManager {
 
+	/**
+	 * Add warned station.
+	 *
+	 * @param station the station
+	 */
 	void addWarnedStation(Station station);
 
+	/**
+	 * Remove warned station.
+	 *
+	 * @param station the station
+	 */
 	void removeWarnedStation(Station station);
 
 }

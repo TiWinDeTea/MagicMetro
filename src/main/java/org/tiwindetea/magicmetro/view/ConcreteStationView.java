@@ -54,7 +54,7 @@ public class ConcreteStationView extends Parent implements StationView {
 	private static final int PASSENGER_OFFSET_X = 10;
 	private static final int PASSENGER_OFFSET_Y = 0;
 
-	public final Shape sprite;
+	private final Shape sprite;
 	private final List<PassengerView> passengers = new LinkedList<>();
 	private final PassengerViewFactory passengerViewFactory;
 	private final TilePane tilePane = new TilePane();
@@ -62,6 +62,14 @@ public class ConcreteStationView extends Parent implements StationView {
 
 	private StationMouseListener stationMouseListener = null;
 
+	/**
+	 * Instantiates a new ConcreteStationView.
+	 *
+	 * @param sprite               the sprite
+	 * @param spriteWidth          the sprite width
+	 * @param spriteHeight         the sprite height
+	 * @param passengerViewFactory the passenger view factory
+	 */
 	public ConcreteStationView(Shape sprite,
 	                           int spriteWidth,
 	                           int spriteHeight,
@@ -170,6 +178,11 @@ public class ConcreteStationView extends Parent implements StationView {
 		Platform.runLater(() -> this.progressIndicator.setProgress(percentage));
 	}
 
+	/**
+	 * Sets station mouse listener.
+	 *
+	 * @param stationMouseListener the station mouse listener
+	 */
 	public void setStationMouseListener(StationMouseListener stationMouseListener) {
 		this.stationMouseListener = stationMouseListener;
 	}

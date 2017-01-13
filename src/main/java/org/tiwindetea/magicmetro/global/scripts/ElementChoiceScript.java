@@ -42,17 +42,16 @@ public class ElementChoiceScript {
 	public final List<Pair<ElementScript, Integer>> elementScripts;
 
 	/**
-	 * Default constructor.
+	 * Instantiates a new ElementChoiceScript.
 	 *
-	 * @param apparitionTime TODO
-	 * @param elementScripts  TODO
+	 * @param apparitionTime the apparition time
+	 * @param elementScripts the element scripts
 	 */
 	public ElementChoiceScript(@Nonnull Duration apparitionTime,
 	                           @Nonnull List<Pair<ElementScript, Integer>> elementScripts) {
 
 		this.apparitionTime = apparitionTime;
 		this.elementScripts = elementScripts;
-		//TODO
 	}
 
 }

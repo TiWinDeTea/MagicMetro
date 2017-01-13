@@ -34,8 +34,16 @@ import javafx.scene.Node;
  */
 public interface MenuListener {
 
+	/**
+	 * Close menu.
+	 *
+	 * @param menuNode the menu node
+	 */
 	void closeMenu(Node menuNode);
 
+	/**
+	 * Exit game.
+	 */
 	void exitGame();
 
 }

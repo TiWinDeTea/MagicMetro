@@ -67,7 +67,8 @@ public class MenuManager implements MenuController {
 	/**
 	 * Instantiates a new MenuManager.
 	 *
-	 * @param stage the stage
+	 * @param stage      the stage
+	 * @param mapScripts the map scripts
 	 */
 	public MenuManager(Stage stage, Collection<MapScript> mapScripts) {
 		this.stage = stage;

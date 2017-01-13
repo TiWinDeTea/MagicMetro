@@ -48,6 +48,19 @@ public class LineInnerExtensionEvent implements Event {
 	public final Point2d middleLeftConnectionPosition;
 	public final Point2d middleRightConnectionPosition;
 
+	/**
+	 * Instantiates a new LineExtensionEvent.
+	 *
+	 * @param lineId                        the line id
+	 * @param oldSectionId                  the old section id
+	 * @param newLeftSectionId              the new left section id
+	 * @param newRightSectionId             the new right section id
+	 * @param fromStationId                 the from station id
+	 * @param addedStationId                the added station id
+	 * @param toStationId                   the to station id
+	 * @param middleLeftConnectionPosition  the middle left connection position
+	 * @param middleRightConnectionPosition the middle right connection position
+	 */
 	public LineInnerExtensionEvent(int lineId,
 	                               int oldSectionId,
 	                               int newLeftSectionId,

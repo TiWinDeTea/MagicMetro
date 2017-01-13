@@ -85,6 +85,11 @@ public class ViewManager implements MenuListener {
 
 	private final MenuController menuController;
 
+	/**
+	 * Instantiates a new ViewManager.
+	 *
+	 * @param menuController the menu controller
+	 */
 	public ViewManager(@Nonnull MenuController menuController) {
 		this.menuController = menuController;
 
@@ -187,15 +192,32 @@ public class ViewManager implements MenuListener {
 		});
 	}
 
+	/**
+	 * Sets map size.
+	 *
+	 * @param width  the width
+	 * @param height the height
+	 */
 	public void setMapSize(double width, double height) {
 		Platform.runLater(() -> this.mapView.setWidth(width));
 		Platform.runLater(() -> this.mapView.setHeight(height));
 	}
 
+	/**
+	 * Sets water.
+	 *
+	 * @param water the water
+	 */
 	public void setWater(MultiShape2d<Rectangle2d> water) {
 		Platform.runLater(() -> this.mapView.setWater(water));
 	}
 
+	/**
+	 * Create a train view.
+	 *
+	 * @param type the type
+	 * @return the train view
+	 */
 	public TrainView createTrainView(TrainType type) {
 		ConcreteTrainView concreteTrainView = new ConcreteTrainView(
 		  this.skin.newTrainView(type),
@@ -208,6 +230,12 @@ public class ViewManager implements MenuListener {
 		return concreteTrainView;
 	}
 
+	/**
+	 * Create a station view .
+	 *
+	 * @param type the type
+	 * @return the station view
+	 */
 	public StationView createStationView(StationType type) {
 		ConcreteStationView concreteStationView = new ConcreteStationView(
 		  this.skin.newStationView(type),
@@ -218,12 +246,22 @@ public class ViewManager implements MenuListener {
 		return concreteStationView;
 	}
 
+	/**
+	 * Create a line view.
+	 *
+	 * @return the line view
+	 */
 	public LineView createLineView() {
 		ConcreteLineView concreteLineView = new ConcreteLineView(this.skin.getLineColor(this.currentLineNumber++));
 		this.mapView.addLine(concreteLineView);
 		return concreteLineView;
 	}
 
+	/**
+	 * Create a passenger car view.
+	 *
+	 * @return the passenger car view
+	 */
 	public PassengerCarView createPassengerCarView() {
 		ConcretePassengerCarView concretePassengerCarView = new ConcretePassengerCarView(
 		  this.skin.newPassengerCarView(),
@@ -236,14 +274,29 @@ public class ViewManager implements MenuListener {
 		return concretePassengerCarView;
 	}
 
+	/**
+	 * Gets root.
+	 *
+	 * @return the root
+	 */
 	public Parent getRoot() {
 		return this.mainAnchorPane;
 	}
 
+	/**
+	 * Gets inventory view.
+	 *
+	 * @return the inventory view
+	 */
 	public InventoryView getInventoryView() {
 		return this.concreteInventoryView;
 	}
 
+	/**
+	 * Ask element choice.
+	 *
+	 * @param elementScripts the element scripts
+	 */
 	public void askElementChoice(List<Pair<ElementScript, Integer>> elementScripts) {
 		this.mapView.applyState();
 		Platform.runLater(() -> {

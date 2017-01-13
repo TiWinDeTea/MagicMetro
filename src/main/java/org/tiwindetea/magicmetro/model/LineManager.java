@@ -34,6 +34,11 @@ import org.tiwindetea.magicmetro.model.lines.Line;
  */
 public interface LineManager {
 
+	/**
+	 * A line was deleted.
+	 *
+	 * @param deletedLine the deleted line
+	 */
 	void lineDeleted(Line deletedLine);
 
 }

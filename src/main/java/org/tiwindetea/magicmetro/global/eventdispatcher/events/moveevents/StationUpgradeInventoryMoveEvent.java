@@ -36,6 +36,11 @@ public class StationUpgradeInventoryMoveEvent implements Event {
 
 	public final int stationId;
 
+	/**
+	 * Instantiates a StationUpgradeInventoryMoveEvent.
+	 *
+	 * @param stationId the station id
+	 */
 	public StationUpgradeInventoryMoveEvent(int stationId) {
 		this.stationId = stationId;
 	}

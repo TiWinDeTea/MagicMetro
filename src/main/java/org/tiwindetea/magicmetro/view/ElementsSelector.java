@@ -60,6 +60,12 @@ public class ElementsSelector extends StackPane {
 	private static final double PICTURE_HEIGHT = 150;
 	private static final double PICTURE_ZOOM_FACTOR = 1.25;
 
+	/**
+	 * Instantiates a new ElementsSelector.
+	 *
+	 * @param elementScripts           the element scripts
+	 * @param elementsSelectorListener the elements selector listener
+	 */
 	public ElementsSelector(@Nonnull List<Pair<ElementScript, Integer>> elementScripts,
 	                        @Nonnull MenuListener elementsSelectorListener) {
 

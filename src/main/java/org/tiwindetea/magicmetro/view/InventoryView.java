@@ -24,25 +24,64 @@
 
 package org.tiwindetea.magicmetro.view;
 
+import org.tiwindetea.magicmetro.model.Inventory;
+
 /**
- * TODO
+ * View of the inventory, control the graphical representation of the Inventory.
  *
  * @author Maxime PINARD
+ * @see Inventory
  * @since 0.1
  */
 public interface InventoryView {
 
+	/**
+	 * Sets station upgrades.
+	 *
+	 * @param value the value
+	 */
 	void setStationUpgrades(int value);
 
+	/**
+	 * Sets trains.
+	 *
+	 * @param value the value
+	 */
 	void setTrains(int value);
 
+	/**
+	 * Sets passenger cars.
+	 *
+	 * @param value the value
+	 */
 	void setPassengerCars(int value);
 
+	/**
+	 * Sets tunnels.
+	 *
+	 * @param value the value
+	 */
 	void setTunnels(int value);
 
+	/**
+	 * Sets available line.
+	 *
+	 * @param lineId the line id
+	 */
 	void setAvailableLine(int lineId);
 
+	/**
+	 * Sets a line as used.
+	 *
+	 * @param lineId the line id
+	 */
 	void setUsed(int lineId);
 
+	/**
+	 * Sets a line as unused.
+	 *
+	 * @param lineId the line id
+	 */
 	void setUnused(int lineId);
+
 }

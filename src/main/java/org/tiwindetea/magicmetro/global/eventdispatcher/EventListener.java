@@ -25,7 +25,7 @@
 package org.tiwindetea.magicmetro.global.eventdispatcher;
 
 /**
- * The EventListener interface. Classes that implement this interface can be added as listeners in the eventdispatcher
+ * The EventListener interface. Classes that implement this interface can be added as listeners in the event dispatcher
  * to be notified via the onEvent method when an event of the related class is fired.
  *
  * @param <EventType> the type of the events related to this listener

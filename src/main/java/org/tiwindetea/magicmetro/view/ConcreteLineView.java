@@ -46,15 +46,30 @@ public class ConcreteLineView extends Parent implements LineView {
 
 	private List<SectionView> sections = new LinkedList<>();
 
+	/**
+	 * Instantiates a new Concrete line view.
+	 *
+	 * @param color the color
+	 */
 	public ConcreteLineView(Color color) {
 		this.color = color;
 	}
 
+	/**
+	 * Add section.
+	 *
+	 * @param section the section
+	 */
 	public void addSection(SectionView section) {
 		this.sections.add(section);
 		this.getChildren().add(section);
 	}
 
+	/**
+	 * Remove section.
+	 *
+	 * @param section the section
+	 */
 	public void removeSection(SectionView section) {
 		this.sections.remove(section);
 		this.getChildren().remove(section);

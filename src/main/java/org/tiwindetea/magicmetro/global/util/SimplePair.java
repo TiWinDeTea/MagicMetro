@@ -35,14 +35,28 @@ import javax.annotation.Nullable;
  */
 public class SimplePair<T> extends Pair<T, T> {
 
+	/**
+	 * Default constructor.
+	 */
 	public SimplePair() {
 
 	}
 
+	/**
+	 * Copy constructor.
+	 *
+	 * @param pair the pair to copy
+	 */
 	public SimplePair(Pair<T, T> pair) {
 		super(pair);
 	}
 
+	/**
+	 * Creates a new simple pair.
+	 *
+	 * @param left  The left value of the pair
+	 * @param right The right value of the pair
+	 */
 	public SimplePair(T left, T right) {
 		super(left, right);
 	}

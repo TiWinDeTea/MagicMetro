@@ -25,17 +25,26 @@
 package org.tiwindetea.magicmetro.view;
 
 /**
- * TODO
+ * Listener of the mouse actions on the inventory.
  *
  * @author Maxime PINARD
  * @since 0.1
  */
 public interface InventoryMouseListener {
 
+	/**
+	 * Notify that mouse was pressed on station upgrade counter.
+	 */
 	void mousePressedOnStationUpgradeCounter();
 
+	/**
+	 * Notify that mouse was pressed on passenger car counter.
+	 */
 	void mousePressedOnPassengerCarCounter();
 
+	/**
+	 * Notify that mouse was pressed on train counter.
+	 */
 	void mousePressedOnTrainCounter();
 
 }
