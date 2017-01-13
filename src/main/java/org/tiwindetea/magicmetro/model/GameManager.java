@@ -27,6 +27,7 @@ package org.tiwindetea.magicmetro.model;
 import org.tiwindetea.magicmetro.global.TimeManager;
 import org.tiwindetea.magicmetro.global.eventdispatcher.EventDispatcher;
 import org.tiwindetea.magicmetro.global.eventdispatcher.EventListener;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.GameExitEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.InventoryElementAdditionEvent;
 import org.tiwindetea.magicmetro.global.scripts.ElementChoiceScript;
 import org.tiwindetea.magicmetro.global.scripts.MapScript;
@@ -52,6 +53,7 @@ public class GameManager implements StationManager, LineManager {
 	private final Inventory inventory;
 	private final MapScript mapScript;
 	private final EventListener<InventoryElementAdditionEvent> onInventoryElementAdditionEvent;
+	private final EventListener<GameExitEvent> onGameExitEvent;
 
 	private final PriorityQueue<Station> warnedStations = new PriorityQueue<>((o1, o2) ->
 	  (int) (o1.getWarnEnd() - o2.getWarnEnd()));
@@ -220,6 +222,14 @@ public class GameManager implements StationManager, LineManager {
 		};
 		EventDispatcher.getInstance().addListener(InventoryElementAdditionEvent.class,
 		  this.onInventoryElementAdditionEvent);
+
+		this.onGameExitEvent = new EventListener<GameExitEvent>() {
+			@Override
+			public void onEvent(GameExitEvent event) {
+				GameManager.this.gameEnded = true;
+			}
+		};
+		EventDispatcher.getInstance().addListener(GameExitEvent.class, this.onGameExitEvent);
 	}
 
 	@Override
