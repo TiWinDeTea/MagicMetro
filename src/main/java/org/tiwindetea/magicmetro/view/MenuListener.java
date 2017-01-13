@@ -24,14 +24,18 @@
 
 package org.tiwindetea.magicmetro.view;
 
+import javafx.scene.Node;
+
 /**
  * Listen the ElementsSelector, apply an action on choice.
  *
  * @author Maxime PINARD
  * @since 0.1
  */
-public interface ElementsSelectorListener {
+public interface MenuListener {
 
-	void onChoice(ElementsSelector elementsSelector);
+	void closeMenu(Node menuNode);
+
+	void exitGame();
 
 }

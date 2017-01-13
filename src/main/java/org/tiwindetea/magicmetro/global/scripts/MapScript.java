@@ -65,4 +65,18 @@ public class MapScript {
 		this.water = water;
 	}
 
+	public MapScript(MapScript mapScript) {
+		this.mapName = mapScript.mapName;
+		this.mapWidth = mapScript.mapWidth;
+		this.mapHeight = mapScript.mapHeight;
+		this.elementChoiceScripts.addAll(mapScript.elementChoiceScripts);
+		this.stationScripts.addAll(mapScript.stationScripts);
+		this.water = mapScript.water.clone();
+		this.initialLines = mapScript.initialLines;
+		this.initialTrains = mapScript.initialTrains;
+		this.initialPassengerCars = mapScript.initialPassengerCars;
+		this.initialStationUpgrades = mapScript.initialStationUpgrades;
+		this.initialTunnels = mapScript.initialTunnels;
+	}
+
 }
