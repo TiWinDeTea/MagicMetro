@@ -58,10 +58,6 @@ public class PassengerCar {
 		this.view = view;
 	}
 
-	public boolean isEmpty(){
-		return this.passengers.isEmpty();
-	}
-
 	/**
 	 * Determine if the passenger car is full.
 	 *
@@ -104,16 +100,6 @@ public class PassengerCar {
 			}
 		}
 		return wantedPassengers;
-	}
-
-	/**
-	 * Get the list of passenger
-	 *
-	 * @return the list of passenger
-	 */
-	@Nonnull
-	public List<Passenger> getPassengers(){
-		return passengers;
 	}
 
 	/**
