@@ -47,11 +47,14 @@ import org.arakhne.afc.math.geometry.d2.d.Rectangle2d;
 import org.arakhne.afc.math.geometry.d2.dfx.MultiShape2dfx;
 import org.arakhne.afc.math.geometry.d2.dfx.Rectangle2dfx;
 import org.tiwindetea.magicmetro.global.TimeManager;
+import org.tiwindetea.magicmetro.global.scripts.ElementScript;
+import org.tiwindetea.magicmetro.global.util.Pair;
 import org.tiwindetea.magicmetro.global.util.Utils;
 import org.tiwindetea.magicmetro.model.StationType;
 import org.tiwindetea.magicmetro.model.TrainType;
 
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * ViewManager, manage the view, create graphical elements and display them.
@@ -59,7 +62,7 @@ import java.util.LinkedList;
  * @author Maxime PINARD
  * @since 0.1
  */
-public class ViewManager {
+public class ViewManager implements ElementsSelectorListener {
 
 	private static final Color BACKGROUND_COLOR = Color.LIGHTGRAY;
 	private static final Color MAP_BACKGROUND_COLOR = Color.WHITE;
@@ -213,4 +216,24 @@ public class ViewManager {
 		return this.concreteInventoryView;
 	}
 
+	public void askElementChoice(List<Pair<ElementScript, Integer>> elementScripts) {
+		this.mapView.applyState();
+		Platform.runLater(() -> {
+			ElementsSelector elementsSelector = new ElementsSelector(elementScripts, ViewManager.this);
+			TimeManager.getInstance().pause();
+			AnchorPane.setRightAnchor(elementsSelector, 0d);
+			AnchorPane.setTopAnchor(elementsSelector, 0d);
+			AnchorPane.setLeftAnchor(elementsSelector, 0d);
+			AnchorPane.setBottomAnchor(elementsSelector, 0d);
+			this.mainAnchorPane.getChildren().add(elementsSelector);
+		});
+	}
+
+	@Override
+	public void onChoice(ElementsSelector elementsSelector) {
+		Platform.runLater(() -> {
+			this.mainAnchorPane.getChildren().remove(elementsSelector);
+			TimeManager.getInstance().start();
+		});
+	}
 }
