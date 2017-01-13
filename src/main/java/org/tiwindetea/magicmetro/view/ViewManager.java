@@ -26,6 +26,7 @@ package org.tiwindetea.magicmetro.view;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -33,6 +34,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -47,12 +50,16 @@ import org.arakhne.afc.math.geometry.d2.d.Rectangle2d;
 import org.arakhne.afc.math.geometry.d2.dfx.MultiShape2dfx;
 import org.arakhne.afc.math.geometry.d2.dfx.Rectangle2dfx;
 import org.tiwindetea.magicmetro.global.TimeManager;
+import org.tiwindetea.magicmetro.global.eventdispatcher.EventDispatcher;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.GameExitEvent;
 import org.tiwindetea.magicmetro.global.scripts.ElementScript;
 import org.tiwindetea.magicmetro.global.util.Pair;
 import org.tiwindetea.magicmetro.global.util.Utils;
 import org.tiwindetea.magicmetro.model.StationType;
 import org.tiwindetea.magicmetro.model.TrainType;
+import org.tiwindetea.magicmetro.view.menus.MenuController;
 
+import javax.annotation.Nonnull;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -62,7 +69,7 @@ import java.util.List;
  * @author Maxime PINARD
  * @since 0.1
  */
-public class ViewManager implements ElementsSelectorListener {
+public class ViewManager implements MenuListener {
 
 	private static final Color BACKGROUND_COLOR = Color.LIGHTGRAY;
 	private static final Color MAP_BACKGROUND_COLOR = Color.WHITE;
@@ -76,7 +83,11 @@ public class ViewManager implements ElementsSelectorListener {
 
 	private int currentLineNumber = 0;
 
-	public ViewManager() {
+	private final MenuController menuController;
+
+	public ViewManager(@Nonnull MenuController menuController) {
+		this.menuController = menuController;
+
 		this.mainAnchorPane.setBackground(new Background(new BackgroundFill(
 		  BACKGROUND_COLOR,
 		  CornerRadii.EMPTY,
@@ -141,7 +152,7 @@ public class ViewManager implements ElementsSelectorListener {
 		this.concreteInventoryView = new ConcreteInventoryView(this.mapView); //FIXME: cyclic reference, care at deletion
 		StackPane inventoryStackPane = new StackPane();
 
-		LinkedList<Node> HUD = new LinkedList<>();
+		LinkedList<javafx.scene.Node> HUD = new LinkedList<>();
 		HUD.add(timeVBox);
 		HUD.add(inventoryStackPane);
 
@@ -157,6 +168,23 @@ public class ViewManager implements ElementsSelectorListener {
 		this.cPane.getChildren().add(this.mapView);
 
 		this.mapView.setInventoryView(this.concreteInventoryView); //FIXME: cyclic reference, care at deletion
+
+		this.mainAnchorPane.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent event) {
+				if(event.getCode() == KeyCode.ESCAPE) {
+					Platform.runLater(() -> {
+						ExitMenu exitMenu = new ExitMenu(ViewManager.this);
+						TimeManager.getInstance().pause();
+						AnchorPane.setRightAnchor(exitMenu, 0d);
+						AnchorPane.setTopAnchor(exitMenu, 0d);
+						AnchorPane.setLeftAnchor(exitMenu, 0d);
+						AnchorPane.setBottomAnchor(exitMenu, 0d);
+						ViewManager.this.mainAnchorPane.getChildren().add(exitMenu);
+					});
+				}
+			}
+		});
 	}
 
 	public void setMapSize(double width, double height) {
@@ -230,10 +258,19 @@ public class ViewManager implements ElementsSelectorListener {
 	}
 
 	@Override
-	public void onChoice(ElementsSelector elementsSelector) {
+	public void closeMenu(Node menuNode) {
 		Platform.runLater(() -> {
-			this.mainAnchorPane.getChildren().remove(elementsSelector);
+			this.mainAnchorPane.getChildren().remove(menuNode);
 			TimeManager.getInstance().start();
 		});
 	}
+
+	@Override
+	public void exitGame() {
+		TimeManager.getInstance().stop();
+		EventDispatcher.getInstance().fire(new GameExitEvent());
+		this.mapView.setInventoryView(null);
+		this.menuController.exitMenu();
+	}
+
 }
