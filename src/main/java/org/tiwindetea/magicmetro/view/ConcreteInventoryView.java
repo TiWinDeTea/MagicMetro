@@ -54,26 +54,16 @@ import java.util.List;
  */
 public class ConcreteInventoryView extends Parent implements InventoryView {
 
-	//TODO: externalise in resource bundle
-	private static final Image STATION_UPGRADE_IMAGE = new Image(ConcreteInventoryView.class.getResource(
-	  "InventoryStationUpgrade.png").toString());
-	private static final Image PASSENGER_CAR_IMAGE = new Image(ConcreteInventoryView.class.getResource(
-	  "InventoryPassengerCar.png").toString());
-	private static final Image TRAIN_IMAGE = new Image(ConcreteInventoryView.class.getResource(
-	  "InventoryTrain.png").toString());
-	private static final Image TUNNEL_IMAGE = new Image(ConcreteInventoryView.class.getResource(
-	  "InventoryTunnel.png").toString());
-
 	private final MapView mapView;
 	private final InventoryMouseListener inventoryMouseListener;
 
 	private HBox mainHBox = new HBox();
 	private HBox linesHBox = new HBox();
 
-	private final CircleCounter stationUpgradeCounter = new CircleCounter(STATION_UPGRADE_IMAGE);
-	private final CircleCounter passengerCarCounter = new CircleCounter(PASSENGER_CAR_IMAGE);
-	private final CircleCounter trainCounter = new CircleCounter(TRAIN_IMAGE);
-	private final CircleCounter tunnelCounter = new CircleCounter(TUNNEL_IMAGE);
+	private final CircleCounter stationUpgradeCounter = new CircleCounter(ViewSettings.STATION_UPGRADE_IMAGE);
+	private final CircleCounter passengerCarCounter = new CircleCounter(ViewSettings.PASSENGER_CAR_IMAGE);
+	private final CircleCounter trainCounter = new CircleCounter(ViewSettings.TRAIN_IMAGE);
+	private final CircleCounter tunnelCounter = new CircleCounter(ViewSettings.TUNNEL_IMAGE);
 
 	private final List<Pair<ConcreteLineView, LineDisplayer>> lineDisplayers = new ArrayList<>(6);
 
