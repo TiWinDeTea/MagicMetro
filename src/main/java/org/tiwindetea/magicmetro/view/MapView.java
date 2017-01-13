@@ -149,7 +149,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 				this.sectionView.setSectionMouseListener(MapView.this);
 				this.sectionView.setFromStation(fromStation);
 				this.sectionView.setWater(MapView.this.water);
-				MapView.this.lineGroup.getChildren().add(this.sectionView);
+				Platform.runLater(() -> MapView.this.lineGroup.getChildren().add(this.sectionView));
 			}
 			else {
 				MapView.this.modificationState = MapView.this.voidModificationState;
@@ -200,7 +200,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 
 		@Override
 		public synchronized void apply(double x, double y) {
-			MapView.this.lineGroup.getChildren().remove(this.sectionView);
+			Platform.runLater(() -> MapView.this.lineGroup.getChildren().remove(this.sectionView));
 			for(ConcreteStationView station : MapView.this.stations) {
 				if(station != this.sectionView.getFromStation()) {
 					Circle2d circle2d = new Circle2d(new Point2d(station.getTranslateX(), station.getTranslateY()),
@@ -258,8 +258,8 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 			this.toSectionView.setToStation(this.oldSectionView.getToStation());
 			this.toSectionView.setWater(MapView.this.water);
 
-			MapView.this.lineGroup.getChildren().add(this.fromSectionView);
-			MapView.this.lineGroup.getChildren().add(this.toSectionView);
+			Platform.runLater(() -> MapView.this.lineGroup.getChildren().add(this.fromSectionView));
+			Platform.runLater(() -> MapView.this.lineGroup.getChildren().add(this.toSectionView));
 
 			this.stationsBounds = new MultiShape2d<>();
 			for(ConcreteStationView station : MapView.this.stations) {
@@ -298,8 +298,8 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 
 		@Override
 		public void apply(double x, double y) {
-			MapView.this.lineGroup.getChildren().remove(this.toSectionView);
-			MapView.this.lineGroup.getChildren().remove(this.fromSectionView);
+			Platform.runLater(() -> MapView.this.lineGroup.getChildren().remove(this.toSectionView));
+			Platform.runLater(() -> MapView.this.lineGroup.getChildren().remove(this.fromSectionView));
 			ConcreteStationView toStation = null;
 			for(ConcreteStationView station : MapView.this.stations) {
 				if(station != this.fromSectionView.getFromStation() && station != this.toSectionView.getToStation()) {
@@ -382,7 +382,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 			this.sectionView.setSectionMouseListener(MapView.this);
 			this.sectionView.setFromStation(this.fromStation);
 			this.sectionView.setWater(MapView.this.water);
-			MapView.this.lineGroup.getChildren().add(this.sectionView);
+			Platform.runLater(() -> MapView.this.lineGroup.getChildren().add(this.sectionView));
 
 			if(this.srcSectionView.getFromStation() == this.fromStation) {
 				this.srcSectionView.setFromHookVisible(false);
@@ -434,7 +434,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 				}
 				else {
 					if(this.fromStationBounds.contains(x, y)) {
-						MapView.this.lineGroup.getChildren().remove(this.sectionView);
+						Platform.runLater(() -> MapView.this.lineGroup.getChildren().remove(this.sectionView));
 						boolean from = this.srcSectionView.getFromStation() == this.fromStation;
 						if(this.srcSectionView.getPrevSection() != null || this.srcSectionView.getNextSection() != null) {
 							this.srcSectionView.setMouseTransparent(true);
@@ -474,7 +474,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 
 		@Override
 		public void apply(double x, double y) {
-			MapView.this.lineGroup.getChildren().remove(this.sectionView);
+			Platform.runLater(() -> MapView.this.lineGroup.getChildren().remove(this.sectionView));
 			for(ConcreteStationView station : MapView.this.stations) {
 				if(station != this.sectionView.getFromStation()) {
 					Circle2d circle2d = new Circle2d(new Point2d(station.getTranslateX(), station.getTranslateY()),
@@ -532,7 +532,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 			//this.stationUpgradeShape.setLayoutY(-Skin.STATION_UPGRADE_VIEW_HEIGHT / 2);
 
 			this.stationUpgradeShape.setMouseTransparent(true);
-			MapView.this.trainGroup.getChildren().add(this.stationUpgradeShape);
+			Platform.runLater(() -> MapView.this.trainGroup.getChildren().add(this.stationUpgradeShape));
 			this.stationUpgradeShape.setVisible(false);
 		}
 
@@ -550,7 +550,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 
 		@Override
 		public void apply(double x, double y) {
-			MapView.this.trainGroup.getChildren().remove(this.stationUpgradeShape);
+			Platform.runLater(() -> MapView.this.trainGroup.getChildren().remove(this.stationUpgradeShape));
 			MapView.this.dragOverLock.lock();
 			if(MapView.this.dragOverStation != null) {
 				EventDispatcher.getInstance()
@@ -570,7 +570,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 			this.passengerCarShape.setLayoutY(-Skin.PASSENGERCAR_VIEW_HEIGHT / 2);
 
 			this.passengerCarShape.setMouseTransparent(true);
-			MapView.this.trainGroup.getChildren().add(this.passengerCarShape);
+			Platform.runLater(() -> MapView.this.trainGroup.getChildren().add(this.passengerCarShape));
 			this.passengerCarShape.setVisible(false);
 		}
 
@@ -588,7 +588,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 
 		@Override
 		public void apply(double x, double y) {
-			MapView.this.trainGroup.getChildren().remove(this.passengerCarShape);
+			Platform.runLater(() -> MapView.this.trainGroup.getChildren().remove(this.passengerCarShape));
 			MapView.this.dragOverLock.lock();
 			if(MapView.this.dragOverSection != null) {
 				//TODO: event to model... (add passenger car to a train in the line, model check if a passenger car is available)
@@ -607,7 +607,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 			this.trainShape.setLayoutY(-Skin.TRAIN_VIEW_HEIGHT / 2);
 
 			this.trainShape.setMouseTransparent(true);
-			MapView.this.trainGroup.getChildren().add(this.trainShape);
+			Platform.runLater(() -> MapView.this.trainGroup.getChildren().add(this.trainShape));
 			this.trainShape.setVisible(false);
 		}
 
@@ -625,7 +625,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 
 		@Override
 		public void apply(double x, double y) {
-			MapView.this.trainGroup.getChildren().remove(this.trainShape);
+			Platform.runLater(() -> MapView.this.trainGroup.getChildren().remove(this.trainShape));
 			MapView.this.dragOverLock.lock();
 			if(MapView.this.dragOverSection != null) {
 				EventDispatcher.getInstance().fire(new TrainInventoryMoveEvent(
@@ -764,7 +764,7 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 	@Override
 	public void mousePressedOnPassengerCarCounter() {
 		this.modificationStateLock.lock();
-		this.modificationState = new PassengerCarMoveState(this.skin.newPassengerCarView(TrainType.NORMAL)); //FIXME: temporary TrainType.NORMAL for tests
+		this.modificationState = new PassengerCarMoveState(this.skin.newPassengerCarView()); //FIXME: temporary TrainType.NORMAL for tests
 		this.modificationStateLock.unlock();
 	}
 
