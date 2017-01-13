@@ -280,7 +280,7 @@ public class Skin implements PassengerViewFactory {
 	}
 
 	@Nonnull
-	public Shape newPassengerCarView(@Nonnull TrainType type) {
+	public Shape newPassengerCarView() {
 		Polygon polygon = new Polygon();
 		polygon.getPoints().addAll(
 		  0d, 0d,
@@ -302,6 +302,11 @@ public class Skin implements PassengerViewFactory {
 
 	@Nonnull
 	public List<Point2d> getTrainPassengerPositions() {
+		return TRAIN_PASSENGERS_POSITIONS;
+	}
+
+	@Nonnull
+	public List<Point2d> getPassengerCarPassengerPositions() {
 		return TRAIN_PASSENGERS_POSITIONS;
 	}
 
