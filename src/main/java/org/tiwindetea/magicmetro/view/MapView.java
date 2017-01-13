@@ -89,6 +89,9 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 	private final List<ConcreteTrainView> trains = new LinkedList<>();
 	private final List<ConcreteLineView> lines = new LinkedList<>();
 
+	private double mouseLastX = 0;
+	private double mouseLastY = 0;
+
 	private SectionView dragOverSection; // The section with the mouse is dragging over or null
 	private ConcreteStationView dragOverStation; // The station with the mouse is dragging over or null
 	private Lock dragOverLock = new ReentrantLock();
@@ -664,6 +667,8 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 					node.setMouseTransparent(true);
 				}
 				MapView.this.startFullDrag();
+				MapView.this.mouseLastX = event.getX();
+				MapView.this.mouseLastY = event.getY();
 			}
 		});
 
@@ -682,6 +687,8 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 				MapView.this.modificationStateLock.lock();
 				MapView.this.modificationState.update(event.getX(), event.getY());
 				MapView.this.modificationStateLock.unlock();
+				MapView.this.mouseLastX = event.getX();
+				MapView.this.mouseLastY = event.getY();
 			}
 		});
 
@@ -845,4 +852,12 @@ public class MapView extends DraggableZoomableParent implements StationMouseList
 	public void setHUD(Collection<Node> HUD) {
 		this.HUD = HUD;
 	}
+
+	public void applyState() {
+		MapView.this.modificationStateLock.lock();
+		MapView.this.modificationState.apply(this.mouseLastX, this.mouseLastY);
+		MapView.this.modificationState = MapView.this.voidModificationState;
+		MapView.this.modificationStateLock.unlock();
+	}
+
 }
