@@ -36,9 +36,18 @@ import org.arakhne.afc.math.geometry.d2.d.Point2d;
 import org.arakhne.afc.math.geometry.d2.d.Rectangle2d;
 import org.tiwindetea.magicmetro.global.eventdispatcher.EventDispatcher;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.FullScreenToggleEvent;
+import org.tiwindetea.magicmetro.global.scripts.ElementChoiceScript;
+import org.tiwindetea.magicmetro.global.scripts.ElementScript;
+import org.tiwindetea.magicmetro.global.scripts.LineScript;
 import org.tiwindetea.magicmetro.global.scripts.MapScript;
+import org.tiwindetea.magicmetro.global.scripts.PassengerCarScript;
 import org.tiwindetea.magicmetro.global.scripts.StationScript;
+import org.tiwindetea.magicmetro.global.scripts.StationUpgradeScript;
+import org.tiwindetea.magicmetro.global.scripts.TrainScript;
+import org.tiwindetea.magicmetro.global.scripts.TunnelScript;
+import org.tiwindetea.magicmetro.global.util.Pair;
 import org.tiwindetea.magicmetro.model.StationType;
+import org.tiwindetea.magicmetro.model.TrainType;
 import org.tiwindetea.magicmetro.view.menus.MenuManager;
 
 import java.time.Duration;
@@ -153,9 +162,54 @@ public class Main extends Application {
 		  new StationScript(Duration.ofSeconds(300),
 			new Point2d(670, 350),
 			StationType.DIAMOND));
-		testMapScript.initialStationUpgrades = 2;
-		testMapScript.initialLines = 4;
-		testMapScript.initialTrains = 5;
+		testMapScript.elementChoiceScripts.add(new ElementChoiceScript(
+		  Duration.ofSeconds(60),
+		  new LinkedList<Pair<ElementScript, Integer>>() {{
+			  add(new Pair<>(new TrainScript(TrainType.NORMAL), 1));
+		  }}
+		));
+		testMapScript.elementChoiceScripts.add(new ElementChoiceScript(
+		  Duration.ofSeconds(120),
+		  new LinkedList<Pair<ElementScript, Integer>>() {{
+			  add(new Pair<>(new LineScript(), 1));
+			  add(new Pair<>(new StationUpgradeScript(5), 1));
+		  }}
+		));
+		testMapScript.elementChoiceScripts.add(new ElementChoiceScript(
+		  Duration.ofSeconds(180),
+		  new LinkedList<Pair<ElementScript, Integer>>() {{
+			  add(new Pair<>(new PassengerCarScript(), 2));
+			  add(new Pair<>(new LineScript(), 1));
+			  add(new Pair<>(new TunnelScript(), 2));
+		  }}
+		));
+		testMapScript.elementChoiceScripts.add(new ElementChoiceScript(
+		  Duration.ofSeconds(240),
+		  new LinkedList<Pair<ElementScript, Integer>>() {{
+			  add(new Pair<>(new TrainScript(TrainType.NORMAL), 1));
+			  add(new Pair<>(new StationUpgradeScript(5), 1));
+		  }}
+		));
+		testMapScript.elementChoiceScripts.add(new ElementChoiceScript(
+		  Duration.ofSeconds(300),
+		  new LinkedList<Pair<ElementScript, Integer>>() {{
+			  add(new Pair<>(new LineScript(), 1));
+			  add(new Pair<>(new PassengerCarScript(), 2));
+			  add(new Pair<>(new TunnelScript(), 2));
+
+		  }}
+		));
+		testMapScript.elementChoiceScripts.add(new ElementChoiceScript(
+		  Duration.ofSeconds(360),
+		  new LinkedList<Pair<ElementScript, Integer>>() {{
+			  add(new Pair<>(new StationUpgradeScript(5), 1));
+			  add(new Pair<>(new TrainScript(TrainType.NORMAL), 1));
+		  }}
+		));
+
+		testMapScript.initialStationUpgrades = 1;
+		testMapScript.initialLines = 3;
+		testMapScript.initialTrains = 3;
 		testMapScript.initialTunnels = 3;
 		this.mapScripts.add(testMapScript);
 	}
