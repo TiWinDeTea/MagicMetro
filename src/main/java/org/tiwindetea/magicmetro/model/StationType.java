@@ -24,6 +24,11 @@
 
 package org.tiwindetea.magicmetro.model;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
 /**
  * StationType, possible types of a Station.
  *
@@ -37,5 +42,15 @@ public enum StationType {
 	CIRCLE,
 	STAR,
 	DIAMOND,
-	CROSS
+	CROSS;
+
+	private static final List<StationType> VALUES =
+	  Collections.unmodifiableList(Arrays.asList(values()));
+	private static final int SIZE = VALUES.size();
+	private static final Random RANDOM = new Random();
+
+	public static StationType random() {
+		return VALUES.get(RANDOM.nextInt(SIZE));
+	}
+
 }

@@ -67,6 +67,8 @@ public class Skin implements PassengerViewFactory {
 		add(Color.PINK);
 		add(Color.CYAN);
 		add(Color.MAROON);
+		add(Color.PURPLE);
+		add(Color.LIME);
 	}};
 	private static final List<Point2d> TRAIN_PASSENGERS_POSITIONS = new ArrayList<Point2d>() {{
 		add(new Point2d(0, 0));
