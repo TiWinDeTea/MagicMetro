@@ -27,9 +27,8 @@ package org.tiwindetea.magicmetro.model;
 import org.tiwindetea.magicmetro.global.TimeManager;
 import org.tiwindetea.magicmetro.global.eventdispatcher.EventDispatcher;
 import org.tiwindetea.magicmetro.global.eventdispatcher.EventListener;
-import org.tiwindetea.magicmetro.global.eventdispatcher.events.timeevents.TimePauseEvent;
-import org.tiwindetea.magicmetro.global.eventdispatcher.events.timeevents.TimeSpeedChangeEvent;
-import org.tiwindetea.magicmetro.global.eventdispatcher.events.timeevents.TimeStartEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.InventoryElementAdditionEvent;
+import org.tiwindetea.magicmetro.global.scripts.ElementChoiceScript;
 import org.tiwindetea.magicmetro.global.scripts.MapScript;
 import org.tiwindetea.magicmetro.global.scripts.StationScript;
 import org.tiwindetea.magicmetro.global.util.Utils;
@@ -52,15 +51,7 @@ public class GameManager implements StationManager, LineManager {
 	private final GameMap gameMap;
 	private final Inventory inventory;
 	private final MapScript mapScript;
-	private final EventListener<TimeStartEvent> onTimeStartEvent = event -> {
-		//TODO
-	};
-	private final EventListener<TimePauseEvent> onTimePauseEvent = event -> {
-		//TODO
-	};
-	private final EventListener<TimeSpeedChangeEvent> onTimeSpeedChangeEvent = event -> {
-		//TODO
-	};
+	private final EventListener<InventoryElementAdditionEvent> onInventoryElementAdditionEvent;
 
 	private final PriorityQueue<Station> warnedStations = new PriorityQueue<>((o1, o2) ->
 	  (int) (o1.getWarnEnd() - o2.getWarnEnd()));
@@ -80,6 +71,13 @@ public class GameManager implements StationManager, LineManager {
 					for(Train train : GameManager.this.gameMap.getTrainsCopy()) {
 						train.live();
 					}
+					// bonus choice
+					ElementChoiceScript elementChoiceScript = GameManager.this.mapScript.elementChoiceScripts.peek();
+					if((elementChoiceScript != null) && (elementChoiceScript.apparitionTime.toMillis() < currentTime)) {
+						GameManager.this.mapScript.elementChoiceScripts.poll();
+						GameManager.this.viewManager.askElementChoice(elementChoiceScript.elementScripts);
+					}
+
 					// stations apparition
 					StationScript stationScript = GameManager.this.mapScript.stationScripts.peek();
 					if((stationScript != null) && (stationScript.apparitionTime.toMillis() < currentTime)) {
@@ -135,19 +133,15 @@ public class GameManager implements StationManager, LineManager {
 
 		this.mapScript = mapScript;
 
-		EventDispatcher.getInstance().addListener(TimeStartEvent.class, this.onTimeStartEvent);
-		EventDispatcher.getInstance().addListener(TimePauseEvent.class, this.onTimePauseEvent);
-		EventDispatcher.getInstance().addListener(TimeSpeedChangeEvent.class, this.onTimeSpeedChangeEvent);
-
 		this.viewManager = viewManager;
 		this.inventory = new Inventory(this.viewManager.getInventoryView());
 		this.gameMap = new GameMap(this.inventory);
 
-		this.viewManager.setMapSize(mapScript.mapWidth, mapScript.mapHeight);
+		this.viewManager.setMapSize(this.mapScript.mapWidth, this.mapScript.mapHeight);
 		this.viewManager.setWater(this.mapScript.water);
 		StationScript stationScript = this.mapScript.stationScripts.peek();
 		while((stationScript != null) && (stationScript.apparitionTime == Duration.ZERO)) {
-			mapScript.stationScripts.poll();
+			this.mapScript.stationScripts.poll();
 			Station station = new Station(stationScript.position,
 			  stationScript.type,
 			  viewManager.createStationView(stationScript.type),
@@ -156,13 +150,13 @@ public class GameManager implements StationManager, LineManager {
 			stationScript = this.mapScript.stationScripts.peek();
 		}
 
-		for(int i = 0; i < mapScript.initialLines; ++i) {
+		for(int i = 0; i < this.mapScript.initialLines; ++i) {
 			Line line = new Line(this.viewManager.createLineView(), this);
 			this.inventory.addLine(line);
 			this.gameMap.addLine(line);
 		}
 
-		for(int i = 0; i < mapScript.initialTrains; ++i) {
+		for(int i = 0; i < this.mapScript.initialTrains; ++i) {
 			this.inventory.addTrain(new Train(
 			  TrainType.NORMAL.maxSpeed,
 			  TrainType.NORMAL.acceleration,
@@ -170,17 +164,62 @@ public class GameManager implements StationManager, LineManager {
 			  )));
 		}
 
-		for(int i = 0; i < mapScript.initialTunnels; ++i) {
+		for(int i = 0; i < this.mapScript.initialPassengerCars; ++i) {
+			this.inventory.addPassengerCar(new PassengerCar(this.viewManager.createPassengerCarView()));
+		}
+
+		for(int i = 0; i < this.mapScript.initialTunnels; ++i) {
 			this.inventory.addTunnel();
 		}
 
-		for(int i = 0; i < mapScript.initialStationUpgrades; ++i) {
+		for(int i = 0; i < this.mapScript.initialStationUpgrades; ++i) {
 			this.inventory.addStationUpgrade(new StationUpgrade());
 		}
 
 		this.executorService.submit(this.gameLoop);
 		this.executorService.shutdown();
 		//TODO
+
+		this.onInventoryElementAdditionEvent = new EventListener<InventoryElementAdditionEvent>() {
+			@Override
+			public void onEvent(InventoryElementAdditionEvent event) {
+				switch(event.elementScript.type) {
+				case TRAIN:
+					for(int i = 0; i < event.number; ++i) {
+						GameManager.this.inventory.addTrain(new Train(
+						  TrainType.NORMAL.maxSpeed,
+						  TrainType.NORMAL.acceleration,
+						  GameManager.this.viewManager.createTrainView(TrainType.NORMAL
+						  )));
+					}
+					break;
+				case STATION_UPGRADE:
+					for(int i = 0; i < event.number; ++i) {
+						GameManager.this.inventory.addStationUpgrade(new StationUpgrade());
+					}
+					break;
+				case TUNNEL:
+					for(int i = 0; i < event.number; ++i) {
+						GameManager.this.inventory.addTunnel();
+					}
+					break;
+				case LINE:
+					for(int i = 0; i < event.number; ++i) {
+						Line line = new Line(GameManager.this.viewManager.createLineView(), GameManager.this);
+						GameManager.this.inventory.addLine(line);
+						GameManager.this.gameMap.addLine(line);
+					}
+					break;
+				case PASSENGER_CAR:
+					for(int i = 0; i < event.number; ++i) {
+						GameManager.this.inventory.addPassengerCar(new PassengerCar(GameManager.this.viewManager.createPassengerCarView()));
+					}
+					break;
+				}
+			}
+		};
+		EventDispatcher.getInstance().addListener(InventoryElementAdditionEvent.class,
+		  this.onInventoryElementAdditionEvent);
 	}
 
 	@Override
