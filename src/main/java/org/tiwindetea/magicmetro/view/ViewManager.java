@@ -193,6 +193,18 @@ public class ViewManager {
 		return concreteLineView;
 	}
 
+	public PassengerCarView createPassengerCarView() {
+		ConcretePassengerCarView concretePassengerCarView = new ConcretePassengerCarView(
+		  this.skin.newPassengerCarView(),
+		  Skin.PASSENGERCAR_VIEW_WIDTH,
+		  Skin.PASSENGERCAR_VIEW_HEIGHT,
+		  this.skin.getPassengerCarPassengerPositions(),
+		  this.skin
+		);
+		//Platform.runLater(() -> this.mapView.addPassengerCar(concretePassengerCarView)); //TODO
+		return concretePassengerCarView;
+	}
+
 	public Parent getRoot() {
 		return this.mainAnchorPane;
 	}
