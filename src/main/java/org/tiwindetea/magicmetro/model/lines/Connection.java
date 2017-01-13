@@ -78,6 +78,7 @@ public class Connection {
 	public Connection(@Nonnull Station station) {
 		this.station = station;
 		this.position = this.station.getPosition();
+
 		this.subSections = new SimplePair<>(null, null);
 	}
 
@@ -94,6 +95,12 @@ public class Connection {
 
 		this.position = new Point2d(position);
 		this.subSections = new SimplePair<>(leftSubSection, rightSubSection);
+	}
+
+	public Connection(Point2d position, SubSection leftSubSection, SubSection rightSubSection, Station stationRef) {
+		this.position = (position == null) ? new Point2d() : new Point2d(position);
+		this.subSections = new SimplePair<>(leftSubSection, rightSubSection);
+		this.station = stationRef;
 	}
 
 	/**

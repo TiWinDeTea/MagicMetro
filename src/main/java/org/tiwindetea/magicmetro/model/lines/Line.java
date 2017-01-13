@@ -31,6 +31,7 @@ import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineIn
 import org.tiwindetea.magicmetro.global.util.SimplePair;
 import org.tiwindetea.magicmetro.model.LineManager;
 import org.tiwindetea.magicmetro.model.Station;
+import org.tiwindetea.magicmetro.model.Train;
 import org.tiwindetea.magicmetro.view.LineView;
 
 import javax.annotation.Nonnull;
@@ -182,6 +183,12 @@ public class Line {
 		this.sections.add(section);
 	}
 
+	/**
+	 * manage the lineInnerExtensionEvent
+	 *
+	 * @param event the event sent
+	 * @param stations the 3 stations in the line Inner Ectension
+	 */
 	public void manage(LineInnerExtensionEvent event, Collection<Station> stations) {
 
 		Section oldSection = null;
@@ -302,6 +309,11 @@ public class Line {
 		this.sections.add(rightSection);
 	}
 
+	/**
+	 * manage the case where we have a line decrease
+	 *
+	 * @param event the event sent
+	 */
 	public void manage(LineDecreaseEvent event) {
 
 		Station oldStation = null;
@@ -389,6 +401,15 @@ public class Line {
 	 */
 	public boolean contains(Station station) {
 		return this.stations.contains(station);
+	}
+
+	/**
+	 * Get the number of section
+	 *
+	 * @return the number of section
+	 */
+	public int nbSection(){
+		return sections.size();
 	}
 
 	/**

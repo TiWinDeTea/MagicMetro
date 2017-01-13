@@ -35,12 +35,15 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Stack;
 
 /**
  * A train, move by following connections and subsections of a line.<p>
  * Exchange passenger with stations depending on the passenger path.
  *
+ * @author Julien Barbier
+ * @since 0.2
  * @author Maxime PINARD
  * @since 0.1
  */
@@ -50,6 +53,7 @@ public class Train {
 
 	private static final int CAPACITY = 6;
 	private static final int PASSENGER_MOVE_DELAY = 20; // TODO: choose a real value
+	private static final double STATION_SLOW_DOWN_DISTANCE = 100000; // TODO: choose a real value
 
 	private final double maxSpeed;
 	private final double acceleration;
@@ -100,8 +104,51 @@ public class Train {
 	 * @param passengerCar the passenger car
 	 */
 	public synchronized void removePassengerCar(PassengerCar passengerCar) {
-		//TODO: move passengers in other passengerCars or send them back to their initial station
+		//we verify if the train isFull to avoid loop
+		if(isFull()){
+			while(!passengerCar.getPassengers().isEmpty()){
+				Passenger passenger = passengerCar.getPassengers().get(0);
+				passenger.getStation().addPassenger(passenger);
+				//we set the initial path to the passenger
+				passengerCar.removePassenger(passenger);
+			}
+		} else {
+			//we add the passenger in the other PassengerCar
+			for (PassengerCar passengerCar1 : this.passengerCars){
+				if(passengerCar1 != passengerCar){
+					while (!passengerCar1.isFull() && !passengerCar.isEmpty()){
+						//we send the other Passenger in the other PassengerCars
+						passengerCar1.addPassenger(passengerCar.getPassengers().get(0));
+						passengerCar.removePassenger(passengerCar.getPassengers().get(0));
+					}
+					if(passengerCar.isEmpty()){
+						break;
+					}
+				}
+			}
+			//we verify if it's empty or not.
+			if(!passengerCar.isEmpty()){
+				//we send the passenger to the station of beginning
+				for(Passenger passenger : passengerCar.getPassengers()){
+					passengerCar.removePassenger(passenger);
+					passenger.getStation().addPassenger(passenger);
+				}
+			}
+		}
 		this.passengerCars.remove(passengerCar);
+	}
+
+	/**
+	 * Removed the last Passenger Car
+	 *
+	 * @return the PassengerCar removed
+	 */
+	public synchronized PassengerCar removePassengerCar(){
+		PassengerCar tmp = passengerCars.get(passengerCars.size()-1);
+		if(tmp != null) {
+			removePassengerCar(tmp);
+		}
+		return tmp;
 	}
 
 	/**
@@ -125,6 +172,18 @@ public class Train {
 	private void setPosition(Point2d position) {
 		this.position = position;
 		this.view.setPosition(this.position);
+	}
+
+	public synchronized void toEmpty(){
+		if(this.line != null) {
+			for (PassengerCar passengerCar : passengerCars) {
+				removePassengerCar(passengerCar);
+			}
+			while (!passengers.isEmpty()){
+				Passenger passenger = passengers.get(0);
+				removePassenger(passenger);
+			}
+		}
 	}
 
 	public void start(@Nonnull Line line) {
@@ -163,6 +222,12 @@ public class Train {
 		return this.line;
 	}
 
+	/**
+	 * Add a passenger
+	 *
+	 * @param passenger the passenger to add
+	 * @return true if the passenger added, false otherwise
+	 */
 	private synchronized boolean addPassenger(Passenger passenger) {
 		if(this.passengers.size() < CAPACITY) {
 			this.passengers.add(passenger);
@@ -178,9 +243,16 @@ public class Train {
 		return false;
 	}
 
+	/**
+	 * Remove passenger
+	 *
+	 * @param passenger the passenger to remove
+	 * @return true if the passenger is removed, false otherwise
+	 */
 	private synchronized boolean removePassenger(Passenger passenger) {
 		if(this.passengers.remove(passenger)) {
 			this.view.removePassenger(passenger.getWantedStation());
+			passenger.getStation().addPassenger(passenger);
 			return true;
 		}
 		for(PassengerCar passengerCar : this.passengerCars) {
@@ -191,11 +263,94 @@ public class Train {
 		return false;
 	}
 
+	/**
+	 * make the train living
+	 *
+	 * @param lineRef the line where the train is
+	 * @param connectionA the fromConnection
+	 * @param connectionB toConnection
+	 */
+	public void makeItLivable(Line lineRef, Connection connectionA, Connection connectionB){
+		setLastConnection(connectionA);
+		setNextConnection(connectionB);
+		setPosition(new Point2d(connectionA.getPosition().getX(), connectionB.getPosition().getY()));
+		setLineRef(lineRef);
+		if(position != null) {
+			makeItVisible();
+			currentState = movingState;
+			currentState.init();
+			//System.out.println(toString());
+		}
+	}
+
+	/**
+	 * set the Line reference
+	 *
+	 * @param lineRef the line
+	 */
+	private void setLineRef(Line lineRef) {
+		this.line = lineRef;
+	}
+
+	/**
+	 * get the Line
+	 *
+	 * @return the line where the train is
+	 */
+	protected Line getLineRef() {
+		return line;
+	}
+
+	/**
+	 * gets the next Connection
+	 *
+	 * @return the next Connection
+	 */
+	protected Connection getNextConnection() {
+		return nextConnection;
+	}
+
+	/**
+	 * set the last Connection
+	 *
+	 * @param lastConnection the connection
+	 */
+	public void setLastConnection(Connection lastConnection) {
+		this.lastConnection = lastConnection;
+	}
+
+	/**
+	 * sets the next Connection
+	 *
+	 * @param nextConnection the connection
+	 */
+	public void setNextConnection(Connection nextConnection) {
+		this.nextConnection = nextConnection;
+	}
+
+	/**
+	 * make the train visible
+	 */
+	public void makeItVisible(){
+		this.view.setPosition(position);
+		this.view.setVisible(true);
+	}
+
+	/**
+	 * Moving the train
+	 *
+	 * @param move the vector of moving
+	 */
 	private void move(Vector2d move) {
 		this.position.add(move);
 		this.view.setPosition(this.position);
 	}
 
+	/**
+	 * sets the rotation
+	 *
+	 * @param rotation the rotation
+	 */
 	private void setRotation(double rotation) {
 		this.rotation = rotation;
 		this.view.setRotation(this.rotation);
@@ -244,7 +399,6 @@ public class Train {
 
 			double dx = Train.this.speed * Math.cos(this.angleToNextConnection);
 			double dy = Train.this.speed * Math.sin(this.angleToNextConnection);
-
 			Point2d oldPosition = new Point2d(Train.this.position);
 			move(new Vector2d(dx, dy));
 
@@ -264,6 +418,7 @@ public class Train {
 				  .getOther(Train.this.nextConnection);
 				Connection rightConnection = Train.this.nextConnection.getRightSubSection()
 				  .getOther(Train.this.nextConnection);
+
 				Connection tmpConnection = Train.this.nextConnection;
 				if(leftConnection != Train.this.lastConnection) {
 					Train.this.nextConnection = leftConnection;

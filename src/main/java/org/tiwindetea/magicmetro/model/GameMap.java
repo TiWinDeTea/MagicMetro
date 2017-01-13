@@ -30,6 +30,8 @@ import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineCr
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineDecreaseEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineExtensionEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.lineevents.LineInnerExtensionEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.moveevents.PassengerCarGameMapRemoved;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.moveevents.PassengerCarInventoryMoveEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.moveevents.StationUpgradeInventoryMoveEvent;
 import org.tiwindetea.magicmetro.global.eventdispatcher.events.moveevents.TrainInventoryMoveEvent;
 import org.tiwindetea.magicmetro.model.lines.Connection;
@@ -95,6 +97,14 @@ public class GameMap {
 	private final EventListener<LineDecreaseEvent> onLineDecreaseEvent = event -> {
 		for(Line line : this.lines) {
 			if(line.gameId == event.lineId) {
+				if(line.nbSection() == 1) {
+					for (Train train : trains) {
+						if (train.getLine() == line) {
+							train.toEmpty();
+						}
+						inventory.addTrain(train);
+					}
+				}
 				line.manage(event);
 				break;
 			}
@@ -131,6 +141,36 @@ public class GameMap {
 		}
 	};
 
+	private final EventListener<PassengerCarInventoryMoveEvent> onPassengerCarInventoryMoveEvent = event -> {
+		PassengerCar passengerCar = this.inventory.takePassengerCar();
+		if(passengerCar == null){
+			throw new IllegalStateException("No passengerCar in the inventory");
+		} else {
+			Train train = getTrainWithId(event.gameIdTrain);
+			if(train == null){
+				throw new IllegalStateException("No Train with this id");
+			} else {
+				train.addPassengerCar(passengerCar);
+				trainsCopy = trains.toArray(new Train[trains.size()]);
+				System.out.println("The passenger car is added");
+			}
+		}
+	};
+
+	private final EventListener<PassengerCarGameMapRemoved> onPassengerCarGameMapRemoved = event -> {
+		Train train = getTrainWithId(event.gameIdTrain);
+		if(train == null){
+			throw new IllegalStateException("No train in the Game Map with this id");
+		} else {
+			PassengerCar passengerCar = train.removePassengerCar();
+			if(passengerCar == null){
+				throw new IllegalStateException("No Passenger Car for this Station");
+			} else {
+				System.out.println("The passenger car is removed");
+			}
+		}
+	};
+
 	private double[][] stationHeuristics;
 
     /**
@@ -145,6 +185,8 @@ public class GameMap {
 	    EventDispatcher.getInstance().addListener(TrainInventoryMoveEvent.class, this.onTrainInventoryMoveEvent);
 	    EventDispatcher.getInstance()
 	      .addListener(StationUpgradeInventoryMoveEvent.class, this.onStationUpgradeInventoryMoveEvent);
+	    EventDispatcher.getInstance().addListener(PassengerCarInventoryMoveEvent.class, this.onPassengerCarInventoryMoveEvent);
+	    EventDispatcher.getInstance().addListener(PassengerCarGameMapRemoved.class, this.onPassengerCarGameMapRemoved);
     }
 
 	Passenger addPassengerToStation() {
@@ -200,6 +242,7 @@ public class GameMap {
      * @return true if the trains was removed, false otherwise
      */
     public synchronized boolean removeTrain(Train train) {
+
 	    boolean result = this.trains.remove(train);
 	    this.trainsCopy = this.trains.toArray(new Train[this.trains.size()]);
 	    return result;
@@ -271,6 +314,22 @@ public class GameMap {
         }
         return null;
     }
+
+	/**
+	 * get the train with id sent
+	 *
+	 * @param id the id
+	 * @return the train with the id sent
+	 */
+	@Nullable
+	private Train getTrainWithId(int id){
+    	for (Train train : trains){
+    		if(train.gameId == id){
+    			return train;
+			}
+		}
+		return null;
+	}
 
     /**
      * get line with the id

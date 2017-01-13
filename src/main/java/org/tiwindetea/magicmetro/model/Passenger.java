@@ -24,6 +24,7 @@
 
 package org.tiwindetea.magicmetro.model;
 
+
 import java.util.Stack;
 
 /**
@@ -68,13 +69,16 @@ public class Passenger {
 		return this.station;
 	}
 
-    /**
+	/**
      * Setter for the path of the Passenger
      *
      * @param path the path we want to set to the the Passenger
      */
-    public void setPath(Stack<Station> path) {
-	    this.path = path;
+
+	public void setPath(Stack<Station> path){
+		if(path!=null) {
+			this.path = path;
+		}
     }
 
 	/**
