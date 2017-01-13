@@ -34,8 +34,9 @@ import javafx.stage.WindowEvent;
 import org.arakhne.afc.math.geometry.d2.d.MultiShape2d;
 import org.arakhne.afc.math.geometry.d2.d.Point2d;
 import org.arakhne.afc.math.geometry.d2.d.Rectangle2d;
+import org.tiwindetea.magicmetro.global.TimeManager;
 import org.tiwindetea.magicmetro.global.eventdispatcher.EventDispatcher;
-import org.tiwindetea.magicmetro.global.eventdispatcher.events.FullScreenToggleEvent;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.GameExitEvent;
 import org.tiwindetea.magicmetro.global.scripts.ElementChoiceScript;
 import org.tiwindetea.magicmetro.global.scripts.ElementScript;
 import org.tiwindetea.magicmetro.global.scripts.LineScript;
@@ -82,19 +83,14 @@ public class Main extends Application {
 		// shortcut to exit fullscreen
 		this.stage.setFullScreenExitKeyCombination(new KeyCodeCombination(KeyCode.F, KeyCombination.SHIFT_DOWN));
 
-		EventDispatcher.getInstance().addListener(FullScreenToggleEvent.class, this::onFullScreenToggleEvent);
-
 		this.stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent event) {
-				//TODO: stop TimeManager thread
-				//TODO: also stop TimeManager thread when using primaryStage.close()
+				TimeManager.getInstance().end();
+				EventDispatcher.getInstance().fire(new GameExitEvent());
+				System.out.println("Main.handle");
 			}
 		});
-	}
-
-	private void onFullScreenToggleEvent(FullScreenToggleEvent event) {
-		this.stage.setFullScreen(event.fullScreen);
 	}
 
 	private void initMapScripts() {

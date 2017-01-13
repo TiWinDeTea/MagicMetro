@@ -28,6 +28,9 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.tiwindetea.magicmetro.global.TimeManager;
+import org.tiwindetea.magicmetro.global.eventdispatcher.EventDispatcher;
+import org.tiwindetea.magicmetro.global.eventdispatcher.EventListener;
+import org.tiwindetea.magicmetro.global.eventdispatcher.events.FullScreenToggleEvent;
 import org.tiwindetea.magicmetro.global.scripts.MapScript;
 import org.tiwindetea.magicmetro.model.GameManager;
 import org.tiwindetea.magicmetro.view.ViewManager;
@@ -46,6 +49,13 @@ public class MenuManager implements MenuController {
 	private static final double SCENE_INITIAL_WIDTH = 1280;
 	private static final double SCENE_INITIAL_HEIGHT = 720;
 
+	private final EventListener<FullScreenToggleEvent> onFullScreenToggleEvent = new EventListener<FullScreenToggleEvent>() {
+		@Override
+		public void onEvent(FullScreenToggleEvent event) {
+			MenuManager.this.stage.setFullScreen(event.fullScreen);
+		}
+	};
+
 	private final Stage stage;
 	private final Pane voidPane = new Pane();
 	private final Scene scene = new Scene(this.voidPane, SCENE_INITIAL_WIDTH, SCENE_INITIAL_HEIGHT);
@@ -63,6 +73,7 @@ public class MenuManager implements MenuController {
 		this.stage = stage;
 		this.mapScripts = mapScripts;
 		this.stage.setScene(this.scene);
+		EventDispatcher.getInstance().addListener(FullScreenToggleEvent.class, this.onFullScreenToggleEvent);
 	}
 
 	/**
@@ -80,6 +91,7 @@ public class MenuManager implements MenuController {
 			this.scene.setRoot(this.currentMenu.getRoot());
 		}
 		else {
+			TimeManager.getInstance().end();
 			this.stage.close();
 		}
 	}
@@ -105,12 +117,13 @@ public class MenuManager implements MenuController {
 
 	@Override
 	public void launchGame(MapScript mapScript) {
-		ViewManager viewManager = new ViewManager();
+		this.menuQueue.push(this.currentMenu);
+		ViewManager viewManager = new ViewManager(this);
 		GameManager gameManager = new GameManager(viewManager, mapScript);
 		TimeManager.getInstance().reset();
+		TimeManager.getInstance().setSpeed(1);
 		TimeManager.getInstance().start();
 		this.scene.setRoot(viewManager.getRoot());
-		//TODO: on game exit (pass menumanager with interface to gamemanager ?) put back current menu root
 	}
 
 }
