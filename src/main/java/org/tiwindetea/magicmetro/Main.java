@@ -88,7 +88,6 @@ public class Main extends Application {
 			public void handle(WindowEvent event) {
 				TimeManager.getInstance().end();
 				EventDispatcher.getInstance().fire(new GameExitEvent());
-				System.out.println("Main.handle");
 			}
 		});
 	}
