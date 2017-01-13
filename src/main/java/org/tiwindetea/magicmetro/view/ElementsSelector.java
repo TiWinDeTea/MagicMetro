@@ -61,7 +61,7 @@ public class ElementsSelector extends StackPane {
 	private static final double PICTURE_ZOOM_FACTOR = 1.25;
 
 	public ElementsSelector(@Nonnull List<Pair<ElementScript, Integer>> elementScripts,
-	                        @Nonnull ElementsSelectorListener elementsSelectorListener) {
+	                        @Nonnull MenuListener elementsSelectorListener) {
 
 		Rectangle rectangle = new Rectangle();
 		rectangle.widthProperty().bind(this.widthProperty());
@@ -106,7 +106,7 @@ public class ElementsSelector extends StackPane {
 				public void handle(MouseEvent event) {
 					EventDispatcher.getInstance()
 					  .fire(new InventoryElementAdditionEvent(elementScript.getLeft(), elementScript.getRight()));
-					elementsSelectorListener.onChoice(ElementsSelector.this);
+					elementsSelectorListener.closeMenu(ElementsSelector.this);
 				}
 			});
 			vBox.addEventFilter(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
