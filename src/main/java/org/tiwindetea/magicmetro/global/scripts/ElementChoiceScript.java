@@ -24,6 +24,8 @@
 
 package org.tiwindetea.magicmetro.global.scripts;
 
+import org.tiwindetea.magicmetro.global.util.Pair;
+
 import javax.annotation.Nonnull;
 import java.time.Duration;
 import java.util.List;
@@ -37,18 +39,19 @@ import java.util.List;
 public class ElementChoiceScript {
 
 	public final Duration apparitionTime;
-	public final List<ElementScript> possibleBonus;
+	public final List<Pair<ElementScript, Integer>> elementScripts;
 
 	/**
 	 * Default constructor.
 	 *
 	 * @param apparitionTime TODO
-	 * @param possibleBonus  TODO
+	 * @param elementScripts  TODO
 	 */
-	public ElementChoiceScript(@Nonnull Duration apparitionTime, @Nonnull List<ElementScript> possibleBonus) {
+	public ElementChoiceScript(@Nonnull Duration apparitionTime,
+	                           @Nonnull List<Pair<ElementScript, Integer>> elementScripts) {
 
 		this.apparitionTime = apparitionTime;
-		this.possibleBonus = possibleBonus;
+		this.elementScripts = elementScripts;
 		//TODO
 	}
 

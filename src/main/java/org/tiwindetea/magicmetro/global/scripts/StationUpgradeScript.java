@@ -41,7 +41,7 @@ public class StationUpgradeScript extends ElementScript {
 	 */
 	public StationUpgradeScript(int capacityBonus) {
 
-		super(ElementType.STATIONUPGRADE);
+		super(ElementType.STATION_UPGRADE);
 		this.capacityBonus = capacityBonus;
 	}
 

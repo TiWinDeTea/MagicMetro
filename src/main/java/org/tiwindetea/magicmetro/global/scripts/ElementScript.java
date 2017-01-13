@@ -38,17 +38,28 @@ public abstract class ElementScript {
 	 * TODO
 	 */
 	public enum ElementType {
-		TRAIN,
-		STATIONUPGRADE,
-		TUNNEL,
-		LINE,
-		PASSENGERCAR
+		TRAIN("Train"),
+		STATION_UPGRADE("Station upgrade"),
+		TUNNEL("Tunnel"),
+		LINE("Line"),
+		PASSENGER_CAR("Passenger car");
+
+		private final String name;
+
+		ElementType(String name) {
+			this.name = name;
+		}
+
+		@Override
+		public String toString() {
+			return this.name;
+		}
 	}
 
 	public final ElementType type;
 
 	/**
-	 * Instantiates a new Element script.
+	 * Instantiates a new element script.
 	 *
 	 * @param type the type of script
 	 */

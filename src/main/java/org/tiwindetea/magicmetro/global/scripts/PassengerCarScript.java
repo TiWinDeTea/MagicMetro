@@ -36,7 +36,7 @@ public class PassengerCarScript extends ElementScript {
 	 * Default constructor.
 	 */
 	public PassengerCarScript() {
-		super(ElementType.PASSENGERCAR);
+		super(ElementType.PASSENGER_CAR);
 	}
 
 }
