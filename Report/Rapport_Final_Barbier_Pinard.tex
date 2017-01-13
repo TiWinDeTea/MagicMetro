@@ -28,25 +28,38 @@ $ mvn package
 				\item MagicMetro.jar
 				\item MagicMetro-jar-with-dependencies.jar
 			\end{itemize}
-	\section{Fonctionnalité présents dans le projet}
+	\section{Fonctionnalités prêtes}
 		\p{}
 		Les fonctionnalités que nous avons réussi à implémenter dans les temps sont les suivantes : 
 		\begin{itemize}
-			\item Gestion des Lignes et présences de plusieurs ligne.
+			\item Menus avec un système du type pushdown automaton pour revenir en arrière (touche échap et bouton Exit)
+			\item Menu d'option avec choix du full screen
+			\item Menu de choix des maps dynamique en fonction des MapScript présents
 			\item Choix entre plusieurs Maps
-			\item Présence d'un menu option pour mettre en pleine écran
-			\item Ajout de Train
-			\item Apparition de station en fonction du temps
-			\item Path-Finding pour les passengers
-			\item Upgrade des stations (Bonus)
-			\item Choix de Bonus tous les X temps.
+			\item Système de scripts de description de maps
+				\begin{itemize}
+					\item Apparition des stations (moment et position)
+					\item Choix des bonus (moment, type et nombre)
+				\end{itemize}
+			\item Gestion du temps (play, pause, vitesse)
+			\item Inventaire
+			\item Ajout de trains aux lignes depuis l'inventaire
+			\item Amélioration des station avec les amélioration présentes dans l'inventaire
+			\item Path-Finding pour les passagers
+			\item Gestion des lignes
+				\begin{itemize}
+					\item Création de nouvelle ligne
+					\item Extension de ligne par l'extrémité
+					\item Extension de ligne par une section
+					\item Régression de ligne par l'extrémité
+				\end{itemize}
 		\end{itemize}
-	\section{Fonctionnalité à Implémenter}
+	\section{Fonctionnalités à implémenter}
 		\p{}
 		Faute de temps, nous n'avons pas réussi à implémenter ces fonctionnalités : 
 		\begin{itemize}
 			\item Gestion des Wagons (Vue et modèle)
 			\item Retrait de Train d'une ligne
-			\item Loopage des trains quand la ligne est circulaire.
+			\item Mouvement circulaire des trains quand la ligne est circulaire.
 		\end{itemize}
 \end{document}
