@@ -189,7 +189,7 @@ public class Section {
 	 * @param connection the station Connection
 	 * @return the other station Connection or left if it's not a station Connection
 	 */
-	public Connection getOtherStationConnection(@Nonnull Connection connection){
+	public Connection getOtherStationConnection(@Nonnull Connection connection) {
 		if(this.rightConnection == connection) {
 			return this.leftConnection;
 		}

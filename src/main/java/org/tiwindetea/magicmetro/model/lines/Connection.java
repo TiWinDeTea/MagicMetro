@@ -64,7 +64,7 @@ public class Connection {
 	 *
 	 * @param position the position of the connection
 	 */
-	public Connection(@Nonnull Point2d position){
+	public Connection(@Nonnull Point2d position) {
 		this.position = new Point2d(position);
 		this.subSections = new SimplePair<>(null, null);
 	}
@@ -180,7 +180,7 @@ public class Connection {
 	/**
 	 * Sets the left and right subsection of the connection.
 	 *
-	 * @param subSectionLeft the left subsection
+	 * @param subSectionLeft  the left subsection
 	 * @param subSectionRight the right subsection
 	 */
 	public void setSubSections(@Nullable SubSection subSectionLeft, @Nullable SubSection subSectionRight) {

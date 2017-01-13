@@ -177,7 +177,7 @@ public class GameMap {
 
 	private void recomputePassengersPaths() {
 		for(Station station : this.stations) {
-			for(Passenger passenger : station.getPassengers()){
+			for(Passenger passenger : station.getPassengers()) {
 				passenger.setPath(pathFinding(station, passenger.getWantedStation()));
 			}
 		}
@@ -190,8 +190,8 @@ public class GameMap {
 	 * @return true if the trains in the map changed, false otherwise
 	 */
 	public synchronized boolean addTrain(Train train) {
-	    boolean result = this.trains.add(train);
-	    this.trainsCopy = this.trains.toArray(new Train[this.trains.size()]);
+		boolean result = this.trains.add(train);
+		this.trainsCopy = this.trains.toArray(new Train[this.trains.size()]);
 		return result;
 	}
 
@@ -202,10 +202,10 @@ public class GameMap {
 	 * @return true if the trains was removed, false otherwise
 	 */
 	public synchronized boolean removeTrain(Train train) {
-	    boolean result = this.trains.remove(train);
-	    this.trainsCopy = this.trains.toArray(new Train[this.trains.size()]);
-	    return result;
-    }
+		boolean result = this.trains.remove(train);
+		this.trainsCopy = this.trains.toArray(new Train[this.trains.size()]);
+		return result;
+	}
 
 	/**
 	 * Get a copy of the trains.
@@ -265,12 +265,12 @@ public class GameMap {
 	 * @return the station or null if the station with this id isn't in the map
 	 */
 	@Nullable
-	private Station getStationWithId(int id){
-	    for(Station station : this.stations) {
-		    if(station.gameId == id) {
-			    return station;
-		    }
-	    }
+	private Station getStationWithId(int id) {
+		for(Station station : this.stations) {
+			if(station.gameId == id) {
+				return station;
+			}
+		}
 		return null;
 	}
 
@@ -280,47 +280,54 @@ public class GameMap {
 	 * @param id the id of the line
 	 * @return the line or null if the line with this id isn't in the map
 	 */
-	private Line getLineWithId(int id){
-	    for(Line line : this.lines) {
-		    if(line.gameId == id) {
-			    return line;
-		    }
-        }
-        return null;
-    }
+	private Line getLineWithId(int id) {
+		for(Line line : this.lines) {
+			if(line.gameId == id) {
+				return line;
+			}
+		}
+		return null;
+	}
 
-    // All function for path finding (not optimized)
+	// All function for path finding (not optimized)
 
-    private synchronized double distanceBetweenTwoStationConnected(Station stationA, Station stationB){
-    	if(stationA != stationB) {
-			for (Connection connection : stationA.getConnections()) {
-				if (connection.getLeftSubSection() != null && connection.getLeftSubSection().getSection().getOtherStationConnection(connection).getStation() == stationB) {
+	private synchronized double distanceBetweenTwoStationConnected(Station stationA, Station stationB) {
+		if(stationA != stationB) {
+			for(Connection connection : stationA.getConnections()) {
+				if(connection.getLeftSubSection() != null && connection.getLeftSubSection()
+				  .getSection()
+				  .getOtherStationConnection(connection)
+				  .getStation() == stationB) {
 					return connection.getLeftSubSection().getSection().getLength();
 				}
-				if (connection.getRightSubSection() != null && connection.getRightSubSection().getSection().getOtherStationConnection(connection).getStation() == stationB) {
+				if(connection.getRightSubSection() != null && connection.getRightSubSection()
+				  .getSection()
+				  .getOtherStationConnection(connection)
+				  .getStation() == stationB) {
 					return connection.getRightSubSection().getSection().getLength();
 				}
 			}
 			return -1;
 		}
 		return 0;
-    }
+	}
 
-    private synchronized void initHeuristics(Station station){
-	    int index = this.stations.indexOf(station);
-	    int i = 0;
-	    this.stationHeuristics = new double[this.stations.size()][this.stations.size()];
-	    for(Station station1 : this.stations) {
-			if (station1 == station) {
+	private synchronized void initHeuristics(Station station) {
+		int index = this.stations.indexOf(station);
+		int i = 0;
+		this.stationHeuristics = new double[this.stations.size()][this.stations.size()];
+		for(Station station1 : this.stations) {
+			if(station1 == station) {
 				this.stationHeuristics[index][i] = 0;
-			} else {
+			}
+			else {
 				this.stationHeuristics[index][i] = Double.MAX_VALUE;
 			}
 			++i;
 		}
 	}
 
-	private void updateDistance(Station stationA, Station stationB, Station beginStation, Station[] predecessor){
+	private void updateDistance(Station stationA, Station stationB, Station beginStation, Station[] predecessor) {
 		double i = distanceBetweenTwoStationConnected(stationA, stationB);
 		int index = this.stations.indexOf(stationA);
 		int index1 = this.stations.indexOf(stationB);
@@ -341,9 +348,9 @@ public class GameMap {
 	 * @param stationType the type of station wanted
 	 * @return the path
 	 */
-	public synchronized Stack<Station> pathFinding(Station station, StationType stationType){
+	public synchronized Stack<Station> pathFinding(Station station, StationType stationType) {
 		Stack<Station> result = new Stack<>();
-	    Station[] predecessor = new Station[this.stations.size()];
+		Station[] predecessor = new Station[this.stations.size()];
 		Station current = station;
 
 		initHeuristics(station);
@@ -360,26 +367,50 @@ public class GameMap {
 			path.add(station);
 			Stack<Station> finished = new Stack<>();
 			predecessor[this.stations.indexOf(station)] = current;
-			while (!path.isEmpty()){
+			while(!path.isEmpty()) {
 				current = path.poll();
-				if(current.getType() == stationType){
-					while (current != station){
+				if(current.getType() == stationType) {
+					while(current != station) {
 						int index = this.stations.indexOf(current);
 						result.push(current);
 						current = predecessor[index];
 					}
 					return result;
 				}
-				for(Connection connection : current.getConnections()){
+				for(Connection connection : current.getConnections()) {
 					if(connection.getRightSubSection() != null &&
-							!finished.contains(connection.getRightSubSection().getSection().getOtherStationConnection(connection).getStation())){
-						updateDistance(connection.getStation(), connection.getRightSubSection().getSection().getOtherStationConnection(connection).getStation(),station, predecessor);
-						path.add(connection.getRightSubSection().getSection().getOtherStationConnection(connection).getStation());
+					  !finished.contains(connection.getRightSubSection()
+						.getSection()
+						.getOtherStationConnection(connection)
+						.getStation())) {
+						updateDistance(connection.getStation(),
+						  connection.getRightSubSection()
+							.getSection()
+							.getOtherStationConnection(connection)
+							.getStation(),
+						  station,
+						  predecessor);
+						path.add(connection.getRightSubSection()
+						  .getSection()
+						  .getOtherStationConnection(connection)
+						  .getStation());
 					}
 					if(connection.getLeftSubSection() != null &&
-							!finished.contains(connection.getLeftSubSection().getSection().getOtherStationConnection(connection).getStation())){
-						updateDistance(connection.getStation(), connection.getLeftSubSection().getSection().getOtherStationConnection(connection).getStation(), station, predecessor);
-						path.add(connection.getLeftSubSection().getSection().getOtherStationConnection(connection).getStation());
+					  !finished.contains(connection.getLeftSubSection()
+						.getSection()
+						.getOtherStationConnection(connection)
+						.getStation())) {
+						updateDistance(connection.getStation(),
+						  connection.getLeftSubSection()
+							.getSection()
+							.getOtherStationConnection(connection)
+							.getStation(),
+						  station,
+						  predecessor);
+						path.add(connection.getLeftSubSection()
+						  .getSection()
+						  .getOtherStationConnection(connection)
+						  .getStation());
 					}
 				}
 				finished.add(current);

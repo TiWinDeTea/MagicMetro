@@ -197,7 +197,9 @@ public class SectionView extends Parent {
 			@Override
 			public void handle(MouseEvent event) {
 				if(SectionView.this.sectionMouseListener != null) {
-					SectionView.this.sectionMouseListener.mousePressedOnSection(SectionView.this, event.getX(), event.getY());
+					SectionView.this.sectionMouseListener.mousePressedOnSection(SectionView.this,
+					  event.getX(),
+					  event.getY());
 				}
 			}
 		});

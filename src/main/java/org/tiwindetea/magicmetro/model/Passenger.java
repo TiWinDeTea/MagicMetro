@@ -66,7 +66,7 @@ public class Passenger {
 	 *
 	 * @return the station
 	 */
-	public Station getStation(){
+	public Station getStation() {
 		return this.station;
 	}
 
@@ -77,8 +77,8 @@ public class Passenger {
 	 * @param path the path
 	 */
 	public void setPath(Stack<Station> path) {
-	    this.path = path;
-    }
+		this.path = path;
+	}
 
 	/**
 	 * Gets path.

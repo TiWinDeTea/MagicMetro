@@ -315,7 +315,7 @@ public class Main extends Application {
 			mapScript.initialTunnels = 3;
 			this.mapScripts.add(mapScript);
 		}
-		
+
 	}
 
 }

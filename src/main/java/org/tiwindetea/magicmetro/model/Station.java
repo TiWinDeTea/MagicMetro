@@ -167,7 +167,7 @@ public class Station {
 	 *
 	 * @return the connections list
 	 */
-	public List<Connection> getConnections(){
+	public List<Connection> getConnections() {
 		return this.connections;
 	}
 
@@ -177,7 +177,7 @@ public class Station {
 	 * @param connection the connection to test
 	 * @return true if the station contains this connection, else otherwise
 	 */
-	public boolean containsConnection(Connection connection){
+	public boolean containsConnection(Connection connection) {
 		return this.connections.contains(connection);
 	}
 
@@ -223,10 +223,14 @@ public class Station {
 	 * @param gameIdLine the id of the line
 	 * @return the connection
 	 */
-	public Connection getConnection(int gameIdLine){
+	public Connection getConnection(int gameIdLine) {
 		for(Connection connection : this.connections) {
-			if(connection.getLeftSubSection() != null && connection.getLeftSubSection().getSection().getLine().gameId == gameIdLine ||
-					connection.getRightSubSection() != null && connection.getRightSubSection().getSection().getLine().gameId == gameIdLine){
+			if(connection.getLeftSubSection() != null && connection.getLeftSubSection()
+			  .getSection()
+			  .getLine().gameId == gameIdLine ||
+			  connection.getRightSubSection() != null && connection.getRightSubSection()
+				.getSection()
+				.getLine().gameId == gameIdLine) {
 				return connection;
 			}
 		}
