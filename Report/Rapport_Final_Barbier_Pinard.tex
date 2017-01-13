@@ -1,5 +1,5 @@
 \documentclass[report, backcover, french, nodocumentinfo]{upmethodology-document}
-\include{settings}
+\include{settings_final}
 % For more information about UPmethodology: https://www.ctan.org/pkg/upmethodology
 
 \begin{document}
@@ -10,6 +10,24 @@
 	\upmpublicationpage{}
 
 	\newpage{}
+	\section{Etat général}
+		\p{}
+			Le projet utilise \textit{Apache Maven} pour compiler, un \textit{jar} classique et un contenant les dépendances peuvent être créés avec la commande:
+			\begin{Verbatim}[frame=single]
+$ mvn package
+			\end{Verbatim}
+			Les dépendances suivantes seront téléchargées:
+			\begin{itemize}
+				\item jsr305 $3.0.1$ (com.google.code.findbugs)
+				\item junit $4.4$ (junit)
+				\item math $13.0$ (org.arakhne.afc.core)
+				\item mathfx $13.0$ (org.arakhne.afc.advanced)
+			\end{itemize}
+			Et les \textit{jar} suivant seront créé et placé dans \textit{./target}:
+			\begin{itemize}
+				\item MagicMetro.jar
+				\item MagicMetro-jar-with-dependencies.jar
+			\end{itemize}
 	\section{Fonctionnalité présents dans le projet}
 		\p{}
 		Les fonctionnalités que nous avons réussi à implémenter dans les temps sont les suivantes : 
