@@ -167,6 +167,14 @@ public class TimeManager {
 	}
 
 	/**
+	 * End the TimeManager, cannot be reuse after this function call.
+	 */
+	public void end() {
+		stop();
+		this.executorService.shutdown();
+	}
+
+	/**
 	 * Gets the refresh delay as milliseconds
 	 *
 	 * @return the refresh delay
